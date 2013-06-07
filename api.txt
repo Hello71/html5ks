@@ -1,0 +1,32 @@
+== imachine{,_replay} api ==
+label * -> function
+jump_out -> save & register & call
+call -> ''
+seen_scene(scene) -> return label in seen_scenes
+int attraction_*
+path_end(chr, is_good)
+iscene(name, is_h, is_end)
+act_op(movie)
+imenu(choice)
+
+== script api ==
+chars: in ui_settings.rpy
+  e.g. his(text) -> promise
+with(transition, action) -> promise
+
+== prefs ==
+h-scenes (tied to shrinkwrap)
+fullscreen?
+webp (default on chrome/opera, off on others or webpjs)
+text speed
+auto delay
+music/sfx vol
+skip unread
+skip after choice
+
+== context menu ==
+show image, scrollback, skip, auto, options
+
+== save/load ==
+passive: seen_scenes
+active: track attraction

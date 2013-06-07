@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Katawa Shoujo</title>
+    <link rel="shortcut icon" type="image/png" href="/dump/ui/icon.png">
+    <link rel="apple-touch-icon" href="/dump/ui/icon.png">
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+      @font-face {
+        font-family: "Playtime";
+        /* src: url("playtime.ttf"); */
+        src: url("playtime-webfont.ttf");
+        src: url("playtime-webfont.woff");
+      }
+      #container {
+        width: 800px;
+        height: 600px;
+        position: relative;
+        overflow: hidden;
+      }
+      @keyframes toright {
+        from {
+          left: -100px;
+        }
+        to {
+          left: -190px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <audio id="music" src="/dump/bgm/Ease.ogg" loop controls></audio>
+    <div id="container" style="position: relative;">
+      <img src="/dump/bgs/school_girlsdormhall.jpg" style="position: relative; animation: 1.5s toright both ease-in;">
+      <img src="/dump/ui/bg-say.png" style="position: absolute; top: 440px; left: 0;">
+      <div style="font: 22px/27px Playtime; color: white; width: 750px; height: 90px; position: absolute; top: 493px; left: 28px;">It doesn't take long to identify the source as Lilly's room, though the deep timbre of the female voice unmistakably belongs not to her, but to her sister.</div>
+    </div>
+  </body>
+</html>
