@@ -1,18 +1,20 @@
 == imachine{,_replay} api ==
 label * -> function
-jump_out -> save & register & call
-call -> ''
+jump_out -> seen_scenes & call
+call -> call
 seen_scene(scene) -> return label in seen_scenes
 int attraction_*
 path_end(chr, is_good)
-iscene(name, is_h, is_end)
-act_op(movie)
-imenu(choice)
+iscene(name, is_h, is_end) -> promise
+✓ act_op(movie) -> promise
+imenu(choice) -> promise
 
 == script api ==
 chars: in ui_settings.rpy
   e.g. his(text) -> promise
 with(transition, action) -> promise
+play(stream, name, fade)
+stream: sound,music,ambient
 
 == prefs ==
 h-scenes (tied to shrinkwrap)
