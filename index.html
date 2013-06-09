@@ -9,6 +9,7 @@
         margin: 0;
         padding: 0;
         overflow: hidden;
+        background: black;
       }
       @font-face {
         font-family: "Playtime";
@@ -19,8 +20,13 @@
       #container {
         width: 800px;
         height: 600px;
-        position: relative;
+        top: 50%;
+        margin-top: -300px;
+        left: 50%;
+        margin-left: -400px;
+        position: absolute;
         overflow: hidden;
+        transform: scale(1.5);
       }
       @keyframes toright {
         from {
@@ -30,22 +36,32 @@
           left: -190px;
         }
       }
-      #bg,#vid {
-        position: relative;
+      #bg,#video {
+        position: absolute;
+      }
+      #video {
+        z-index: 2;
       }
     </style>
-    <script src="/js/helpers.js"></script>
-    <script src="/js/api.js"></script>
-    <script src="/js/imachine_api.js"></script>
-    <script src="/js/script_api.js"></script>
+    <script>
+        window.define = function(factory) {
+            try{ delete window.define; } catch(e){ window.define = void 0; } // IE
+            window.when = factory();
+        };
+        window.define.amd = {};
+    </script>
   </head>
   <body>
-    <audio id="music" src="/dump/bgm/Ease.ogg" loop controls></audio>
-    <div id="container" style="position: relative;">
+    <audio id="music" loop></audio>
+    <audio id="sound"></audio>
+    <audio id="ambient" loop></audio>
+    <div id="container">
       <img id="bg" src="/dump/bgs/school_girlsdormhall.jpg">
       <video id="video"></video>
       <img src="/dump/ui/bg-say.png" style="position: absolute; top: 440px; left: 0;">
       <div style="font: 22px/27px Playtime; color: white; width: 750px; height: 90px; position: absolute; top: 493px; left: 28px;">It doesn't take long to identify the source as Lilly's room, though the deep timbre of the female voice unmistakably belongs not to her, but to her sister.</div>
     </div>
+    <script src="/when/when.js"></script>
+    <script src="/js/html5ks.js"></script>
   </body>
 </html>
