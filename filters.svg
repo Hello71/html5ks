@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg>
+  <filter id="night">
+    <feColorMatrix values="0.6 0   0   0 0
+                               0   0.6 0   0 0
+                               0   0   0.7 0 0
+                               0   0   0   1 0"/>
+    <feColorMatrix type="saturate" values="0.6"/>
+  </filter>
+    
+  <filter id="sp_night">
+    <feColorMatrix values="0.9 0    0 0 0
+                               0   0.92 0 0 0
+                               0   0    1 0 0
+                               0   0    0 1 0"/>
+    <feComponentTransfer>
+         <feFuncR type="linear" intercept="-0.05" slope="1"/>
+         <feFuncG type="linear" intercept="-0.05" slope="1"/>
+         <feFuncB type="linear" intercept="-0.05" slope="1"/>
+    </feComponentTransfer>
+  </filter>
+
+  <filter id="sunset">
+    <feColorMatrix values="1.1 0    0    0 0
+                               0   0.95 0    0 0
+                               0   0    0.85 0 0
+                               0   0    0    1 0"/>
+    <feComponentTransfer>
+         <feFuncR type="linear" intercept="0.1" slope="1"/>
+         <feFuncG type="linear" intercept="0.1" slope="1"/>
+         <feFuncB type="linear" intercept="0.1" slope="1"/>
+    </feComponentTransfer>
+  </filter>
+
+  <filter id="sp_sunset">
+    <feColorMatrix values="1.02 0    0   0 0
+                               0    0.95 0   0 0
+                               0    0    0.9 0 0
+                               0    0    0   1 0"/>
+    <feComponentTransfer>
+         <feFuncR type="linear" intercept="0.05" slope="1"/>
+         <feFuncG type="linear" intercept="0.05" slope="1"/>
+         <feFuncB type="linear" intercept="0.05" slope="1"/>
+    </feComponentTransfer>
+  </filter>
+
+  <filter id="past">
+    <feColorMatrix type="saturate" values="0.15"/>
+    <feColorMatrix values="1.0  0    0    0 0
+                               0    0.94 0    0 0
+                               0    0    0.76 0 0
+                               0    0    0    1 0"/>
+  </filter>
+
+  <filter id="rain">
+    <feColorMatrix type="saturate" values="0.4"/>
+    <feColorMatrix values="0.95 0    0 0 0
+                               0    0.95 0 0 0
+                               0    0    1 0 0
+                               0    0    0 1 0"/>
+    <feComponentTransfer>
+         <feFuncR type="linear" intercept="-0.1" slope="1"/>
+         <feFuncG type="linear" intercept="-0.1" slope="1"/>
+         <feFuncB type="linear" intercept="-0.1" slope="1"/>
+    </feComponentTransfer>
+  </filter>
+
+  <filter id="sp_rain">
+    <feColorMatrix type="saturate" values="0.6"/>
+    <feColorMatrix values="0.96 0    0 0 0
+                               0    0.96 0 0 0
+                               0    0    1 0 0
+                               0    0    0 1 0"/>
+    <feComponentTransfer>
+         <feFuncR type="linear" intercept="-0.05" slope="1"/>
+         <feFuncG type="linear" intercept="-0.05" slope="1"/>
+         <feFuncB type="linear" intercept="-0.05" slope="1"/>
+    </feComponentTransfer>
+  </filter>
+
+  <filter id="past_night">
+    <feColorMatrix values="0.6 0    0   0 0
+                               0   0.6  0   0 0
+                               0   0    0.7 0 0
+                               0   0    0   1 0"/>
+    <feColorMatrix type="saturate" values="0.6"/>
+    <feColorMatrix type="saturate" values="0.15"/>
+    <feColorMatrix values="1 0    0    0 0
+                               0 0.94 0    0 0
+                               0 0    0.76 0 0
+                               0 0    0    1 0"/>
+  </filter>
+
+  <filter id="shadowalpha">
+    <feComponentTransfer>
+      <feFuncA type="linear" intercept="0.7" slope="0"/>
+    </feComponentTransfer>
+  </filter>
+</svg>

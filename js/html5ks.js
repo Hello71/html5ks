@@ -29,7 +29,8 @@ window.html5ks = {
       music: document.getElementById("music"),
       ambient: document.getElementById("ambient"),
       sound: document.getElementById("sound")
-    }
+    },
+    say: document.getElementById("say")
   },
   seen_scene: function (scene) {
     return !!this.persistent.seen_scenes[scene];
@@ -98,8 +99,14 @@ window.html5ks = {
   scene: function (type, name) {
     var deferred = when.defer();
     if (typeof name == "undefined") name = type;
-    this.WARN("don't know extension, trying all");
     var bg = document.getElementById("bg");
+    if (name == "black") {
+      bg.src = "";
+      bg.style.background = "black";
+      deferred.resolve(this);
+      return deferred.promise;
+    }
+    this.WARN("don't know extension, trying all");
     var img = "/dump/" + this.sceneTypes[type] + "/" + name;
     bg.onerror = function () {
       bg.onerror = function () {
@@ -127,12 +134,25 @@ window.html5ks = {
     }
     this.elements.container.style.transform = "scale(" + newScale + ")";
   },
+  loadChars: function () {
+    for (var character in this.characters) {
+      this[character] = function (text) {
+        var deferred = when.defer();
+        this.elements.say.textContent = text;
+        setTimeout(function () {
+          deferred.resolve(text);
+        }, 1000);
+        return deferred.promise;
+      };
+    };
+  },
   onload: function () {
     this.load();
     this.scale();
     window.addEventListener("resize", function () {
       html5ks.scale();
     }, false);
+    this.loadChars();
   }
 };
 document.addEventListener("DOMContentLoaded", function () {

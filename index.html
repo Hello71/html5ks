@@ -37,9 +37,14 @@
       }
       #bg,#video {
         position: absolute;
+        width: 800px;
+        height: 600px;
       }
       #video {
         z-index: 2;
+      }
+      #say {
+        font: 22px/27px Playtime; color: white; width: 750px; height: 90px; position: absolute; top: 493px; left: 28px;
       }
     </style>
     <script>
@@ -58,11 +63,13 @@
       <img id="bg" src="/dump/bgs/school_girlsdormhall.jpg">
       <video id="video"></video>
       <img src="/dump/ui/bg-say.png" style="position: absolute; top: 440px; left: 0;">
-      <div style="font: 22px/27px Playtime; color: white; width: 750px; height: 90px; position: absolute; top: 493px; left: 28px;">It doesn't take long to identify the source as Lilly's room, though the deep timbre of the female voice unmistakably belongs not to her, but to her sister.</div>
+      <div id="say">It doesn't take long to identify the source as Lilly's room, though the deep timbre of the female voice unmistakably belongs not to her, but to her sister.</div>
     </div>
     <script src="/when/when.js"></script>
     <script src="/js/html5ks.js"></script>
     <script src="/js/play.js"></script>
+    <script src="/js/images.js"></script>
     <script src="/js/characters.js"></script>
+    <script src="/js/script-a1-monday.js"></script>
   </body>
 </html>

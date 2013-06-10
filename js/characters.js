@@ -1,6 +1,6 @@
 if (!window.html5ks) window.html5ks = {};
 html5ks.characters = {
-  name_only: {name: null, kind: adv},
+  name_only: {name: ""},
   
   hi: {name: "Hisao", color: "#629276"},
   
@@ -15,7 +15,7 @@ html5ks.characters = {
   mi_not_shi: {name: "{s}Shizune{/s} Misha", color: "#FF809F"},
   
   ke: {name: "Kenji", color: "#CC7C2A"},
-  mu: {name: "Muto", color: "#FFFFFF"},
+  mu: {name: "Mutou", color: "#FFFFFF"},
   nk: {name: "Nurse", color: "#FFFFFF"},
   no: {name: "Nomiya", color: "#E0E0E0"},
   yu: {name: "Yuuko", color: "#2c9e31"},
@@ -29,42 +29,39 @@ html5ks.characters = {
   
   mystery: {name: "???"},
   
-  ssh: {name: "Shizune", kind: shi, what_prefix: "[ ", what_suffix: " ]"},
-  his: {name: "Hisao", kind: hi, what_prefix: "[ ", what_suffix: " ]"},
+  ssh: {name: "Shizune", color: "#72ADEE", what_prefix: "[ ", what_suffix: " ]"},
+  his: {name: "Hisao", color: "#629276", what_prefix: "[ ", what_suffix: " ]"},
   
-  ha_: {name: "Purple-haired girl", kind: ha},
-  emi_: {name: "Twintails girl", kind: emi},
-  rin_: {name: "Strange girl", kind: rin},
-  li_: {name: "Wavy-haired girl", kind: li},
-  mi_: {name: "Laughing girl", kind: mi},
-  ke_: {name: "Bespectacled hallmate", kind: ke},
-  mu_: {name: "Tall man", kind: mu},
-  yu_: {name: "Librarian", kind: yu},
-  no_: {name: "Silver-haired man", kind: no},
-  sa_: {name: "Gallery owner", kind: sa},
-  aki_: {name: "Well-dressed person", kind: aki},
-  nk_: {name: "Smiling man", kind: nk},
-  hx_: {name: "Huge man", kind: hx},
-  hh_: {name: "Slim girl", kind: hh},
-  emm_: {name: "Woman with braid", kind: emm},
+  ha_: {name: "Purple-haired girl", color: "#897CBF"},
+  emi_: {name: "Twintails girl", color: "#FF8D7C"},
+  rin_: {name: "Strange girl", color: "#b14343"},
+  li_: {name: "Wavy-haired girl", color: "#F9EAA0"},
+  mi_: {name: "Laughing girl", color: "#FF809F"},
+  ke_: {name: "Bespectacled hallmate", color: "#CC7C2A"},
+  mu_: {name: "Tall man", color: "#FFFFFF"},
+  yu_: {name: "Librarian", color: "#2c9e31"},
+  no_: {name: "Silver-haired man", color: "#E0E0E0"},
+  sa_: {name: "Gallery owner", color: "#D4D4FF"},
+  aki_: {name: "Well-dressed person", color: "#eb243b"},
+  nk_: {name: "Smiling man", color: "#FFFFFF"},
+  hx_: {name: "Huge man", color: "#99AACC"},
+  hh_: {name: "Slim girl", color: "#6299FF"},
+  emm_: {name: "Woman with braid", color: "#995050"},
   
-  n: ReadbackNVL({name: null, 
-       kind: "nvl",
-       ctc: animBlink(im.Rotozoom("ui/ctc.png", 270, 1.0), {offset: 10, ypos: 560, xpos: 772}),
-       ctc_position: "fixed"}),
+  n: {name: null, kind: "nvl"},
   
   nb: {name: null, 
-     kind: adv,
      ctc: null,
      what_color: "#666666",
      what_line_spacing: 8,
      what_prefix: "",
      what_suffix: "",
-     show_function: say_wrapper,
      window_style: "b_nvl_window"},
   
   rinbabble: {name: null,
-    kind: n,
-    what_prefix: "{color: #FF8D7C}{b}Rin{/b}{/color}\n" + displayStrings.quote_outer_open,
-    what_suffix: displayStringsquote_outer_close},
+    kind: "nvl",
+    what_prefix: "{color: #FF8D7C}{b}Rin{/b}{/color}\n“",
+    what_suffix: "”"},
+
+  Iwanako: {name: "Iwanako"}
 };
