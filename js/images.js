@@ -1038,81 +1038,36 @@ image: "vfx/mural.jpg"},
     rin_exhibition_sold: "vfx/rin_exhibition_sold.jpg",
     rin_exhibition_c: "vfx/rin_exhibition_c.jpg",
 
-    rin_shadow basic: At("sprites/rin/close/rin_basic_deadpan_close_.png"), shadowalpha),
-    rin_shadow negative: At("sprites/rin/close/rin_negative_spaciness_close.png"), shadowalpha),
+    rin_shadow basic: {image:"sprites/rin/close/rin_basic_deadpan_close.png", filter:"shadowalpha"},
+    rin_shadow negative: {image:"sprites/rin/close/rin_negative_spaciness_close.png", filter:"shadowalpha"},
 
     "nightsky_rotation": {
-        image: "bgs/misc_sky_ni.jpg",
-        xalign: 0.5,
-yalign: 0.5 rotate 0,
-zoom: 1.5 alpha 0.0,
-        parallel: {
-            linear 40,
-rotate 360,
-            repeat,
-        parallel: {
-            linear 10,
-zoom: 3.0,
-        parallel: {
-            linear 5.0,
-alpha 1.0,
+        image: "bgs/misc_sky_ni.jpg"}
 
     "cityscape_zoom": {
-        image: "vfx/cityscape.png",
-        xpos: -0.25,
-ypos: 1.0,
-xanchor: 0.0,
-yanchor: 0.0,
-zoom: 1.5,
-        ease: 2.0,
-xpos: 0.0,
-ypos: 1.0,
-xanchor: 0.0,
-yanchor: 1.0,
-zoom: 1.0,
+        image: "vfx/cityscape.png"}
 
     "hill_enter": {
-        image: "vfx/hillouette.png",
-        xpos: 0.5,
-ypos: 1.0,
-xanchor: 0.5,
-yanchor: 0.0,
-        ease: 2.0,
-xpos: 0.5,
-ypos: 1.0,
-xanchor: 0.5,
-yanchor: 1.0,
+        image: "vfx/hillouette.png"}
 
     "hill_pairtouch": "vfx/hillpair1.png",
     "hill_pairnotouch": "vfx/hillpair2.png",
 
     nightwash: "vfx/nightwash.png",
 
-    python: {
-        def noisetile(bitmap, opacity=0.1): {
-            return im.Tile(im.Alpha(bitmap,opacity)),
+    noiseoverlay: "vfx/noise1.png",
 
-    noiseoverlay: {
-        noisetile("vfx/noise1.png"),
-        pause 0.1,
-        noisetile("vfx/noise2.png"),
-        pause 0.1,
-        noisetile("vfx/noise3.png"),
-        pause 0.1,
-        repeat,
-
-    comic vfx1: "vfx/comic_vfx1.png",
-    comic vfx2: "vfx/comic_vfx2.png",
-    comic vfx3: "vfx/comic_vfx3.png",
-    comic vfx4: "vfx/comic_vfx4.png",
+    comic_vfx1: "vfx/comic_vfx1.png",
+    comic_vfx2: "vfx/comic_vfx2.png",
+    comic_vfx3: "vfx/comic_vfx3.png",
+    comic_vfx4: "vfx/comic_vfx4.png",
 
     "ev_emi_bed_full": LiveComposite((800,1280),
                                         (0,0),"event/emi_bed_normal.jpg",
                                         (0,600),"event/emi_bed_legs.jpg"),
 
-    passoutOP1: {
-        Solid("#0000"),
-        Solid("#000")  with ImageDissolve("ui/tr-flashback.png", 6.0, 32, alpha=true),
+    passoutOP1: 
+        "ui/tr-flashback.png",
 
 
     wine: "vfx/wine.png",
