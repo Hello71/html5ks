@@ -1,3 +1,8 @@
+
+"use strict";
+var stub = function(){}
+var LiveComposite = stub;
+var im = {Composite:stub,Crop:stub,FactorScale:stub,Grayscale:stub};
 html5ks.images = {
     "ev_other_iwanako_start": {
         image: "event/other_iwanako_nosnow.jpg",
@@ -5,29 +10,29 @@ html5ks.images = {
         yalign: 0.9,
         zoom: 1.2,
         transform: {
-          type: "warp",
-          seconds: 20,
-          zoom: 1,
-          yalign: 0.5,
+            type: "warp",
+            seconds: 20,
+            zoom: 1,
+            yalign: 0.5,
         },
     },
 
     "ev_other_iwanako": "event/other_iwanako_nosnow.jpg",
     "evul_other_iwanako": "event/other_iwanako.jpg",
 
-    "ev_hisao_class_start": im.Crop("event/hisao_class.jpg", 0, 0, 800, 600),
+    "ev_hisao_class_start": {image:"event/hisao_class.jpg", crop: (0, 0, 800, 600)},
 
     "ev_hisao_class_move": {
         image: "event/hisao_class.jpg",
         xalign: 0.0,
         transform: {
-          type: "warp",
-          seconds: 40.0,
-          xalign: 1.0,
+            type: "warp",
+            seconds: 40.0,
+            xalign: 1.0,
         },
     },
 
-    "ev_hisao_class_end": im.Crop("event/hisao_class.jpg", 800, 0, 800, 600),
+    "ev_hisao_class_end": {image:"event/hisao_class.jpg", crop: (800, 0, 800, 600)},
 
 
     "ev_emi_knockeddown": "event/emi_knockeddown.jpg",
@@ -35,43 +40,39 @@ html5ks.images = {
     "ev_emi_knockeddown_facepullout": {
         image: "event/emi_knockeddown_large.jpg",
         crop: (840, 50, 800, 600),
-        easeout: 10.0,
-crop: (840, 50, 880, 660),
+        transform:{
+        type:"easeout",
+        seconds:10.0,
+        crop: (840, 50, 880, 660),
+        }
     },
 
     "ev_emi_knockeddown_largepullout": {
         image: "event/emi_knockeddown.jpg",
-        crop: (40, 30, 720, 540),
-        easein: 10.0,
-crop: (0, 0, 800, 600),
+        crop: (40, 30, 720, 540)
+    },
 
-    "ev_emi_knockeddown_face": im.Crop("event/emi_knockeddown_large.jpg", 840, 50, 800, 600),
+    "ev_emi_knockeddown_face": {image:"event/emi_knockeddown_large.jpg", crop:(840, 50, 800, 600)},
 
     "ev_emi_knockeddown_legs": {
         crop: null,
         image: "event/emi_knockeddown_large.jpg",
-        xpos: 2350,
-ypos: 1010,
-xanchor: 2400,
-yanchor: 1800,
-        ease: 8.0,
-xpos: 1900,
-ypos: 900,
+        xpos: -50,
+        ypos: -790,
+    },
 
     "ev_emi_run_face_zoomin": {
         image: "event/emi_run_face.jpg",
         crop: (0, 0, 800, 600),
-        ease: 10.0,
-crop: (40, 30, 720, 540),
+    },
 
     "ev_emi_run_face": "event/emi_run_face.jpg",
 
     "ev_emi_run_face_zoomout_ss": {
         filter: "sunset",
-image: "event/emi_run_face.jpg",
+        image: "event/emi_run_face.jpg",
         crop: (40, 30, 720, 540),
-        ease: 10.0,
-crop: (0, 0, 800, 600),
+    },
 
     "ev_emi_firstkiss": "event/emi_firstkiss.jpg",
 
@@ -115,12 +116,12 @@ crop: (0, 0, 800, 600),
     "ev_picnic_normal": {
         image: "event/picnic_normal.jpg",
         xalign: 0.5,
-yalign: 0.0,
+        yalign: 0.0,
     },
     "ev_picnic_rain": {
         image: "event/picnic_rain.jpg",
         xalign: 0.5,
-yalign: 0.0,
+        yalign: 0.0,
     },
 
     "ev_emi_cry_down": "event/emi_cry_down.jpg",
@@ -176,47 +177,54 @@ yalign: 0.0,
 
     "ev_rin_eating_zoomout": {
         image: "event/rin_eating.jpg",
-        crop: (159,0,640,480),
-        seconds:  10.0,
-crop: (0, 0, 800, 600),
+        crop: (159, 0, 640, 480)
+    },
 
     "evh_rin_artclass1": {
         image: "event/rin_artclass1.jpg",
         yalign: 0.5,
-xalign: 1.0,
+        xalign: 1.0
+    },
     "evh_rin_artclass2": {
         image: "event/rin_artclass2.jpg",
         yalign: 0.5,
-xalign: 1.0,
+        xalign: 1.0
+    },
     "evh_rin_artclass3": {
         image: "event/rin_artclass3.jpg",
         yalign: 0.5,
-xalign: 1.0,
+        xalign: 1.0
+    },
     "evh_rin_artclass4": {
         image: "event/rin_artclass4.jpg",
         yalign: 0.5,
-xalign: 1.0,
-        seconds:  10.0,
-xalign: 0.0,
+        xalign: 1.0
+    },
 
     "evh_rin_wisp1": {
         image: "event/rin_wisp1.jpg",
-        truecenter,
+        pos: "truecenter"
+    },
     "evh_rin_wisp2": {
         image: "event/rin_wisp2.jpg",
-        truecenter,
+        pos: "truecenter"
+    },
     "evh_rin_wisp3": {
         image: "event/rin_wisp3.jpg",
-        truecenter,
+        pos: "truecenter"
+    },
     "evh_rin_wisp4": {
         image: "event/rin_wisp4.jpg",
-        truecenter,
+        pos: "truecenter"
+    },
     "evh_rin_wisp5": {
         image: "event/rin_wisp5.jpg",
-        truecenter,
+        pos: "truecenter"
+    },
     "ev_rin_wisp_blurred": {
         image: "event/rin_wisp_blurred.jpg",
-        truecenter,
+        pos: "truecenter"
+    },
     "smoke_focused": "event/rin_wisp_smoke_focused.png",
     "smoke_blurred": "event/rin_wisp_smoke_blurred.png",
 
@@ -224,16 +232,16 @@ xalign: 0.0,
     "ovl_hisaobyrin": "vfx/hisaobyrin.png",
 
     "ev_hisao_mirror": "event/hisao_mirror.jpg",
-    "evh_hisao_mirror_800": im.FactorScale("event/hisao_mirror.jpg", 0.8),
+    "evh_hisao_mirror_800": {image:"event/hisao_mirror.jpg", zoom:0.8},
 
     "ev_busride": "event/busride.jpg",
     "ev_busride_ni": "event/busride_ni.jpg",
 
     "ev_rin_roof_boredom": "event/rin_roof/rin_roof_boredom.jpg",
-    "ev_rin_roof_disgust": roofcomposite("event/rin_roof/rin_roof_disgust.jpg"),
-    "ev_rin_roof_doubt": roofcomposite("event/rin_roof/rin_roof_doubt.jpg"),
-    "ev_rin_roof_nonchalant": roofcomposite("event/rin_roof/rin_roof_nonchalant.jpg"),
-    "ev_rin_roof_surprised": roofcomposite("event/rin_roof/rin_roof_surprised.jpg"),
+    "ev_rin_roof_disgust": {image:"event/rin_roof/rin_roof_disgust.jpg",composite:"ev_rin_roof_boredom"},
+    "ev_rin_roof_doubt": {image:"event/rin_roof/rin_roof_doubt.jpg",composite:"ev_rin_roof_boredom"},
+    "ev_rin_roof_nonchalant": {image:"event/rin_roof/rin_roof_nonchalant.jpg",composite:"ev_rin_roof_boredom"},
+    "ev_rin_roof_surprised": {image:"event/rin_roof/rin_roof_surprised.jpg",composite:"ev_rin_roof_boredom"},
 
     "hisao_rin_roof": "event/rin_roof/hisao_shadow.png",
     "emi_rin_roof": "event/rin_roof/emi_shadow.png",
@@ -251,13 +259,13 @@ xalign: 0.0,
 
     "ev_watch_black": "event/watch_black.jpg",
     "ev_watch_worn": "vfx/watch_worn.png",
-    "evh_watch_worn_330": night("vfx/watch_worn_330.png"),
+    "evh_watch_worn_330": {filter:"night",image:"vfx/watch_worn_330.png"},
     "bg_watchhallway_blur": "vfx/watchhallway_blur.jpg",
 
     "bg_worrytree": "vfx/worrytree.jpg",
     "bg_worrytree_ss": {
-      filter: "sunset",
-      image: "vfx/worrytree.jpg"
+        filter: "sunset",
+        image: "vfx/worrytree.jpg"
     },
 
     "ev_rin_painting_base": "event/rin_painting_base.jpg",
@@ -274,20 +282,24 @@ xalign: 0.0,
     "ev_rin_rain_away_close": "event/rin_rain_away_close.jpg",
     "ev_rin_rain_towards_close": "event/rin_rain_towards_close.jpg",
 
-    "ovl_rin_rain_hisaotowards_close": im.Crop("event/rin_rain_towards_close.jpg", 400,0,400,1200),
-    "ovl_rin_rain_hisaotowards": im.Crop("event/rin_rain_towards.jpg", 400,0,400,600),
+    "ovl_rin_rain_hisaotowards_close": im.Crop("event/rin_rain_towards_close.jpg", 400, 0, 400, 1200),
+    "ovl_rin_rain_hisaotowards": im.Crop("event/rin_rain_towards.jpg", 400, 0, 400, 600),
 
     "rin_basic_deadpan_superclose": "sprites/rin/superclose/rin_basic_deadpan_superclose.png",
     "rin_basic_deadpannormal_superclose": "sprites/rin/superclose/rin_basic_deadpannormal_superclose.png",
     "rin_basic_lucid_superclose": "sprites/rin/superclose/rin_basic_lucid_superclose.png",
-    "rin_basic_crying_superclose_ss": {filter: "sunset",
-image: "sprites/rin/superclose/rin_basic_crying_superclose.png"},
+    "rin_basic_crying_superclose_ss": {
+        filter: "sunset",
+        image: "sprites/rin/superclose/rin_basic_crying_superclose.png"
+    },
     "rin_relaxed_doubt_superclose": "sprites/rin/superclose/rin_relaxed_doubt_superclose.png",
     "rin_relaxed_sleepy_superclose": "sprites/rin/superclose/rin_relaxed_sleepy_superclose.png",
     "rin_relaxed_surprised_superclose": "sprites/rin/superclose/rin_relaxed_surprised_superclose.png",
     "rin_negative_crying_superclose": "sprites/rin/superclose/rin_negative_crying_superclose.png",
-    "rin_negative_crying_superclose_ss": {filter: "sunset",
-image: "sprites/rin/superclose/rin_negative_crying_superclose.png"},
+    "rin_negative_crying_superclose_ss": {
+        filter: "sunset",
+        image: "sprites/rin/superclose/rin_negative_crying_superclose.png"
+    },
 
     "bg_gallery_atelier_close": "vfx/gallery_atelier_close.jpg",
     "rin_back_cas_superclose": "sprites/rin/superclose/rin_back_cas_superclose.png",
@@ -320,20 +332,22 @@ image: "sprites/rin/superclose/rin_negative_crying_superclose.png"},
     "ev_rin_nap_total": "event/rin_nap_total.jpg",
 
     "ev_rin_nap_total_awind": {
-      image: "event/rin_nap_total.jpg",
-      dissolve: "ev_rin_nap_total_wind"
+        image: "event/rin_nap_total.jpg",
+        dissolve: "ev_rin_nap_total_wind"
     },
     "ev_rin_nap_close_awind": {
-      image: "event/rin_nap_close.jpg",
-      dissolve: "ev_rin_nap_close_wind"
+        image: "event/rin_nap_close.jpg",
+        dissolve: "ev_rin_nap_close_wind"
     },
 
     "ev_rin_nap_total_awind_tears": {
-      image: "ev rin_nap_total_awind", composite:
-                                                       "ev rin_nap_total_tears"},
+        image: "ev rin_nap_total_awind",
+        composite: "ev rin_nap_total_tears"
+    },
     "ev_rin_nap_close_awind_tears": {
-                                     image:                  "ev rin_nap_close_awind",
-                                           composite:            "ev rin_nap_close_tears"},
+        image: "ev rin_nap_close_awind",
+        composite: "ev rin_nap_close_tears"
+    },
 
 
     "ev_rin_masturbate_away": "event/rin_masturbate_away.jpg",
@@ -353,42 +367,93 @@ image: "sprites/rin/superclose/rin_negative_crying_superclose.png"},
     "evh_rin_relief_down_large": "event/rin_relief_down_large.jpg",
 
     "ev_rin_gallery": {
-        truecenter,
-        image: "event/rin_gallery.jpg",
+        pos: "truecenter",
+        image: "event/rin_gallery.jpg"
+    },
 
     doodlewhite: {
-      image: "vfx/rin_doodle.png",
-      filter: "maxbright"},
+        image: "vfx/rin_doodle.png",
+        filter: "maxbright"
+    },
 
     "ev_rin_doodle": {
         image: "doodlewhite",
         xalign: 0.0,
-yalign: 0.0,
+        yalign: 0.0
+    },
 
     "ev_rin_doodle_all": {
         image: "vfx/rin_doodle.png",
-        truecenter,
-        zoom: 0.9,
-        easein: 12.0,
-zoom: 0.75},
+        pos: "truecenter",
+        zoom: 0.9
+    },
 
     "bg_misc_sky_rays": "bgs/misc_sky_rays.jpg",
 
     "ev_rin_trueend_gone": "event/rin_trueend/rin_trueend_gone.jpg",
-    "ev_rin_trueend_gone_ni": {image:"event/rin_trueend/rin_trueend_gone.jpg",filter:"night"},
-    "ev_rin_trueend_normal_comp": {image:"event/rin_trueend/rin_trueend_normal.jpg",xpos:113,ypos:124},
-    "ev_rin_trueend_normal": {image:"ev_rin_trueend_gone",composite:"ev_rin_trueend_normal_comp"},
-    "ev_rin_trueend_closed_comp": {xpos:177,ypos:129,image:"event/rin_trueend/rin_trueend_closed.jpg"},
-    "ev_rin_trueend_closed": {image:"ev_rin_trueend_normal", composite: "ev_rin_trueend_closed_comp"},
-    "ev_rin_trueend_sad_comp": {image:"event/rin_trueend/rin_trueend_sad.jpg",xpos:177,ypos:129},
-    "ev_rin_trueend_sad": {image:"ev_rin_trueend_normal", composite: "ev_rin_trueend_sad_comp"},
-    "ev_rin_trueend_smile_comp":{image:"event/rin_trueend/rin_trueend_smile.jpg",xpos:177,ypos:129},
-    "ev_rin_trueend_smile": {image:"ev_rin_trueend_normal",composite:"ev_rin_trueend_smile_comp"},
-    "ev_rin_trueend_weaksmile_comp":{image:"event/rin_trueend/rin_trueend_weaksmile.jpg",xpos:177,ypos:129},
-    "ev_rin_trueend_weaksmile": {image:"ev_rin_trueend_normal",composite:"ev_rin_trueend_weaksmile_comp"},
-    "ev_rin_trueend_hug": {xpos:335,ypos:51,image:"event/rin_trueend/rin_trueend_hug.jpg"},
-    "ev_rin_trueend_hugclosed_comp":{image:"event/rin_trueend/rin_trueend_hugclosed.jpg",xpos:484,ypos:154},
-    "ev_rin_trueend_hugclosed": {image:"ev_rin_trueend_hug",composite:"ev_rin_trueend_hugclosed_comp"},
+    "ev_rin_trueend_gone_ni": {
+        image: "event/rin_trueend/rin_trueend_gone.jpg",
+        filter: "night"
+    },
+    "ev_rin_trueend_normal_comp": {
+        image: "event/rin_trueend/rin_trueend_normal.jpg",
+        xpos: 113,
+        ypos: 124
+    },
+    "ev_rin_trueend_normal": {
+        image: "ev_rin_trueend_gone",
+        composite: "ev_rin_trueend_normal_comp"
+    },
+    "ev_rin_trueend_closed_comp": {
+        xpos: 177,
+        ypos: 129,
+        image: "event/rin_trueend/rin_trueend_closed.jpg"
+    },
+    "ev_rin_trueend_closed": {
+        image: "ev_rin_trueend_normal",
+        composite: "ev_rin_trueend_closed_comp"
+    },
+    "ev_rin_trueend_sad_comp": {
+        image: "event/rin_trueend/rin_trueend_sad.jpg",
+        xpos: 177,
+        ypos: 129
+    },
+    "ev_rin_trueend_sad": {
+        image: "ev_rin_trueend_normal",
+        composite: "ev_rin_trueend_sad_comp"
+    },
+    "ev_rin_trueend_smile_comp": {
+        image: "event/rin_trueend/rin_trueend_smile.jpg",
+        xpos: 177,
+        ypos: 129
+    },
+    "ev_rin_trueend_smile": {
+        image: "ev_rin_trueend_normal",
+        composite: "ev_rin_trueend_smile_comp"
+    },
+    "ev_rin_trueend_weaksmile_comp": {
+        image: "event/rin_trueend/rin_trueend_weaksmile.jpg",
+        xpos: 177,
+        ypos: 129
+    },
+    "ev_rin_trueend_weaksmile": {
+        image: "ev_rin_trueend_normal",
+        composite: "ev_rin_trueend_weaksmile_comp"
+    },
+    "ev_rin_trueend_hug": {
+        xpos: 335,
+        ypos: 51,
+        image: "event/rin_trueend/rin_trueend_hug.jpg"
+    },
+    "ev_rin_trueend_hugclosed_comp": {
+        image: "event/rin_trueend/rin_trueend_hugclosed.jpg",
+        xpos: 484,
+        ypos: 154
+    },
+    "ev_rin_trueend_hugclosed": {
+        image: "ev_rin_trueend_hug",
+        composite: "ev_rin_trueend_hugclosed_comp"
+    },
 
     "ev_rin_wet_pan_down": "event/rin_wet/rin_wet_pan_down.jpg",
     "ev_rin_wet_arms": "event/rin_wet/rin_wet_arms.jpg",
@@ -399,7 +464,10 @@ zoom: 0.75},
     "ev_rin_wet_towel_touch": "event/rin_wet/rin_wet_towel_touch.jpg",
 
     "ev_rin_pair_base": "event/rin_pair/rin_pair_base.jpg",
-    "ev_rin_pair_base_clothes": {image:"event/rin_pair/rin_pair_base.jpg",composite:"event/rin_pair/rin_pair_hisao_clothes.png"},
+    "ev_rin_pair_base_clothes": {
+        image: "event/rin_pair/rin_pair_base.jpg",
+        composite: "event/rin_pair/rin_pair_hisao_clothes.png"
+    },
 
     "rp_hisao_frown": "event/rin_pair/rin_pair_hisao_frown.png",
     "rp_hisao_smile": "event/rin_pair/rin_pair_hisao_smile.png",
@@ -409,38 +477,88 @@ zoom: 0.75},
     "rp_rin_talk": "event/rin_pair/rin_pair_rin_talk.png",
 
     "evh_rin_h2_surprise": "event/rin_h2/rin_h2_u_surprise.jpg",
-    "evh_rin_h2_pan": {image:"event/rin_h2/rin_h2_l_pan.jpg",ypos:300},
-    "evh_rin_h2_pan_surprise": {image:"evh_rin_h2_surprise",composite:"evh_rin_h2_pan"},
+    "evh_rin_h2_pan": {
+        image: "event/rin_h2/rin_h2_l_pan.jpg",
+        ypos: 300
+    },
+    "evh_rin_h2_pan_surprise": {
+        image: "evh_rin_h2_surprise",
+        composite: "evh_rin_h2_pan"
+    },
 
-    "evh_rin_h2_pan_away": {image:"event/rin_h2/rin_h2_u_away.jpg",composite:"evh_rin_h2_pan"},
+    "evh_rin_h2_pan_away": {
+        image: "event/rin_h2/rin_h2_u_away.jpg",
+        composite: "evh_rin_h2_pan"
+    },
 
-    "evh_rin_h2_pan_closed": {image:"event/rin_h2/rin_h2_u_closed.jpg",composite:"evh_rin_h2_pan"},
+    "evh_rin_h2_pan_closed": {
+        image: "event/rin_h2/rin_h2_u_closed.jpg",
+        composite: "evh_rin_h2_pan"
+    },
 
-    "evh_rin_h2_nopan": {image:"event/rin_h2/rin_h2_l_nopan.jpg",ypos:300},
-    "evh_rin_h2_nopan_closed": {image:
-                                     "event/rin_h2/rin_h2_u_closed.jpg",composite:"evh_rin_h2_nopan"},
+    "evh_rin_h2_nopan": {
+        image: "event/rin_h2/rin_h2_l_nopan.jpg",
+        ypos: 300
+    },
+    "evh_rin_h2_nopan_closed": {
+        image: "event/rin_h2/rin_h2_u_closed.jpg",
+        composite: "evh_rin_h2_nopan"
+    },
 
-    "evh_rin_h2_hisao": {image:"event/rin_h2/rin_h2_l_hisao.jpg",ypos:300},
+    "evh_rin_h2_hisao": {
+        image: "event/rin_h2/rin_h2_l_hisao.jpg",
+        ypos: 300
+    },
     "evh_rin_h2_hisao_surprise": {
-                                     image: "event/rin_h2/rin_h2_u_surprise.jpg",composite:"evh_rin_h2_hisao"},
+        image: "event/rin_h2/rin_h2_u_surprise.jpg",
+        composite: "evh_rin_h2_hisao"
+    },
 
-    "evh_rin_h2_hisao_away": {image:
-                                     "event/rin_h2/rin_h2_u_away.jpg",composite:"evh_rin_h2_hisao"},
+    "evh_rin_h2_hisao_away": {
+        image: "event/rin_h2/rin_h2_u_away.jpg",
+        composite: "evh_rin_h2_hisao"
+    },
 
-    "evh_rin_h2_hisao_closed": {image:
-                                     "event/rin_h2/rin_h2_u_closed.jpg",composite:"evh_rin_h2_hisao"},
+    "evh_rin_h2_hisao_closed": {
+        image: "event/rin_h2/rin_h2_u_closed.jpg",
+        composite: "evh_rin_h2_hisao"
+    },
 
     "evh_rin_h_closed": "event/rin_h/rin_h_closed.jpg",
-    "evh_rin_h_left": {image:"event/rin_h/rin_h_left.png",composite:"evh_rin_h_closed"},
-    "evh_rin_h_normal": {image:"event/rin_h/rin_h_normal.png",composite:"evh_rin_h_closed"},
-    "evh_rin_h_right": {image:"event/rin_h/rin_h_right.png",composite:"evh_rin_h_closed"},
-    "evh_rin_h_strain": {image:"event/rin_h/rin_h_strain.png",composite:"evh_rin_h_closed"},
+    "evh_rin_h_left": {
+        image: "event/rin_h/rin_h_left.png",
+        composite: "evh_rin_h_closed"
+    },
+    "evh_rin_h_normal": {
+        image: "event/rin_h/rin_h_normal.png",
+        composite: "evh_rin_h_closed"
+    },
+    "evh_rin_h_right": {
+        image: "event/rin_h/rin_h_right.png",
+        composite: "evh_rin_h_closed"
+    },
+    "evh_rin_h_strain": {
+        image: "event/rin_h/rin_h_strain.png",
+        composite: "evh_rin_h_closed"
+    },
 
     "evh_rin_h_closed_close": "event/rin_h/rin_h_closed_close.jpg",
-    "evh_rin_h_left_close": {image:"event/rin_h/rin_h_closed_left.jpg",composite:"evh_rin_h_closed_close"},
-    "evh_rin_h_normal_close": {image:"event/rin_h/rin_h_closed_normal.jpg",composite:"evh_rin_h_closed_close"},
-    "evh_rin_h_right_close": {image:"event/rin_h/rin_h_closed_right.jpg",composite:"evh_rin_h_closed_close"},
-    "evh_rin_h_strain_close": {image:"event/rin_h/rin_h_closed_strain.jpg",composite:"evh_rin_h_closed_close"},
+    "evh_rin_h_left_close": {
+        image: "event/rin_h/rin_h_closed_left.jpg",
+        composite: "evh_rin_h_closed_close"
+    },
+    "evh_rin_h_normal_close": {
+        image: "event/rin_h/rin_h_closed_normal.jpg",
+        composite: "evh_rin_h_closed_close"
+    },
+    "evh_rin_h_right_close": {
+        image: "event/rin_h/rin_h_closed_right.jpg",
+        composite: "evh_rin_h_closed_close"
+    },
+    "evh_rin_h_strain_close": {
+        image: "event/rin_h/rin_h_closed_strain.jpg",
+        composite: "evh_rin_h_closed_close"
+    },
 
     "evh_rin_goodend_1": "event/rin_goodend/rin_goodend_1.jpg",
     "evh_rin_goodend_1b": "event/rin_goodend/rin_goodend_1b.jpg",
@@ -461,14 +579,19 @@ zoom: 0.75},
     "ev_lilly_crane": "event/lilly_crane.jpg",
 
     "ev_lilly_touch_uni": "event/lilly_touch_uni.jpg",
-    "ev_lilly_touch_cas": {filter: "sunset",
-image: "event/lilly_touch_cas.jpg"},
+    "ev_lilly_touch_cas": {
+        filter: "sunset",
+        image: "event/lilly_touch_cas.jpg"
+    },
     "ev_lilly_touch_cheong": "event/lilly_touch_cheong.jpg",
 
     "ev_braille": "vfx/braille.jpg",
     "ev_icecream": "vfx/icecream.jpg",
- 
-    "evfg_lilly_sunsetwalk": {image:"event/lilly_sunsetwalk_fg.png",filter:"sunset"},
+
+    "evfg_lilly_sunsetwalk": {
+        image: "event/lilly_sunsetwalk_fg.png",
+        filter: "sunset"
+    },
     "evbg_lilly_sunsetwalk": "event/lilly_sunsetwalk_bg.jpg",
 
     "ev_lilly_bedroom": "event/lilly_bedroom.jpg",
@@ -485,32 +608,69 @@ image: "event/lilly_touch_cas.jpg"},
         image: "event/lilly_train/train_scenery.jpg",
         xalign: 0.0,
         transition: {
-        type: "linear",
-xalign: 1.0
-        }
-},
+            type: "linear",
+            xalign: 1.0
+        },
+    },
     train_scenery_fg: "event/lilly_train/train_scenery_fg.png",
 
     "evfg_lilly_trainride": "event/lilly_train/lilly_trainride.png",
-    "evfg_lilly_trainride_smile": {image:"event/lilly_train/lilly_trainride_smile.png",composite:"evfg_lilly_trainride",xpos:338,ypos:301},
-    "evfg_lilly_trainride_smiles": {image: "event/lilly_train/lilly_trainride_hanasmile.png",xpos:573,ypos:331,composite:"evfg_lilly_trainride_smile"},
+    "evfg_lilly_trainride_smile": {
+        image: "event/lilly_train/lilly_trainride_smile.png",
+        composite: "evfg_lilly_trainride",
+        xpos: 338,
+        ypos: 301
+    },
+    "evfg_lilly_trainride_smiles": {
+        image: "event/lilly_train/lilly_trainride_hanasmile.png",
+        xpos: 573,
+        ypos: 331,
+        composite: "evfg_lilly_trainride_smile"
+    },
 
     "ev_lilly_trainride": "event/lilly_train/lilly_trainride.jpg",
     "ev_lilly_trainride_smiles": "event/lilly_train/lilly_trainride_smiles.jpg",
 
     train_scenery_ni: {
-        image: "event/lilly_train/train_scenery_ni.jpg"},
+        image: "event/lilly_train/train_scenery_ni.jpg"
+    },
 
     train_scenery_fg_ni: {
-        image: "event/lilly_train/train_scenery_fg_ni.png"},
+        image: "event/lilly_train/train_scenery_fg_ni.png"
+    },
 
     lilly_trainride_ni_norm: "event/lilly_train/lilly_trainride_ni_norm.png",
 
-    lilly_trainride_ni_ara: {image:"event/lilly_train/lilly_trainride_ni_ara.png",xpos:321,ypos:200,composite:"lilly_trainride_ni_norm"},
-    lilly_trainride_ni_opensmile: {image:"event/lilly_train/lilly_trainride_ni_opensmile.png",xpos:321,ypos:200,composite:"lilly_trainride_ni_norm"},
-    lilly_trainride_ni_pout: {image:"event/lilly_train/lilly_trainride_ni_pout.png",xpos:321,ypos:200,composite:"lilly_trainride_ni_norm"},
-    lilly_trainride_ni_smile: {image:"event/lilly_train/lilly_trainride_ni_smile.png",xpos:321,ypos:200,composite:"lilly_trainride_ni_norm"},
-    lilly_trainride_ni_weaksmile: {image:"event/lilly_train/lilly_trainride_ni_weaksmile.png",xpos:321,ypos:200,composite:"lilly_trainride_ni_norm"},
+    lilly_trainride_ni_ara: {
+        image: "event/lilly_train/lilly_trainride_ni_ara.png",
+        xpos: 321,
+        ypos: 200,
+        composite: "lilly_trainride_ni_norm"
+    },
+    lilly_trainride_ni_opensmile: {
+        image: "event/lilly_train/lilly_trainride_ni_opensmile.png",
+        xpos: 321,
+        ypos: 200,
+        composite: "lilly_trainride_ni_norm"
+    },
+    lilly_trainride_ni_pout: {
+        image: "event/lilly_train/lilly_trainride_ni_pout.png",
+        xpos: 321,
+        ypos: 200,
+        composite: "lilly_trainride_ni_norm"
+    },
+    lilly_trainride_ni_smile: {
+        image: "event/lilly_train/lilly_trainride_ni_smile.png",
+        xpos: 321,
+        ypos: 200,
+        composite: "lilly_trainride_ni_norm"
+    },
+    lilly_trainride_ni_weaksmile: {
+        image: "event/lilly_train/lilly_trainride_ni_weaksmile.png",
+        xpos: 321,
+        ypos: 200,
+        composite: "lilly_trainride_ni_norm"
+    },
 
 
     "ev_lilly_trainride_ni": "event/lilly_train/lilly_trainride_ni.jpg",
@@ -526,10 +686,12 @@ xalign: 1.0
 
     "evul_lilly_restaurant_listen": {
         image: "event/lilly_restaurant_listen.jpg",
-        zoom: 0.8},
+        zoom: 0.8
+    },
     "evul_lilly_restaurant_sheepish": {
         image: "event/lilly_restaurant_sheepish.jpg",
-        zoom: 0.8},
+        zoom: 0.8
+    },
 
     "ev_lilly_restaurant_wine": "event/lilly_restaurant_wine.jpg",
     "ev_lilly_restaurant_eat": "event/lilly_restaurant_eat.jpg",
@@ -538,31 +700,36 @@ xalign: 1.0
     "ev_hisao_teacup": "event/hisao_teacup.jpg",
     "evul_hisao_teacup": {
         image: "event/hisao_teacup.jpg",
-        zoom: 0.8},
+        zoom: 0.8
+    },
 
     "ev_akira_park": "event/akira_park.jpg",
     "evul_akira_park": {
         image: "event/akira_park.jpg",
-        zoom: 0.8},
+        zoom: 0.8
+    },
 
     "ev_lilly_sheets": "event/lilly_sheets.jpg",
 
     "ev_lilly_hospitalwindow": "event/lilly_hospitalwindow.jpg",
 
 
-    origami_hand: {image:"vfx/origami_hand.png",filter:"night"},
+    origami_hand: {
+        image: "vfx/origami_hand.png",
+        filter: "night"
+    },
 
     "ev_lilly_airport": "event/lilly_airport.jpg",
     "ev_lilly_airport_end": "event/lilly_airport_end.jpg",
 
-    "bg_school_dormhisao_ni_fb": past("bgs/school_dormhisao_blurred_ni.jpg"),
-    origami_fb: past_night("vfx/origami_hand.png"),
-    "bg_shizu_houseext_lights_fb": past("bgs/shizu_houseext_lights.jpg"),
-    "hideaki_serious_up_fb": past_night("sprites/hideaki/hideaki_serious_up.png"),
-    "bg_hosp_ext_fb": past_night("bgs/hosp_ext.jpg"),
-    crowd_still1_fb: past_night("vfx/crowd1.png"),
-    crowd_still2_fb: past_night("vfx/crowd2.png"),
-    "ev_lilly_airport_end_fb": past("event/lilly_airport_end.jpg"),
+    "bg_school_dormhisao_ni_fb": {filter:"past",image:"bgs/school_dormhisao_blurred_ni.jpg"},
+    origami_fb: {filter:"past_night",image:"vfx/origami_hand.png"},
+    "bg_shizu_houseext_lights_fb": {filter:"past",image:"bgs/shizu_houseext_lights.jpg"},
+    "hideaki_serious_up_fb": {filter:"past_night",image:"sprites/hideaki/hideaki_serious_up.png"},
+    "bg_hosp_ext_fb": {filter:"past_night",image:"bgs/hosp_ext.jpg"},
+    crowd_still1_fb: {filter:"past_night",image:"vfx/crowd1.png"},
+    crowd_still2_fb: {filter:"past_night",image:"vfx/crowd2.png"},
+    "ev_lilly_airport_end_fb": {filter:"past",image:"event/lilly_airport_end.jpg"},
     "ev_lilly_hospital": "event/lilly_hospital.jpg",
     "ev_lilly_hospitalclosed": "event/lilly_hospitalclosed.jpg",
 
@@ -600,14 +767,22 @@ xalign: 1.0
 
 
 
-    "ev_hana_library_read": {filter: "sunset",
-image: "event/hana_library_read.jpg"},
-    "ev_hana_library": {filter: "sunset",
-image: "event/hana_library.jpg"},
-    "ev_hana_library_gasp": {filter: "sunset",
-image: "event/hana_library_gasp.jpg"},
-    "ev_hana_library_smile": {filter: "sunset",
-image: "event/hana_library_smile.jpg"},
+    "ev_hana_library_read": {
+        filter: "sunset",
+        image: "event/hana_library_read.jpg"
+    },
+    "ev_hana_library": {
+        filter: "sunset",
+        image: "event/hana_library.jpg"
+    },
+    "ev_hana_library_gasp": {
+        filter: "sunset",
+        image: "event/hana_library_gasp.jpg"
+    },
+    "ev_hana_library_smile": {
+        filter: "sunset",
+        image: "event/hana_library_smile.jpg"
+    },
 
     "ev_hana_library_read_std": "event/hana_library_read.jpg",
     "ev_hana_library_std": "event/hana_library.jpg",
@@ -619,24 +794,12 @@ image: "event/hana_library_smile.jpg"},
 
     "evbg_hanako_breakdown": "event/hanako_breakdown/hanako_breakdown_bg.jpg",
     "evfg_hanako_breakdown_down": "event/hanako_breakdown/hanako_breakdown_down.png",
-    "evfg_hanako_breakdown_up": im.Composite(null,
-                                                  (0,0),"event/hanako_breakdown/hanako_breakdown_down.png",
-                                                  (588,71),"event/hanako_breakdown/hanako_breakdown_up.jpg"),
-    "evfg_hanako_breakdown_closed": im.Composite(null,
-                                                      (0,0),"event/hanako_breakdown/hanako_breakdown_down.png",
-                                                      (588,71),"event/hanako_breakdown/hanako_breakdown_closed.jpg"),
+    "evfg_hanako_breakdown_up": im.Composite(null, (0, 0), "event/hanako_breakdown/hanako_breakdown_down.png", (588, 71), "event/hanako_breakdown/hanako_breakdown_up.jpg"),
+    "evfg_hanako_breakdown_closed": im.Composite(null, (0, 0), "event/hanako_breakdown/hanako_breakdown_down.png", (588, 71), "event/hanako_breakdown/hanako_breakdown_closed.jpg"),
 
-    "evul_hanako_breakdown_down": im.Composite(null,
-                                                  (0,0), "event/hanako_breakdown/hanako_breakdown_bg.jpg",
-                                                  (0,0),"event/hanako_breakdown/hanako_breakdown_down.png"),
-    "evul_hanako_breakdown_up": im.Composite(null,
-                                                  (0,0), "event/hanako_breakdown/hanako_breakdown_bg.jpg",
-                                                  (0,0),"event/hanako_breakdown/hanako_breakdown_down.png",
-                                                  (588,71),"event/hanako_breakdown/hanako_breakdown_up.jpg"),
-    "evul_hanako_breakdown_closed": im.Composite(null,
-                                                  (0,0), "event/hanako_breakdown/hanako_breakdown_bg.jpg",
-                                                  (0,0),"event/hanako_breakdown/hanako_breakdown_down.png",
-                                                  (588,71),"event/hanako_breakdown/hanako_breakdown_closed.jpg"),
+    "evul_hanako_breakdown_down": im.Composite(null, (0, 0), "event/hanako_breakdown/hanako_breakdown_bg.jpg", (0, 0), "event/hanako_breakdown/hanako_breakdown_down.png"),
+    "evul_hanako_breakdown_up": im.Composite(null, (0, 0), "event/hanako_breakdown/hanako_breakdown_bg.jpg", (0, 0), "event/hanako_breakdown/hanako_breakdown_down.png", (588, 71), "event/hanako_breakdown/hanako_breakdown_up.jpg"),
+    "evul_hanako_breakdown_closed": im.Composite(null, (0, 0), "event/hanako_breakdown/hanako_breakdown_bg.jpg", (0, 0), "event/hanako_breakdown/hanako_breakdown_down.png", (588, 71), "event/hanako_breakdown/hanako_breakdown_closed.jpg"),
 
 
     "evh_hanako_crayon1": "event/hanako_crayon1.jpg",
@@ -646,7 +809,7 @@ image: "event/hana_library_smile.jpg"},
     "ev_hanako_cry_closed": "event/hanako_cry_closed.jpg",
     "ev_hanako_cry_away": "event/hanako_cry_away.jpg",
 
-    "ev_hanako_cry_closed_fb": past("event/hanako_cry_closed.jpg"),
+    "ev_hanako_cry_closed_fb": {filter:"past",image:"event/hanako_cry_closed.jpg"},
 
     hanako_door_base: "vfx/hanako_door_base.jpg",
     hanako_door_door: "vfx/hanako_door_door.jpg",
@@ -655,46 +818,53 @@ image: "event/hana_library_smile.jpg"},
 
     "ev_hanako_billiards_distant": {
         image: "event/hanako_billiards_distant.jpg",
-        zoom: 0.8,
+        zoom: 0.8
+    },
     "ev_hanako_billiards_distant_med": {
         image: "event/hanako_billiards_distant.jpg",
         yanchor: 0.0,
-ypos: -0.1,
-xalign: 1.0,
+        ypos: -0.1,
+        xalign: 1.0
+    },
 
     "ev_hanako_billiards_serious": {
         image: "event/hanako_billiards_serious.jpg",
-        zoom: 0.8,
+        zoom: 0.8
+    },
     "ev_hanako_billiards_serious_med": {
         image: "event/hanako_billiards_serious.jpg",
         yanchor: 0.0,
-ypos: -0.1,
-xalign: 1.0,
+        ypos: -0.1,
+        xalign: 1.0
+    },
 
     "ev_hanako_billiards_smile": {
         image: "event/hanako_billiards_smile.jpg",
-        zoom: 0.8,
+        zoom: 0.8
+    },
     "ev_hanako_billiards_smile_med": {
         image: "event/hanako_billiards_smile.jpg",
         yanchor: 0.0,
-ypos: -0.1,
-xalign: 1.0,
+        ypos: -0.1,
+        xalign: 1.0
+    },
 
     "ev_hanako_billiards_smile_close": {
-        image: "event/hanako_billiards_smile_close.jpg",
+        image: "event/hanako_billiards_smile_close.jpg"
+    },
 
     "ev_hanako_billiards_timid": {
         image: "event/hanako_billiards_timid.jpg",
-        zoom: 0.8,
+        zoom: 0.8
+    },
     "ev_hanako_billiards_timid_med": {
         image: "event/hanako_billiards_timid.jpg",
         yanchor: 0.0,
-ypos: -0.1,
-xalign: 1.0,
+        ypos: -0.1,
+        xalign: 1.0
+    },
 
-    "evul_hanako_emptyclassroom": im.FactorScale(im.Composite(null,
-                                                                 (0,0), "event/hanako_emptyclassroom_bg.jpg",
-                                                                 (0,0), "event/hanako_emptyclassroom_fg.png"), 0.8),
+    "evul_hanako_emptyclassroom": im.FactorScale(im.Composite(null, (0, 0), "event/hanako_emptyclassroom_bg.jpg", (0, 0), "event/hanako_emptyclassroom_fg.png"), 0.8),
 
     "evbg_hanako_emptyclassroom": "event/hanako_emptyclassroom_bg.jpg",
     "evfg_hanako_emptyclassroom": "event/hanako_emptyclassroom_fg.png",
@@ -751,29 +921,14 @@ xalign: 1.0,
 
     "evbg_kenji_glasses": "event/kenji_glasses/kenji_glasses_bg.jpg",
     "evmg_kenji_glasses_normal": "event/kenji_glasses/kenji_glasses_mg.png",
-    "evmg_kenji_glasses_frown": im.Composite(null,
-                                          (0,0), "event/kenji_glasses/kenji_glasses_mg.png",
-                                          (400,190), "event/kenji_glasses/kenji_glasses_frown.png"),
-    "evmg_kenji_glasses_closed": im.Composite(null,
-                                          (0,0), "event/kenji_glasses/kenji_glasses_mg.png",
-                                          (400,190), "event/kenji_glasses/kenji_glasses_closed.png"),
+    "evmg_kenji_glasses_frown": im.Composite(null, (0, 0), "event/kenji_glasses/kenji_glasses_mg.png", (400, 190), "event/kenji_glasses/kenji_glasses_frown.png"),
+    "evmg_kenji_glasses_closed": im.Composite(null, (0, 0), "event/kenji_glasses/kenji_glasses_mg.png", (400, 190), "event/kenji_glasses/kenji_glasses_closed.png"),
     "evfg_kenji_glasses": "event/kenji_glasses/kenji_glasses_fg.png",
 
 
-    "evul_kenji_glasses_normal": im.FactorScale(im.Composite(null,
-                                          (0,0), "event/kenji_glasses/kenji_glasses_bg.jpg",
-                                          (0,0), "event/kenji_glasses/kenji_glasses_mg.png",
-                                          (0,0), "event/kenji_glasses/kenji_glasses_fg.png"),0.8),
-    "evul_kenji_glasses_frown": im.FactorScale(im.Composite(null,
-                                          (0,0), "event/kenji_glasses/kenji_glasses_bg.jpg",
-                                          (0,0), "event/kenji_glasses/kenji_glasses_mg.png",
-                                          (400,190), "event/kenji_glasses/kenji_glasses_frown.png",
-                                          (0,0), "event/kenji_glasses/kenji_glasses_fg.png"),0.8),
-    "evul_kenji_glasses_closed": im.FactorScale(im.Composite(null,
-                                          (0,0), "event/kenji_glasses/kenji_glasses_bg.jpg",
-                                          (0,0), "event/kenji_glasses/kenji_glasses_mg.png",
-                                          (400,190), "event/kenji_glasses/kenji_glasses_closed.png",
-                                          (0,0), "event/kenji_glasses/kenji_glasses_fg.png"),0.8),
+    "evul_kenji_glasses_normal": im.FactorScale(im.Composite(null, (0, 0), "event/kenji_glasses/kenji_glasses_bg.jpg", (0, 0), "event/kenji_glasses/kenji_glasses_mg.png", (0, 0), "event/kenji_glasses/kenji_glasses_fg.png"), 0.8),
+    "evul_kenji_glasses_frown": im.FactorScale(im.Composite(null, (0, 0), "event/kenji_glasses/kenji_glasses_bg.jpg", (0, 0), "event/kenji_glasses/kenji_glasses_mg.png", (400, 190), "event/kenji_glasses/kenji_glasses_frown.png", (0, 0), "event/kenji_glasses/kenji_glasses_fg.png"), 0.8),
+    "evul_kenji_glasses_closed": im.FactorScale(im.Composite(null, (0, 0), "event/kenji_glasses/kenji_glasses_bg.jpg", (0, 0), "event/kenji_glasses/kenji_glasses_mg.png", (400, 190), "event/kenji_glasses/kenji_glasses_closed.png", (0, 0), "event/kenji_glasses/kenji_glasses_fg.png"), 0.8),
 
 
     "ev_shizutanabata": "event/shizu_yukata/shizutanabata.jpg",
@@ -785,10 +940,13 @@ xalign: 1.0,
     "ev_shizune_car": {
         image: "event/shizune_car.jpg",
         yalign: 0.5,
-xalign: 0.0,
-transition: {
-  type: "easein",seconds: 12.0,
-xalign: 1.0}},
+        xalign: 0.0,
+        transition: {
+            type: "easein",
+            seconds: 12.0,
+            xalign: 1.0
+        },
+    },
 
     "ev_shizu_fishing_sl": "event/shizu_fishing_sl.jpg",
     "ev_shizu_fishing_ah": "event/shizu_fishing_ah.jpg",
@@ -796,31 +954,14 @@ xalign: 1.0}},
     "ev_shizu_couch": "event/shizu_couch.jpg",
 
     "ev_shizu_roof": "event/shizu_roof/shizu_roof.jpg",
-    "ev_shizu_roof_towardsangry": im.Composite(null,
-                                            (0,0),  "event/shizu_roof/shizu_roof.jpg",
-                                            (299,296), "event/shizu_roof/shizu_roof_towardsangry.jpg"),
-    "ev_shizu_roof_towardsnormal": im.Composite(null,
-                                            (0,0),  "event/shizu_roof/shizu_roof.jpg",
-                                            (299,296), "event/shizu_roof/shizu_roof_towardsnormal.jpg"),
-    "ev_shizu_roof_smile": im.Composite(null,
-                                            (0,0),  "event/shizu_roof/shizu_roof.jpg",
-                                            (299,296), "event/shizu_roof/shizu_roof_smile.jpg"),
+    "ev_shizu_roof_towardsangry": im.Composite(null, (0, 0), "event/shizu_roof/shizu_roof.jpg", (299, 296), "event/shizu_roof/shizu_roof_towardsangry.jpg"),
+    "ev_shizu_roof_towardsnormal": im.Composite(null, (0, 0), "event/shizu_roof/shizu_roof.jpg", (299, 296), "event/shizu_roof/shizu_roof_towardsnormal.jpg"),
+    "ev_shizu_roof_smile": im.Composite(null, (0, 0), "event/shizu_roof/shizu_roof.jpg", (299, 296), "event/shizu_roof/shizu_roof_smile.jpg"),
 
-    "evh_shizu_roof2": im.Composite(null,
-                                            (0,0),  "event/shizu_roof/shizu_roof.jpg",
-                                            (601,316), "event/shizu_roof/shizu_roof_hisao2.jpg"),
-    "evh_shizu_roof2_towardsangry": im.Composite(null,
-                                            (0,0),  "event/shizu_roof/shizu_roof.jpg",
-                                            (601,316), "event/shizu_roof/shizu_roof_hisao2.jpg",
-                                            (299,296), "event/shizu_roof/shizu_roof_towardsangry.jpg"),
-    "evh_shizu_roof2_towardsnormal": im.Composite(null,
-                                            (0,0),  "event/shizu_roof/shizu_roof.jpg",
-                                            (601,316), "event/shizu_roof/shizu_roof_hisao2.jpg",
-                                            (299,296), "event/shizu_roof/shizu_roof_towardsnormal.jpg"),
-    "evh_shizu_roof2_smile": im.Composite(null,
-                                            (0,0),  "event/shizu_roof/shizu_roof.jpg",
-                                            (601,316), "event/shizu_roof/shizu_roof_hisao2.jpg",
-                                            (299,296), "event/shizu_roof/shizu_roof_smile.jpg"),
+    "evh_shizu_roof2": im.Composite(null, (0, 0), "event/shizu_roof/shizu_roof.jpg", (601, 316), "event/shizu_roof/shizu_roof_hisao2.jpg"),
+    "evh_shizu_roof2_towardsangry": im.Composite(null, (0, 0), "event/shizu_roof/shizu_roof.jpg", (601, 316), "event/shizu_roof/shizu_roof_hisao2.jpg", (299, 296), "event/shizu_roof/shizu_roof_towardsangry.jpg"),
+    "evh_shizu_roof2_towardsnormal": im.Composite(null, (0, 0), "event/shizu_roof/shizu_roof.jpg", (601, 316), "event/shizu_roof/shizu_roof_hisao2.jpg", (299, 296), "event/shizu_roof/shizu_roof_towardsnormal.jpg"),
+    "evh_shizu_roof2_smile": im.Composite(null, (0, 0), "event/shizu_roof/shizu_roof.jpg", (601, 316), "event/shizu_roof/shizu_roof_hisao2.jpg", (299, 296), "event/shizu_roof/shizu_roof_smile.jpg"),
 
     "evh_shizune_hcg_tied_blush_small": "event/shizune_hcg_tied/shizune_hcg_tied_blush_small.jpg",
     "evh_shizune_hcg_tied_blush": "event/shizune_hcg_tied/shizune_hcg_tied_blush.jpg",
@@ -837,15 +978,11 @@ xalign: 1.0}},
     "evh_shizune_hcg_tied_stare_small": "event/shizune_hcg_tied/shizune_hcg_tied_stare_small.jpg",
     "evh_shizune_hcg_tied_stare": "event/shizune_hcg_tied/shizune_hcg_tied_stare.jpg",
 
-    evh_hi_shizune_hcg_tied_hisao2: im.Composite((1600,1200),
-                                                        (1080,290),"event/shizune_hcg_tied/shizune_hcg_tied_hisao2.png"),
-    evh_hi_shizune_hcg_tied_hisao2_small: im.Composite((800,600),
-                                                              (540,145),"event/shizune_hcg_tied/shizune_hcg_tied_hisao2_small.png"),
+    evh_hi_shizune_hcg_tied_hisao2: im.Composite((1600, 1200), (1080, 290), "event/shizune_hcg_tied/shizune_hcg_tied_hisao2.png"),
+    evh_hi_shizune_hcg_tied_hisao2_small: im.Composite((800, 600), (540, 145), "event/shizune_hcg_tied/shizune_hcg_tied_hisao2_small.png"),
 
 
-    evhul_shizune_hcg_tied_hisao2_small: im.Composite((800,600),
-                                                             (0,0), "event/shizune_hcg_tied/shizune_hcg_tied_kinky3_small.jpg",
-                                                             (540,145),"event/shizune_hcg_tied/shizune_hcg_tied_hisao2_small.png"),
+    evhul_shizune_hcg_tied_hisao2_small: im.Composite((800, 600), (0, 0), "event/shizune_hcg_tied/shizune_hcg_tied_kinky3_small.jpg", (540, 145), "event/shizune_hcg_tied/shizune_hcg_tied_hisao2_small.png"),
 
 
     "evh_shizu_undressing_clothed_stare": "event/shizu_undressing/shizu_undressing_clothed_stare.jpg",
@@ -861,10 +998,8 @@ xalign: 1.0}},
     "evh_shizu_straddle_open": {
         image: "event/shizu_straddle_open.jpg",
         xalign: 0.7,
-yalign: 1.0,
-        easein: 16.0,
-xalign: 0.0,
-yalign: 0.0,
+        yalign: 1.0
+    },
     "evh_shizu_straddle_tease": "event/shizu_straddle_tease.jpg",
     "evh_shizu_straddle_closed": "event/shizu_straddle_closed.jpg",
     "evh_shizu_straddle_smile": "event/shizu_straddle_smile.jpg",
@@ -883,50 +1018,56 @@ yalign: 0.0,
     "evh_misha_naked": {
         image: "event/misha_naked.jpg",
         xalign: 0.0,
-yalign: 0.0,
+        yalign: 0.0
+    },
     "evh_misha_sex_aside": "event/misha_sex_aside.jpg",
     "evh_misha_sex_closed": "event/misha_sex_closed.jpg",
 
     "ev_misha_roof_normal": {
         image: "event/misha_roof_normal.jpg",
         xalign: 0.5,
-yalign: 0.0,
+        yalign: 0.0
+    },
     "ev_misha_roof_angry": "event/misha_roof_angry.jpg",
     "ev_misha_roof_closed": "event/misha_roof_closed.jpg",
     "ev_misha_roof_sad": "event/misha_roof_sad.jpg",
 
-    aoi_keiko: {filter: "sunset",
-image: "vfx/aoi_keiko.png"},
+    aoi_keiko: {
+        filter: "sunset",
+        image: "vfx/aoi_keiko.png"
+    },
 
     "ev_shizu_goodend": {
         image: "event/shizu_goodend.jpg",
         xalign: 0.5,
-yalign: 1.0},
+        yalign: 1.0
+    },
 
     "ev_shizu_goodend_pan": {
         image: "event/shizu_goodend.jpg",
         xalign: 0.5,
-yalign: 1.0,
-        transition:{
-        seconds:  15.0,
-yalign: 0.0}},
+        yalign: 1.0,
+        transition: {
+            seconds: 15.0,
+            yalign: 0.0
+        },
+    },
 
     "ev_shizu_badend": "event/shizu_badend.jpg",
 
 
     "ev_showdown": "event/lilly_shizu_showdown.jpg",
     "ev_showdown_large": "event/lilly_shizu_showdown_large.jpg",
-    "ev_showdown_lilly": im.Crop("event/lilly_shizu_showdown_large.jpg", 280,100,800,600),
-    "ev_showdown_shizu": im.Crop("event/lilly_shizu_showdown_large.jpg", 1400,160,800,600),
+    "ev_showdown_lilly": im.Crop("event/lilly_shizu_showdown_large.jpg", 280, 100, 800, 600),
+    "ev_showdown_shizu": im.Crop("event/lilly_shizu_showdown_large.jpg", 1400, 160, 800, 600),
 
-    showdown_lilly_slice: im.Crop("event/lilly_shizu_showdown_large.jpg", 440,260,800,299),
-    showdown_shizu_slice: im.Crop("event/lilly_shizu_showdown_large.jpg", 1360,320,800,299),
+    showdown_lilly_slice: im.Crop("event/lilly_shizu_showdown_large.jpg", 440, 260, 800, 299),
+    showdown_shizu_slice: im.Crop("event/lilly_shizu_showdown_large.jpg", 1360, 320, 800, 299),
 
 
     "ev_kenji_rooftop": "event/kenji_rooftop.jpg",
     "ev_kenji_rooftop_large": "event/kenji_rooftop_large.jpg",
-    "ev_kenji_rooftop_kenji": im.Crop("event/kenji_rooftop_large.jpg", 288,376,800,600),
-
+    "ev_kenji_rooftop_kenji": im.Crop("event/kenji_rooftop_large.jpg", 288, 376, 800, 600),
 
 
 
@@ -993,33 +1134,27 @@ yalign: 0.0}},
 
 
 
-
-
     "kenji_silhouette": "sprites/kenji/kenji_neutral_silhouette.png",
     "kenji_silhouette_naked": "sprites/kenji/kenji_neutral_naked_silhouette.png",
     "hanako_silhouette": "sprites/hanako/hanako_basic_bashful_silhouette.png",
     "rin_silhouette": "sprites/rin/rin_relaxed_surprised_silhouette.png",
 
-        shizuepiccomp: im.Composite ((874,836),
-                                          (0,0),sp_night("sprites/shizu/close/shizu_out_serious_close.png"),
-                                          (2.5,600),sp_night("vfx/shizu_out_serious_legs.png")),
+    shizuepiccomp: im.Composite((874, 836), (0, 0), ("sprites/shizu/close/shizu_out_serious_close_silhouette.png"), (2.5, 600), ("vfx/shizu_out_serious_legs_silhouette.png")),
 
-        shizuepiccomp_sil: im.Composite ((874,836),
-                                          (0,0),silhouette("sprites/shizu/close/shizu_out_serious_close.png"),
-                                          (2.5,600),silhouette("vfx/shizu_out_serious_legs.png")),
+    shizuepiccomp_sil: im.Composite((874, 836), (0, 0), ("sprites/shizu/close/shizu_out_serious_close_silhouette.png"), (2.5, 600), ("vfx/shizu_out_serious_legs_silhouette.png")),
 
     ksgallerybg: "ui/tc-neutral.png",
 
-    bloodred: Solid("#d00"),
-    white: Solid("#fff"),
-    pink: Solid("#FF7FD4"),
-    videowhite: Solid("#e9e9e7"),
-    videoblack: Solid("#0d0d0d"),
-    darkgrey: Solid("#0D0D0D"),
-    "bg_school_roof_ni_crop": im.Crop("bgs/school_roof_ni.jpg",200,0,800,600),
+    bloodred: "#d00",
+    white: "#fff",
+    pink: "#FF7FD4",
+    videowhite: "#e9e9e7",
+    videoblack: "#0d0d0d",
+    darkgrey: "#0D0D0D",
+    "bg_school_roof_ni_crop": im.Crop("bgs/school_roof_ni.jpg", 200, 0, 800, 600),
     n_vignette: "vfx/narrowvignette.png",
 
-    fw_screen: Solid("#000000CC"),
+    fw_screen: ("#000000CC"),
 
     fakenvltextbox: "ui/bg-nvl.png",
 
@@ -1027,28 +1162,39 @@ yalign: 0.0}},
 
     "bg_mural_start": "vfx/mural_start.jpg",
     "bg_mural_unfinished": "vfx/mural_unfinished.jpg",
-    "bg_mural_part": At("vfx/mural.jpg", Transform(xalign=0.0)),
+    "bg_mural_part": "vfx/mural.jpg",
     "mural_all": "vfx/mural_wide.jpg",
     "bg_mural": "vfx/mural.jpg",
-    "bg_mural_ss": {filter: "sunset",
-image: "vfx/mural.jpg"},
-    "mural_pan": At("vfx/mural.jpg",Fullpan(60.0, dir="left")),
+    "bg_mural_ss": {
+        filter: "sunset",
+        image: "vfx/mural.jpg"
+    },
+    "mural_pan": "vfx/mural.jpg",
 
-    rin_exhibition_paintings: At("vfx/rin_exhibition_paintings.jpg",Fullpan(40.0, dir="right")),
+    rin_exhibition_paintings: "vfx/rin_exhibition_paintings.jpg", 
     rin_exhibition_sold: "vfx/rin_exhibition_sold.jpg",
     rin_exhibition_c: "vfx/rin_exhibition_c.jpg",
 
-    rin_shadow basic: {image:"sprites/rin/close/rin_basic_deadpan_close.png", filter:"shadowalpha"},
-    rin_shadow negative: {image:"sprites/rin/close/rin_negative_spaciness_close.png", filter:"shadowalpha"},
+    rin_shadow_basic: {
+        image: "sprites/rin/close/rin_basic_deadpan_close.png",
+        filter: "shadowalpha"
+    },
+    rin_shadow_negative: {
+        image: "sprites/rin/close/rin_negative_spaciness_close.png",
+        filter: "shadowalpha"
+    },
 
     "nightsky_rotation": {
-        image: "bgs/misc_sky_ni.jpg"}
+        image: "bgs/misc_sky_ni.jpg"
+    },
 
     "cityscape_zoom": {
-        image: "vfx/cityscape.png"}
+        image: "vfx/cityscape.png"
+    },
 
     "hill_enter": {
-        image: "vfx/hillouette.png"}
+        image: "vfx/hillouette.png"
+    },
 
     "hill_pairtouch": "vfx/hillpair1.png",
     "hill_pairnotouch": "vfx/hillpair2.png",
@@ -1062,12 +1208,9 @@ image: "vfx/mural.jpg"},
     comic_vfx3: "vfx/comic_vfx3.png",
     comic_vfx4: "vfx/comic_vfx4.png",
 
-    "ev_emi_bed_full": LiveComposite((800,1280),
-                                        (0,0),"event/emi_bed_normal.jpg",
-                                        (0,600),"event/emi_bed_legs.jpg"),
+    "ev_emi_bed_full": LiveComposite((800, 1280), (0, 0), "event/emi_bed_normal.jpg", (0, 600), "event/emi_bed_legs.jpg"),
 
-    passoutOP1: 
-        "ui/tr-flashback.png",
+    passoutOP1: "ui/tr-flashback.png",
 
 
     wine: "vfx/wine.png",
@@ -1104,194 +1247,30 @@ image: "vfx/mural.jpg"},
 
     "lillyprop_back_cane": "vfx/prop_lilly_back_cane.png",
     "lillyprop_back_cane_close": "vfx/prop_lilly_back_cane_close.png",
-    "lillyprop_back_cane_ss": sp_filter: "sunset",
-image: "vfx/prop_lilly_back_cane.png",
-    "lillyprop_back_cane_ni": sp_night("vfx/prop_lilly_back_cane.png"),
+    "lillyprop_back_cane_ss": {
+        filter: "sp_sunset",
+        image: "vfx/prop_lilly_back_cane.png"
+    },
+    "lillyprop_back_cane_ni": {
+        filter: "sp_night",
+        image: "vfx/prop_lilly_back_cane.png"
+    },
 
     "bg_gallery_atelier_bw": im.Grayscale("bgs/gallery_atelier.jpg"),
     "bg_school_scienceroom_bw": im.Grayscale("bgs/school_scienceroom.jpg"),
     "bg_school_library_bw": im.Grayscale("bgs/school_library.jpg"),
-    bg city_street4_bw: im.Grayscale("bgs/city_street4.jpg"),
-    bg city_street3_bw: im.Grayscale("bgs/city_street3.jpg"),
+    bg_city_street4_bw: im.Grayscale("bgs/city_street4.jpg"),
+    bg_city_street3_bw: im.Grayscale("bgs/city_street3.jpg"),
     "bg_school_council_bw": im.Grayscale("bgs/school_council.jpg"),
     "bg_school_dormhisao_bw": im.Grayscale("bgs/school_dormhisao.jpg"),
 
 
-
-
-    fw_blank: Solid("#00000000"),
-    fw_flash: Solid("#FFFFFF66"),
-
-    $ fw_dis_fast: Dissolve(0.04, alpha=true),
-    $ fw_dis_medium: Dissolve(0.2, alpha=true),
-    $ fw_dis_slow: Dissolve(3.0, alpha=true),
-    $ fw_sparkle_out: ImageDissolve(im.Tile("vfx/tr-pronoise.png"), 3.0, 32, alpha=true),
-
-    transform fw_constructor (my_image): {
-        "fw_blank",
-        choice 15: {
-            0.2,
-        choice: {
-            "fw_flash"  with fw_dis_fast,
-            0.2,
-            choice: {
-                my_ with fw_dis_medium,
-                "fw_blank"  with fw_dis_slow,
-                6.0,
-            choice: {
-                my_ with fw_dis_medium,
-                "fw_blank"  with fw_sparkle_out,
-                6.0,
-        repeat,
-
-
-
-    fireworks: LiveComposite((800,600),
-                                  (0,0), fw_constructor("vfx/fw1.png"),
-                                  (0,0), fw_constructor("vfx/fw2.png"),
-                                  (0,0), fw_constructor("vfx/fw3.png"),
-                                  (0,0), fw_constructor("vfx/fw4.png"),
-                                  (0,0), fw_constructor("vfx/fw5.png"),
-                                  (0,0), fw_constructor("vfx/fw6.png"),
-                                  (0,0), fw_constructor("vfx/fw7.png"),
-                                  (0,0), fw_constructor("vfx/fw8.png"),
-                                  (0,0), fw_constructor("vfx/fw9.png")),
-
-    transform fw_constructor_nosparkle (my_image): {
-        "fw_blank",
-        choice 15: {
-            0.2,
-        choice: {
-            "fw_flash"  with fw_dis_fast,
-            0.2,
-            my_ with fw_dis_medium,
-            "fw_blank"  with fw_dis_slow,
-            6.0,
-        repeat,
-
-    fireshine: LiveComposite((800,600),
-                                  (0,0), fw_constructor_nosparkle(Solid("#FF000009")),
-                                  (0,0), fw_constructor_nosparkle(Solid("#00FF0009")),
-                                  (0,0), fw_constructor_nosparkle(Solid("#0000FF09")),
-                                  (0,0), fw_constructor_nosparkle(Solid("#CC00CC09")),
-                                  (0,0), fw_constructor_nosparkle(Solid("#CCCC0009")),
-                                  (0,0), fw_constructor_nosparkle(Solid("#0000CC09"))),
-
-    transform hanako_fw_constructor (in_r, in_g, in_b): {
-        alpha 0.0,
-        "fw_blank",
-        choice 15: {
-            0.2,
-        choice: {
-            parallel: {
-                linear 0.04 alpha 1.0,
-                linear 3.0,
-alpha 0.0,
-            parallel: {
-                "fw_flash"  with fw_dis_fast,
-                0.05,
-                im.MatrixColor("event/hanako_fw_flash.jpg", im.matrix.tint(in_r, in_g, in_b))  with fw_dis_medium,
-                8.0,
-        repeat,
-
-    hanako_fw: LiveComposite((800,600),
-                                    (0,0), hanako_fw_constructor(1.0, 1.0, 1.0),
-                                    (0,0), hanako_fw_constructor(1.1, 0.9, 0.9),
-                                    (0,0), hanako_fw_constructor(0.9, 1.1, 0.9),
-                                    (0,0), hanako_fw_constructor(0.9, 0.9, 1.1),
-                                    (0,0), hanako_fw_constructor(0.9, 1.05, 1.05),
-                                    (0,0), hanako_fw_constructor(1.05, 0.9, 1.05),
-                                    (0,0), hanako_fw_constructor(1.05, 1.05, 0.9)),
 
     "ev_hanako_shanghaiwindow": "event/hanako_fw.jpg",
 
     "bg_school_library_yuuko_blurred": "vfx/school_library_yuuko_blurred.jpg",
 
     "phone_mobile": "vfx/mobile-sprite.png",
+    "black": "#000000"
 
-    $ rain_trans: Dissolve(0.1, alpha=true),
-
-    transform rainAnim_tf (my_offset, my_zoom, my_alpha): {
-        xalign: 0.5,
-yalign: 1.0,
-zoom: my_zoom alpha my_alpha,
-        "fw_blank",
-        my_offset,
-        block: {
-            choice: {
-                "vfx/fx-rain-bg1.png"  with rain_trans,
-                0.2,
-            choice: {
-                "vfx/fx-rain-bg2.png"  with rain_trans,
-                0.2,
-            choice: {
-                "vfx/fx-rain-bg3.png"  with rain_trans,
-                0.2,
-            choice: {
-                "vfx/fx-rain-bg4.png"  with rain_trans,
-                0.2,
-            choice: {
-                "vfx/fx-rain-bg5.png"  with rain_trans,
-                0.2,
-            choice: {
-                "vfx/fx-rain-bg6.png"  with rain_trans,
-                0.2,
-            repeat,
-
-    python: {
-
-        def rainAnim(my_offset=0.0, zoom=1.0, alpha=1.0): {
-            return rainAnim_tf(my_offset, zoom, alpha),
-
-
-    "rain_normal": LiveComposite((800, 600),
-                             (0,0), rainAnim(),
-                             (0,0), rainAnim(my_offset=0.1, zoom=1.2),
-                             ),
-
-
-    "rain_light": LiveComposite((800, 600),
-                             (0,0), rainAnim(alpha=0.3),
-                             (0,0), rainAnim(my_offset=0.1, zoom=1.2, alpha=0.3),
-                             ),
-
-    "rain_medium": LiveComposite((800, 600),
-                             (0,0), rainAnim(alpha=0.6),
-                             (0,0), rainAnim(my_offset=0.1, zoom=1.2, alpha=0.6),
-                             ),
-
-    transform mm_widget_in (my_disp, my_delay): {
-        my_disp,
-        xalign: 0.0,
-yanchor: 0.0,
-ypos: 0.2 alpha 0.0,
-        my_delay,
-        easein: 0.3,
-ypos: 0.0,
-alpha 1.0,
-
-
-
-    $ crowdtrans: Dissolve(0.3, alpha=true),
-
-    transform crowdgen (img1, img2, img3): {
-        img1,
-        block: {
-            1.0,
-            img2  with crowdtrans,
-            1.0,
-            img3  with crowdtrans,
-            1.0,
-            img1  with crowdtrans,
-            repeat,
-
-    crowd: crowdgen("vfx/crowd1.png","vfx/crowd2.png","vfx/crowd3.png"),
-    crowd_ss: crowdgen(filter: "sunset",
-image: "vfx/crowd1.png"),filter: "sunset",
-image: "vfx/crowd2.png"),filter: "sunset",
-image: "vfx/crowd3.png",
-    crowd_ni: crowdgen(night("vfx/crowd1.png"),night("vfx/crowd2.png"),night("vfx/crowd3.png")),
-    crowd_fb: crowdgen(past("vfx/crowd1.png"),past("vfx/crowd2.png"),past("vfx/crowd3.png")),
-    crowd_ni_fb: crowdgen(past_night("vfx/crowd1.png"),past_night("vfx/crowd2.png"),past_night("vfx/crowd3.png")),
-
-};,
+};

@@ -35,16 +35,17 @@
           left: -190px;
         }
       }
-      #bg,#video {
+      #bg,#video,#solid {
         position: absolute;
         width: 800px;
         height: 600px;
       }
-      #video {
-        z-index: 2;
-      }
       #say {
         font: 22px/27px Playtime; color: white; width: 750px; height: 90px; position: absolute; top: 493px; left: 28px;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
       }
     </style>
     <script>
@@ -60,10 +61,13 @@
     <audio id="sound"></audio>
     <audio id="ambient" loop></audio>
     <div id="container">
-      <img id="bg" src="/dump/bgs/school_girlsdormhall.jpg">
-      <video id="video"></video>
+      <div id="img">
+        <img id="bg" src="/dump/bgs/school_girlsdormhall.jpg">
+        <div id="solid"></div>
+      </div>
       <img src="/dump/ui/bg-say.png" style="position: absolute; top: 440px; left: 0;">
       <div id="say">It doesn't take long to identify the source as Lilly's room, though the deep timbre of the female voice unmistakably belongs not to her, but to her sister.</div>
+      <video id="video"></video>
     </div>
     <script src="/when/when.js"></script>
     <script src="/js/html5ks.js"></script>

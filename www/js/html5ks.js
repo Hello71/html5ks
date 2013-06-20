@@ -1,12 +1,6 @@
 (function () {
 "use strict";
 window.html5ks = {
-  STUB: function (fn) {
-    return console.log("STUB: " + fn);
-  },
-  WARN: function (msg) {
-    return console.log("WARN: " + msg);
-  },
   persistent: {
     seen_scenes: {},
     attraction: {
@@ -14,7 +8,11 @@ window.html5ks = {
       sc: 0,
       hanako: 0
     },
-    hdisabled: false
+    hdisabled: false,
+    settings: {
+      // ms per character
+      autospeed: 20
+    }
   },
   save: function () {
     localStorage.persistent = JSON.stringify(this.persistent);
@@ -26,11 +24,15 @@ window.html5ks = {
     container: document.getElementById("container"),
     video: document.getElementById("video"),
     audio: {
-      music: document.getElementById("music"),
-      ambient: document.getElementById("ambient"),
-      sound: document.getElementById("sound")
+      music: new Audio(),
+      ambient: new Audio(),
+      sound: new Audio()
     },
-    say: document.getElementById("say")
+    say: document.getElementById("say"),
+    img: {
+      bg: document.getElementById("bg"),
+      solid: document.getElementById("solid")
+    }
   },
   seen_scene: function (scene) {
     return !!this.persistent.seen_scenes[scene];
@@ -39,24 +41,26 @@ window.html5ks = {
     this.persistent.seen_scenes.scene = true;
   },
   play: function (channel, name, fade) {
-    if (fade) this.WARN("fade not implemented");
+    // TODO: fade
     var deferred = when.defer(),
         audio = this.elements.audio[channel];
     audio.src = "/dump/" + (channel === "music" ? "bgm/" + this.music[name] + ".ogg" : this.sfx[name]);
     audio.load();
     audio.play();
-    if (channel !== "music") {
-      audio.addEventListener("ended", function () {
-        deferred.resolve(this);
-      }, false);
-    } else {
-      audio.addEventListener("playing", function () {
-        deferred.resolve(this);
-      }, false);
-    }
+    audio.addEventListener("playing", function () {
+      deferred.resolve(this);
+    }, false);
     audio.addEventListener("error", function () {
       deferred.reject(this.error);
     }, false);
+    return deferred.promise;
+  },
+  stop: function (channel, fade) {
+    var deferred = when.defer();
+    // TODO: fade
+    // TODO: event?
+    this.elements.audio[channel].pause();
+    deferred.resolve();
     return deferred.promise;
   },
   play_video: function (vid_src) {
@@ -88,60 +92,65 @@ window.html5ks = {
     }, 100);
     return deferred.promise;
   },
-  sceneTypes: {
-    "ev": "event",
-    "evh": "event",
-    "ovl": "event",
-    "bg": "bgs",
-    "": "vfx"
+  imageTypes: {
+    "bg": {dir:"bgs",ext:"jpg"}
   },
   // NOT iscene
   scene: function (type, name) {
     var deferred = when.defer();
-    if (typeof name == "undefined") name = type;
-    var bg = document.getElementById("bg");
-    if (name == "black") {
-      bg.src = "";
-      bg.style.background = "black";
-      deferred.resolve(this);
-      return deferred.promise;
+    if (name) {
+      var nom = type + "_" + name;
+    } else {
+      var nom = type;
     }
-    this.WARN("don't know extension, trying all");
-    var img = "/dump/" + this.sceneTypes[type] + "/" + name;
-    bg.onerror = function () {
-      bg.onerror = function () {
-        bg.onerror = function () {
-          deferred.reject(this.error);
-        };
-        bg.src = img + ".jpg";
-      };
-      bg.src = img + ".png";
-    };
+    var bg = this.elements.img.bg;
+    var image = this.images[nom];
+    if (!image) {
+      var typ = this.imageTypes[type];
+      image = typ.dir + "/" + name + "." + typ.ext;
+    }
+    this.elements.img.solid.style.backgroundColor = '';
+    if (typeof image == "string") {
+      if (image.substring(0,1) == "#") {
+        this.elements.img.solid.style.backgroundColor = image;
+        deferred.resolve();
+        return deferred.promise;
+      } else {
+        image = {image: image};
+      }
+    }
     bg.onload = function () {
       deferred.resolve(this);
     };
-    bg.src = img + ".webp";
+    bg.onerror = function () {
+      throw new Error("bg could not load");
+    };
+    bg.src = "/dump/" + image.image;
     return deferred.promise;
   },
   scale: function () {
-    var newScale = 1,
-        height = document.documentElement.clientHeight,
+    var height = document.documentElement.clientHeight,
         width = document.documentElement.clientWidth;
     if (height / width <= 0.75) { // widescreen
-      newScale = height / 600;
+      var newScale = height / 600;
     } else {
-      newScale = width / 800;
+      var newScale = width / 800;
     }
+    this.elements.container.style.webkitTransform = "scale(" + newScale + ")";
+    this.elements.container.style.mozTransform = "scale(" + newScale + ")";
     this.elements.container.style.transform = "scale(" + newScale + ")";
   },
+  next: function () {},
   loadChars: function () {
     for (var character in this.characters) {
       this[character] = function (text) {
         var deferred = when.defer();
         this.elements.say.textContent = text;
-        setTimeout(function () {
+        this.next = function () {
           deferred.resolve(text);
-        }, 1000);
+          this.next = function () {};
+        }
+        setTimeout(this.next, 1000 + this.persistent.settings.autospeed * text.length);
         return deferred.promise;
       };
     };
@@ -153,6 +162,20 @@ window.html5ks = {
       html5ks.scale();
     }, false);
     this.loadChars();
+    document.addEventListener("mouseup", function () {
+      html5ks.next();
+    }, false);
+    en_NOP1();
+  },
+  show: function () {
+    var deferred = when.defer();
+    deferred.resolve();
+    return deferred.promise;
+  },
+  hide: function () {
+    var deferred = when.defer();
+    deferred.resolve();
+    return deferred.promise;
   }
 };
 document.addEventListener("DOMContentLoaded", function () {
