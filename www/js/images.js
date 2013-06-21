@@ -1,6 +1,6 @@
 
 "use strict";
-var stub = function(){}
+var stub = function(){};
 var LiveComposite = stub;
 var im = {Composite:stub,Crop:stub,FactorScale:stub,Grayscale:stub};
 html5ks.images = {

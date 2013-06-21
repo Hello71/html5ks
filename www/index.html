@@ -2,6 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=800, height=600, initial-scale=1, maximum-scale=1">
     <title>Katawa Shoujo</title>
     <link rel="shortcut icon" type="image/png" href="/dump/ui/icon.png">
     <link rel="apple-touch-icon" href="/dump/ui/icon.png">
@@ -13,6 +14,14 @@
         };
         window.define.amd = {};
     </script>
+    <script src="/when/when.js"></script>
+    <script src="/js/jquery-2.0.2.min.js"></script>
+    <script src="/js/modernizr.custom.71672.js"></script>
+    <script src="/js/html5ks.js"></script>
+    <script src="/js/play.js"></script>
+    <script src="/js/images.js"></script>
+    <script src="/js/characters.js"></script>
+    <script src="/js/script-a1-monday.js"></script>
   </head>
   <body>
     <noscript><div id="noscript"><div id="notwork">This Site Totally Doesn't Work Without JavaScript.</div>Like, at all. Sorry. If you enable it and reload this page you'll be good to go. <a href="http://enable-javascript.com/">Don't know how?</a></div></noscript>
@@ -21,19 +30,12 @@
     <audio id="ambient" loop></audio>
     <div id="container">
       <div id="img">
-        <img id="bg" alt="">
+        <img id="bg" src="" alt="">
         <div id="solid"></div>
       </div>
-      <img id="window" src="/dump/ui/bg-say.png" alt="">
+      <img id="window" src="/dump/ui/bg-say.png" alt="" style="display: none;">
       <div id="say"></div>
       <video id="video"></video>
     </div>
-    <script src="/when/when.js"></script>
-    <script src="/js/html5ks.js"></script>
-    <script src="/js/play.js"></script>
-    <script src="/js/images.js"></script>
-    <script src="/js/characters.js"></script>
-    <script src="/js/script-a1-monday.js"></script>
-    <script src="/js/modernizr.custom.71672.js"></script>
   </body>
 </html>

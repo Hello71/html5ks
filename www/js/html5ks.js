@@ -15,25 +15,14 @@ window.html5ks = {
       fade: 100
     }
   },
+  state: {
+    auto: false
+  },
   save: function () {
     localStorage.persistent = JSON.stringify(this.persistent);
   },
   load: function () {
     if (localStorage.persistent) this.persistent = JSON.parse(localStorage.persistent);
-  },
-  elements: {
-    container: document.getElementById("container"),
-    video: document.getElementById("video"),
-    audio: {
-      music: new Audio(),
-      ambient: new Audio(),
-      sound: new Audio()
-    },
-    say: document.getElementById("say"),
-    img: {
-      bg: document.getElementById("bg"),
-      solid: document.getElementById("solid")
-    }
   },
   seen_scene: function (scene) {
     return !!this.persistent.seen_scenes[scene];
@@ -45,7 +34,6 @@ window.html5ks = {
     var fadeSet = html5ks.persistent.settings.fade,
         step = fadeSet / (fade * 1000),
         over = audio.volume + step * dir;
-    console.log(arguments);
     if (over > 1) {
       audio.volume = 1;
     } else if (over < 0) {
@@ -67,11 +55,13 @@ window.html5ks = {
       audio.volume = 0;
     }
     audio.play();
-    audio.addEventListener("playing", function () {
+    audio.addEventListener("playing", function playing() {
+      audio.removeEventListener("playing", playing, false);
       deferred.resolve(this);
       html5ks.fading(audio, 1, fade);
     }, false);
-    audio.addEventListener("error", function () {
+    audio.addEventListener("error", function error() {
+      audio.removeEventListener("error", error, false);
       deferred.reject(this.error);
     }, false);
     return deferred.promise;
@@ -111,10 +101,19 @@ window.html5ks = {
     return window.script[target]();
   },
   window: function (action, transition) {
-    var deferred = when.defer();
-    setTimeout(function () {
-      deferred.resolve(action);
-    }, 100);
+    var windw = this.elements.windw,
+        deferred = when.defer();
+    switch (action) {
+      case "show":
+        windw.style.display = "block";
+        break;
+      case "hide":
+        windw.style.display = "none";
+        break;
+      default:
+        throw new Error("unknown window action " + action);
+    }
+    deferred.resolve(action);
     return deferred.promise;
   },
   imageTypes: {
@@ -175,12 +174,28 @@ window.html5ks = {
           deferred.resolve(text);
           this.next = function () {};
         };
-        setTimeout(this.next, 1000 + this.persistent.settings.autospeed * text.length);
+        if (this.state.auto) {
+          setTimeout(this.next, 1000 + this.persistent.settings.autospeed * text.length);
+        }
         return deferred.promise;
       };
     }
   },
   onload: function () {
+    this.elements = {
+      container: document.getElementById("container"),
+      video: document.getElementById("video"),
+      audio: {
+        music: new Audio(),
+        ambient: new Audio(),
+        sound: new Audio()
+      },
+      say: document.getElementById("say"),
+      img: {
+        bg: document.getElementById("bg"),
+        solid: document.getElementById("solid")
+      }
+    };
     this.load();
     this.scale();
     window.addEventListener("resize", function () {
