@@ -187,7 +187,7 @@ window.html5ks = {
       html5ks.scale();
     }, false);
     this.loadChars();
-    document.addEventListener("mouseup", function () {
+    this.elements.container.addEventListener("mouseup", function () {
       html5ks.next();
     }, false);
     en_NOP1();

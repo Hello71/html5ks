@@ -1,14 +1,16 @@
+@font-face {
+  font-family: "Playtime";
+  /* src: url("playtime.ttf"); */
+  src: url("playtime-webfont.svg");
+  src: url("playtime-webfont.ttf");
+  src: url("playtime-webfont.woff");
+}
 body {
   margin: 0;
   padding: 0;
   overflow: hidden;
   background: gray;
-}
-@font-face {
-  font-family: "Playtime";
-  /* src: url("playtime.ttf"); */
-  src: url("playtime-webfont.ttf");
-  src: url("playtime-webfont.woff");
+  font: 22px/27px Playtime, sans-serif;
 }
 #container {
   width: 800px;
@@ -35,7 +37,12 @@ body {
   height: 600px;
 }
 #say {
-  font: 22px/27px Playtime; color: white; width: 750px; height: 90px; position: absolute; top: 493px; left: 28px;
+  color: white;
+  width: 750px;
+  height: 90px;
+  position: absolute;
+  top: 493px;
+  left: 28px;
   -moz-user-select: none;
   -webkit-user-select: none;
   -ms-user-select: none;
@@ -46,18 +53,20 @@ body {
   top: 440px;
   left: 0;
 }
-#noscript {
-  width: 100%;
-  height: 100%;
-  background-color: gray;
-  opacity: 0.5;
-}
 noscript {
+  position: absolute;
+  top: 20%;
+  width: 600px;
+  left: 50%;
+  margin-left: -300px;
   display: block;
+  cursor: auto;
+}
+#noscript {
   margin: auto;
-  width: auto;
+  background-color: gray;
 }
 #notwork {
-  font-size: 200%;
+  font: 44px/46px Playtime;
   font-weight: bold;
 }
