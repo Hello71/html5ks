@@ -11,7 +11,8 @@ window.html5ks = {
     hdisabled: false,
     settings: {
       // ms per character
-      autospeed: 20
+      autospeed: 20,
+      fade: 100
     }
   },
   save: function () {
@@ -40,15 +41,35 @@ window.html5ks = {
   scene_register: function (scene) {
     this.persistent.seen_scenes.scene = true;
   },
+  fading: function (audio, dir, fade) {
+    var fadeSet = html5ks.persistent.settings.fade,
+        step = fadeSet / (fade * 1000),
+        over = audio.volume + step * dir;
+    console.log(arguments);
+    if (over > 1) {
+      audio.volume = 1;
+    } else if (over < 0) {
+      audio.volume = 0;
+    } else {
+      audio.volume += step * dir;
+      setTimeout(function () {
+        html5ks.fading(audio, dir, fade);
+      }, fadeSet);
+    }
+  },
   play: function (channel, name, fade) {
     // TODO: fade
     var deferred = when.defer(),
         audio = this.elements.audio[channel];
     audio.src = "/dump/" + (channel === "music" ? "bgm/" + this.music[name] + ".ogg" : this.sfx[name]);
     audio.load();
+    if (fade) {
+      audio.volume = 0;
+    }
     audio.play();
     audio.addEventListener("playing", function () {
       deferred.resolve(this);
+      html5ks.fading(audio, 1, fade);
     }, false);
     audio.addEventListener("error", function () {
       deferred.reject(this.error);
@@ -56,10 +77,14 @@ window.html5ks = {
     return deferred.promise;
   },
   stop: function (channel, fade) {
-    var deferred = when.defer();
-    // TODO: fade
-    // TODO: event?
-    this.elements.audio[channel].pause();
+    var deferred = when.defer(),
+        audio = this.elements.audio[channel],
+        fadeSet = html5ks.persistent.settings.fade;
+    if (fade) {
+      html5ks.fading(audio, -1, fade);
+    } else {
+      audio.pause();
+    }
     deferred.resolve();
     return deferred.promise;
   },
@@ -97,11 +122,10 @@ window.html5ks = {
   },
   // NOT iscene
   scene: function (type, name) {
-    var deferred = when.defer();
+    var deferred = when.defer(),
+        nom = type;
     if (name) {
-      var nom = type + "_" + name;
-    } else {
-      var nom = type;
+      nom = type + "_" + name;
     }
     var bg = this.elements.img.bg;
     var image = this.images[nom];
@@ -130,11 +154,12 @@ window.html5ks = {
   },
   scale: function () {
     var height = document.documentElement.clientHeight,
-        width = document.documentElement.clientWidth;
+        width = document.documentElement.clientWidth,
+        newScale = 1;
     if (height / width <= 0.75) { // widescreen
-      var newScale = height / 600;
+      newScale = height / 600;
     } else {
-      var newScale = width / 800;
+      newScale = width / 800;
     }
     this.elements.container.style.webkitTransform = "scale(" + newScale + ")";
     this.elements.container.style.mozTransform = "scale(" + newScale + ")";
@@ -149,11 +174,11 @@ window.html5ks = {
         this.next = function () {
           deferred.resolve(text);
           this.next = function () {};
-        }
+        };
         setTimeout(this.next, 1000 + this.persistent.settings.autospeed * text.length);
         return deferred.promise;
       };
-    };
+    }
   },
   onload: function () {
     this.load();
