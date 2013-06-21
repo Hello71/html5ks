@@ -181,10 +181,28 @@ window.html5ks = {
       };
     }
   },
+  show: function () {
+    var deferred = when.defer();
+    deferred.resolve();
+    return deferred.promise;
+  },
+  hide: function () {
+    var deferred = when.defer();
+    deferred.resolve();
+    return deferred.promise;
+  },
+  warnUnsupported: function () {
+    if (!(/Firefox/.test(navigator.userAgent))) {
+      document.getElementById("html-svg-filter").style.display = "block";
+    }
+    document.getElementById("gotit").addEventListener("mouseup", function () {
+      document.getElementById("warn").style.display = "none";
+    }, false);
+  },
   onload: function () {
     this.elements = {
       container: document.getElementById("container"),
-      video: document.getElementById("video"),
+      video: document.getElementById("vid"),
       audio: {
         music: new Audio(),
         ambient: new Audio(),
@@ -196,6 +214,8 @@ window.html5ks = {
         solid: document.getElementById("solid")
       }
     };
+    this.elements.audio.music.loop = true;
+    this.elements.audio.ambient.loop = true;
     this.load();
     this.scale();
     window.addEventListener("resize", function () {
@@ -205,17 +225,8 @@ window.html5ks = {
     this.elements.container.addEventListener("mouseup", function () {
       html5ks.next();
     }, false);
+    this.warnUnsupported();
     en_NOP1();
-  },
-  show: function () {
-    var deferred = when.defer();
-    deferred.resolve();
-    return deferred.promise;
-  },
-  hide: function () {
-    var deferred = when.defer();
-    deferred.resolve();
-    return deferred.promise;
   }
 };
 document.addEventListener("DOMContentLoaded", function () {
