@@ -3,7 +3,7 @@
 var stub = function(){};
 var LiveComposite = stub;
 var im = {Composite:stub,Crop:stub,FactorScale:stub,Grayscale:stub};
-html5ks.images = {
+window.html5ks.data.images = {
     "ev_other_iwanako_start": {
         image: "event/other_iwanako_nosnow.jpg",
         xalign: 0.5,

@@ -1,9 +1,16 @@
 @font-face {
   font-family: "Playtime";
   /* src: url("playtime.ttf"); */
-  src: url("playtime-webfont.svg");
-  src: url("playtime-webfont.ttf");
-  src: url("playtime-webfont.woff");
+  src: url("PlaytimeWithHotToddies.svg");
+  src: url("PlaytimeWithHotToddies.ttf");
+  src: url("PlaytimeWithHotToddies.woff");
+}
+@font-face {
+  font-family: "Gentium";
+  /* src: url("gentium.ttf"); */
+  src: url("GentiumPlus.svg");
+  src: url("GentiumPlus.ttf");
+  src: url("GentiumPlus.woff");
 }
 body {
   margin: 0;
@@ -21,7 +28,7 @@ body {
   left: 50%;
   margin-left: -400px;
   overflow: hidden;
-  cursor: url("dump/ui/mousecursor.png"), default;
+  cursor: url("/dump/ui/mousecursor.png"), default;
 }
 @keyframes toright {
   from {
@@ -35,7 +42,13 @@ body {
   position: absolute;
   width: 800px;
   height: 600px;
-  filter: url(filters.svg#sunset);
+}
+#who {
+  color: black;
+  position: absolute;
+  top: 452px;
+  left: 12px;
+  font-weight: bold;
 }
 #say {
   color: white;
@@ -49,17 +62,27 @@ body {
   -ms-user-select: none;
   user-select: none;
 }
-#window {
+#window-image {
   position: absolute;
   top: 440px;
   left: 0;
+}
+#gray {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: rgb(64, 64, 64);
+  background-color: rgba(64, 64, 64, 0.8);
+  z-index: 9;
+}
+#warn-container {
+  display: none;
+  cursor: auto;
 }
 #warn {
   background-color: rgb(128, 128, 128);
   background-color: rgba(128, 128, 128, 0.8);
   border-radius: 10px 10px;
-  cursor: auto;
-  display: none;
   height: 70%;
   left: 50%;
   margin-left: -300px;
@@ -71,7 +94,7 @@ body {
   z-index: 10;
 }
 #notwork {
-  font: 44px/46px Playtime;
+  font: 28px/34px Playtime;
   font-weight: bold;
 }
 html.js #warn li#js { display: none; }

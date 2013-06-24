@@ -1,5 +1,4 @@
-if (!window.html5ks) window.html5ks = {};
-html5ks.characters = {
+window.html5ks.data.characters = {
   name_only: {name: ""},
   
   hi: {name: "Hisao", color: "#629276"},

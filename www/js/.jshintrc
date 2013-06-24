@@ -1,4 +1,9 @@
 {
   "globalstrict": true,
-  "browser": true
+  "browser": true,
+  "devel": true,
+  "globals": {
+    "html5ks": false,
+    "when": false
+  }
 }
