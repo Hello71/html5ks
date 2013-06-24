@@ -76,7 +76,7 @@ body {
   z-index: 9;
 }
 #warn-container {
-  display: none;
+  visibility: hidden;
   cursor: auto;
 }
 #warn {

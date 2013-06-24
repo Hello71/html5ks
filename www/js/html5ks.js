@@ -79,7 +79,7 @@
         var warns = document.getElementById("warns").children;
         for (var i = 0; i < warns.length; i++) {
           if (window.getComputedStyle(warns[i]).getPropertyValue("display") !== "none") {
-            warn.style.display = "block";
+            warn.style.visibility = "visible";
           }
         }
       }
