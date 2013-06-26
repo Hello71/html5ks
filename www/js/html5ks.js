@@ -1,6 +1,9 @@
 (function () {
   "use strict";
   window.html5ks = {
+    data: {
+      scripts: {}
+    },
     persistent: {
       seen_scenes: {},
       attraction: {
@@ -13,7 +16,8 @@
         // ms per character
         autospeed: 20,
         fade: 100,
-        gotit: false
+        gotit: false,
+        scale: true
       }
     },
     state: {
@@ -46,22 +50,28 @@
       localStorage.persistent = JSON.stringify(this.persistent);
     },
     scale: function () {
-      var height = document.documentElement.clientHeight,
-          width = document.documentElement.clientWidth,
-          newScale = 1;
-      if (height / width <= 0.75) { // widescreen
-        newScale = height / 600;
+      var newScale = 1;
+      if (html5ks.persistent.settings.scale) {
+        var height = document.documentElement.clientHeight,
+            width = document.documentElement.clientWidth;
+        if (height / width <= 0.75) { // widescreen
+          newScale = height / 600;
+        } else {
+          newScale = width / 800;
+        }
       } else {
-        newScale = width / 800;
+        newScale = 1;
       }
       html5ks.elements.container.style.webkitTransform = "scale(" + newScale + ")";
       html5ks.elements.container.style.mozTransform = "scale(" + newScale + ")";
       html5ks.elements.container.style.transform = "scale(" + newScale + ")";
     },
     next: function () {},
-    loadChars: function () {
-      for (var character in this.characters) {
-      }
+    initEvents: function () {
+      window.addEventListener("resize", html5ks.scale, false);
+      this.elements.container.addEventListener("mouseup", function () {
+        html5ks.next();
+      }, false);
     },
     warnUnsupported: function () {
       if (!html5ks.persistent.settings.gotit) {
@@ -84,25 +94,44 @@
         }
       }
     },
-    initEvents: function () {
-      window.addEventListener("resize", html5ks.scale, false);
-      this.elements.container.addEventListener("mouseup", function () {
-        html5ks.next();
-      }, false);
-    },
     onload: function () {
       this.initElements();
-      this.loadChars();
       this.load();
       this.scale();
       this.initEvents();
       this.warnUnsupported();
     },
     winload: function () {
+      this.fetch("script", "a1-monday").then(function () {
+        html5ks.api.runScript(html5ks.data.scripts["a1-monday"].en_NOP1)
+      });
       this.elements.img.bg.src = "";
+    },
+    fetch: function (type, name) {
+      var deferred = when.defer();
+      switch (type) {
+        case "script":
+          var scripts = html5ks.data.scripts;
+          if (typeof scripts[name] === "object") {
+            deferred.resolve();
+          } else {
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "/scripts/script-" + name + ".json");
+            xhr.onreadystatechange = function () {
+              if (xhr.readyState === 4) {
+                scripts[name] = JSON.parse(xhr.responseText);
+                deferred.resolve();
+              }
+            };
+            xhr.send();
+          }
+          break;
+        default:
+          throw new Error("fetchtype " + type + " not implemented");
+      }
+      return deferred.promise;
     }
   };
-  window.html5ks.data = {};
   document.addEventListener("DOMContentLoaded", function () {
     html5ks.onload();
   }, false);

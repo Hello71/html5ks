@@ -17,20 +17,20 @@
     <link rel="stylesheet" type="text/css" href="/css/index.css">
     <script src="/js/lib/when/when.js"></script>
     <script src="/js/lib/jquery-2.0.2.min.js"></script>
-    <script src="/js/lib/modernizr.custom.71672.js"></script>
+    <script src="/js/lib/modernizr.custom.44609.js"></script>
     <script src="/js/html5ks.js"></script>
     <script src="/js/api.js"></script>
     <script src="/js/play.js"></script>
     <script src="/js/images.js"></script>
     <script src="/js/characters.js"></script>
   </head>
-  <body>
+  <body><div id="all">
     <div id="warn-container">
       <div id="gray"></div>
       <div id="warn">
         <div id="notwork">We use a lot of new features in this; your browser seems to have some issues...</div>
         <ul id="warns">
-          <li id="js">It doesn't seem to have JavaScript enabled. This site doesn't work at all without it. Really. <a href="http://enable-javascript.com">Don't know how to enable JS?</a></li>
+          <noscript><li id="js">It doesn't seem to have JavaScript enabled. This site doesn't work at all without it. Really. <a href="http://enable-javascript.com">Don't know how to enable JS?</a></li></noscript>
           <li id="video">It doesn't seem to support <a href="https://en.wikipedia.org/wiki/HTML5_video">HTML5 video</a>, which means that you won't be able to see any of the videos (obviously). Unless stated below, though, transitions should still work. <a href="http://caniuse.com/#feat=video">You should strongly consider upgrading.</a></li>
           <li id="audio">It doesn't seem to support <a href="https://en.wikipedia.org/wiki/HTML5_audio">HTML5 audio</a>, which means you won't be able to hear any of the amazing music. <a href="http://caniuse.com/#feat=audio">You should strongly consider upgrading.</a></li>
           <li id="fontface">It doesn't seem to support <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face">the @font-face at-rule</a>, which lets us display the Playtime and Gentium fonts used in Katawa Shoujo. <a href="http://caniuse.com/#feat=fontface">Any browser released in the last 2 years or so should support it.</a></li>
@@ -43,7 +43,7 @@
     </div>
     <div id="container">
       <div id="img">
-        <img id="bg" src="/loading.png" alt="">
+        <img id="bg" src="/loading.jpg" alt="">
         <div id="solid"></div>
       </div>
       <div id="window" style="display: none;">
@@ -53,5 +53,5 @@
       </div>
       <video id="vid"></video>
     </div>
-  </body>
+  </div></body>
 </html>

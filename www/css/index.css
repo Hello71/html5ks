@@ -15,11 +15,11 @@
 body {
   margin: 0;
   padding: 0;
-  overflow: hidden;
   background: gray;
   font: 22px/27px Playtime, sans-serif;
 }
 #container {
+  cursor: url("/dump/ui/mousecursor.png"), auto;
   width: 800px;
   height: 600px;
   position: absolute;
@@ -27,8 +27,6 @@ body {
   margin-top: -300px;
   left: 50%;
   margin-left: -400px;
-  overflow: hidden;
-  cursor: url("/dump/ui/mousecursor.png"), default;
 }
 @keyframes toright {
   from {
@@ -79,6 +77,9 @@ body {
   visibility: hidden;
   cursor: auto;
 }
+html.no-js #warn-container {
+  visibility: visible;
+}
 #warn {
   background-color: rgb(128, 128, 128);
   background-color: rgba(128, 128, 128, 0.8);
@@ -97,7 +98,7 @@ body {
   font: 28px/34px Playtime;
   font-weight: bold;
 }
-html.js #warn li#js { display: none; }
+html.no-js #warn li:not(#js) { display: none; }
 html.video #warn li#video { display: none; }
 html.audio #warn li#audio { display: none; }
 html.fontface #warn li#fontface { display: none; }

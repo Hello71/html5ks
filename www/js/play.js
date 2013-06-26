@@ -1,5 +1,4 @@
-if (!window.html5ks) window.html5ks = {};
-html5ks.music = {
+html5ks.data.music = {
   "music_tranquil": "Afternoon",
   "music_nurse": "Ah_Eh_I_Oh_You",
   "music_soothing": "Air_Guitar",
@@ -39,7 +38,7 @@ html5ks.music = {
   "music_one": "To_Become_One",
   "music_menus": "Wiosna"
 };
-html5ks.sfx = {
+html5ks.data.sfx = {
   sfx_tcard: "sfx/tcard.ogg",
   sfx_4lslogo: "sfx/4lsaudiologo.ogg",
   sfx_alarmclock: "sfx/alarm.ogg",

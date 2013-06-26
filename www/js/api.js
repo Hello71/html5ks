@@ -17,7 +17,7 @@ window.html5ks.api = {
     } else {
       audio.volume += step * dir;
       setTimeout(function () {
-        this.fading(audio, dir, fade);
+        html5ks.api.fading(audio, dir, fade);
       }, fadeSet);
     }
   },
@@ -34,7 +34,7 @@ window.html5ks.api = {
     audio.addEventListener("playing", function playing() {
       audio.removeEventListener("playing", playing, false);
       deferred.resolve();
-      html5ks.fading(audio, 1, fade);
+      html5ks.api.fading(audio, 1, fade);
     }, false);
     audio.addEventListener("error", function error() {
       audio.removeEventListener("error", error, false);
@@ -136,31 +136,26 @@ window.html5ks.api = {
     deferred.resolve();
     return deferred.promise;
   },
-  run: function (label) {
-    label.forEach(function (inst) {
-      var cmd = inst[0],
-          args = inst.slice(1);
-      switch (cmd) {
-        case "extend":
-        case "hide":
-        case "ksgallery_unlock":
-        case "nvl":
-        case "play":
-        case "scene":
-        case "set_volume":
-        case "show":
-        case "stop":
-        case "window":
-          html5ks.api[cmd].apply(html5ks, args);
-          break;
-        default:
-          if (html5ks.data.characters[cmd]) {
-            this.character(cmd, args);
-          } else {
-            console.error("instruction not implemented: %o", inst);
-          }
-      }
-    });
+  with: function (transition, action) {
+    return this.runInst(action);
+  },
+  runInst: function (inst) {
+    var cmd = inst[0],
+        args = inst.slice(1);
+    if (html5ks.data.characters[cmd]) {
+      return this.character(cmd, args);
+    } else {
+      console.log(arguments);
+      return this[cmd].apply(this, args);
+    }
+  },
+  runScript: function (label) {
+    var i = 0;
+    (function run() {
+      console.log(label[i]);
+      html5ks.api.runInst(label[i]).then(run, console.error);
+      i++;
+    }());
   },
   character: function (name, str) {
     var deferred = when.defer(),
