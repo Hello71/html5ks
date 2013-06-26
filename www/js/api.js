@@ -34,7 +34,9 @@ window.html5ks.api = {
     audio.addEventListener("playing", function playing() {
       audio.removeEventListener("playing", playing, false);
       deferred.resolve();
-      html5ks.api.fading(audio, 1, fade);
+      if (fade) {
+        html5ks.api.fading(audio, 1, fade);
+      }
     }, false);
     audio.addEventListener("error", function error() {
       audio.removeEventListener("error", error, false);
@@ -79,15 +81,10 @@ window.html5ks.api = {
   window: function (action, transition) {
     var windw = html5ks.elements.window,
         deferred = when.defer();
-    switch (action) {
-      case "show":
-        windw.style.display = "block";
-        break;
-      case "hide":
-        windw.style.display = "none";
-        break;
-      default:
-        throw new Error("unknown window action " + action);
+    if (action === "show") {
+      windw.style.display = "block";
+    } else {
+      windw.style.display = "none";
     }
     deferred.resolve(action);
     return deferred.promise;
@@ -145,8 +142,14 @@ window.html5ks.api = {
     if (html5ks.data.characters[cmd]) {
       return this.character(cmd, args);
     } else {
-      console.log(arguments);
-      return this[cmd].apply(this, args);
+      if (this[cmd]) {
+        return this[cmd].apply(this, args);
+      } else {
+        console.error("no such cmd " + cmd);
+        var deferred = when.defer();
+        deferred.resolve();
+        return deferred.promise;
+      }
     }
   },
   runScript: function (label) {
