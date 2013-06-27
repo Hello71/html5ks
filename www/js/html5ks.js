@@ -2,7 +2,7 @@
   "use strict";
   window.html5ks = {
     data: {
-      scripts: {}
+      script: {}
     },
     persistent: {
       seen_scenes: {},
@@ -34,10 +34,7 @@
         },
         who: document.getElementById("who"),
         say: document.getElementById("say"),
-        img: {
-          bg: document.getElementById("bg"),
-          solid: document.getElementById("solid")
-        },
+        bg: document.getElementById("bg"),
         window: document.getElementById("window")
       };
       this.elements.audio.music.loop = true;
@@ -103,23 +100,28 @@
     },
     winload: function () {
       this.fetch("script", "a1-monday").then(function () {
-        html5ks.api.runScript(html5ks.data.scripts["a1-monday"].en_NOP1)
+        html5ks.api.movie_cutscene("4ls").then(function () {
+          html5ks.api.iscene("en_NOP1")
+        });
       });
-      this.elements.img.bg.src = "";
     },
     fetch: function (type, name) {
       var deferred = when.defer();
       switch (type) {
         case "script":
-          var scripts = html5ks.data.scripts;
-          if (typeof scripts[name] === "object") {
+          var script = html5ks.data.script;
+          if (script[name]) {
             deferred.resolve();
           } else {
             var xhr = new XMLHttpRequest();
             xhr.open("GET", "/scripts/script-" + name + ".json");
             xhr.onreadystatechange = function () {
+              script[name] = true;
               if (xhr.readyState === 4) {
-                scripts[name] = JSON.parse(xhr.responseText);
+                var resp = JSON.parse(xhr.responseText);
+                for (var label in resp) {
+                  script[label] = resp[label];
+                }
                 deferred.resolve();
               }
             };

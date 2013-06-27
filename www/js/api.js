@@ -27,9 +27,7 @@ window.html5ks.api = {
         audio = html5ks.elements.audio[channel];
     audio.src = "/dump/" + (channel === "music" ? "bgm/" + html5ks.data.music[name] + ".ogg" : html5ks.data.sfx[name]);
     audio.load();
-    if (fade) {
-      audio.volume = 0;
-    }
+    audio.volume = fade ? 0 : 1;
     audio.play();
     audio.addEventListener("playing", function playing() {
       audio.removeEventListener("playing", playing, false);
@@ -56,15 +54,19 @@ window.html5ks.api = {
     deferred.resolve();
     return deferred.promise;
   },
-  play_video: function (vid_src) {
+  movie_cutscene: function (vid_src) {
     var deferred = when.defer(),
         video = html5ks.elements.video;
     video.src = "/dump/video/" + vid_src + ".webm";
     video.load();
     video.play();
-    video.addEventListener("ended", function () {
+    var done = function () {
+      this.style.display = "none";
+      this.pause();
       deferred.resolve();
-    }, false);
+    };
+    video.addEventListener("mouseup", done, false);
+    video.addEventListener("ended", done, false);
     video.addEventListener("error", function () {
       deferred.reject(this.error);
     }, false);
@@ -72,11 +74,16 @@ window.html5ks.api = {
   },
   act_op: function (this_video) {
     // strip off extension
-    return this.play_video(this_video.slice(0,-4));
+    return this.movie_cutscene(this_video.slice(0,-4));
   },
   iscene: function (target, is_h, is_end) {
     this.scene_register(target);
-    return window.script[target]();
+    var label = html5ks.data.script[target],
+        i = 0;
+    (function run() {
+      html5ks.api.runInst(label[i]).then(run, console.error);
+      i++;
+    }());
   },
   window: function (action, transition) {
     var windw = html5ks.elements.window,
@@ -96,7 +103,7 @@ window.html5ks.api = {
     if (name) {
       nom = type + "_" + name;
     }
-    var bg = html5ks.elements.img.bg;
+    var img = new Image();
     var image = html5ks.data.images[nom];
     if (!image) {
       var typ = {
@@ -104,23 +111,24 @@ window.html5ks.api = {
       }[type];
       image = typ.dir + "/" + name + "." + typ.ext;
     }
-    html5ks.elements.img.solid.style.backgroundColor = '';
     if (typeof image == "string") {
       if (image.substring(0,1) == "#") {
-        html5ks.elements.img.solid.style.backgroundColor = image;
+        html5ks.elements.bg.style.background = image;
         deferred.resolve();
         return deferred.promise;
       } else {
         image = {image: image};
       }
     }
-    bg.onload = function () {
+    img.onload = function () {
+      console.debug("setting bg " + img.src);
+      html5ks.elements.bg.style.background = "url(" + img.src + ")";
       deferred.resolve();
     };
-    bg.onerror = function () {
+    img.onerror = function () {
       throw new Error("bg could not load");
     };
-    bg.src = "/dump/" + image.image;
+    img.src = "/dump/" + image.image;
     return deferred.promise;
   },
   show: function () {
@@ -144,6 +152,9 @@ window.html5ks.api = {
     } else {
       if (this[cmd]) {
         return this[cmd].apply(this, args);
+      } else if (/^[A-Z]/.test(cmd)) {
+        console.log("cmd starts with caps, probably character");
+        return this.character(cmd, args);
       } else {
         console.error("no such cmd " + cmd);
         var deferred = when.defer();
@@ -152,18 +163,13 @@ window.html5ks.api = {
       }
     }
   },
-  runScript: function (label) {
-    var i = 0;
-    (function run() {
-      console.log(label[i]);
-      html5ks.api.runInst(label[i]).then(run, console.error);
-      i++;
-    }());
-  },
   character: function (name, str) {
     var deferred = when.defer(),
         text = str,
         char = html5ks.data.characters[name];
+    if (!char) {
+      char = { name: name }
+    }
     if (char.what_prefix) {
       text = char.what_prefix + text;
     }
@@ -185,6 +191,13 @@ window.html5ks.api = {
     if (html5ks.state.auto) {
       setTimeout(html5ks.next, 1000 + html5ks.persistent.settings.autospeed * text.length);
     }
+    return deferred.promise;
+  },
+  Pause: function (duration) {
+    var deferred = when.defer();
+    setTimeout(function () {
+      deferred.resolve();
+    }, duration * 1000);
     return deferred.promise;
   }
 };
