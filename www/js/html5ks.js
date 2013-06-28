@@ -95,9 +95,6 @@
     },
     warnUnsupported: function () {
       if (!html5ks.persistent.settings.gotit) {
-        if (!(/Firefox/.test(navigator.userAgent))) {
-          document.getElementById("html-svg-filter").style.display = "block";
-        }
         var warn = document.getElementById("warn-container");
         document.getElementById("gotit").addEventListener("mouseup", function () {
           warn.style.mozAnimation = "0.5s dissolveout";
@@ -105,11 +102,19 @@
           warn.style.animation = "0.5s dissolveout";
           warn.style.opacity = 0;
           html5ks.persistent.settings.gotit = true;
+          html5ks.start();
         }, false);
         var warns = document.getElementById("warns").children;
+        if (/MSIE/.test(navigator.userAgent)) {
+          document.getElementById("ie").style.display = "block";
+        }
+        if (!(/Firefox/.test(navigator.userAgent))) {
+          document.getElementById("html-svg-filter").style.display = "block";
+        }
         for (var i = 0; i < warns.length; i++) {
           if (window.getComputedStyle(warns[i]).getPropertyValue("display") !== "none") {
             warn.style.visibility = "visible";
+            return true;
           }
         }
       }
@@ -119,9 +124,11 @@
       this.load();
       this.scale();
       this.initEvents();
-      this.warnUnsupported();
+      if (!this.warnUnsupported()) {
+        this.start();
+      };
     },
-    winload: function () {
+    start: function () {
       this.fetch("script", "a1-monday").then(function () {
         html5ks.api.movie_cutscene("4ls").then(function () {
           html5ks.menu.mainMenu();
@@ -159,8 +166,5 @@
   };
   document.addEventListener("DOMContentLoaded", function () {
     html5ks.onload();
-  }, false);
-  window.addEventListener("load", function () {
-    html5ks.winload();
   }, false);
 }());
