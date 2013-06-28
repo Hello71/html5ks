@@ -35,7 +35,13 @@
         who: document.getElementById("who"),
         say: document.getElementById("say"),
         bg: document.getElementById("bg"),
-        window: document.getElementById("window")
+        window: document.getElementById("window"),
+        mainMenu: document.getElementById("main-menu"),
+        dialogs: document.getElementById("dialogs"),
+        dialog: {
+          options: document.getElementById("options"),
+          return: document.getElementById("return")
+        }
       };
       this.elements.audio.music.loop = true;
       this.elements.audio.ambient.loop = true;
@@ -47,8 +53,8 @@
       localStorage.persistent = JSON.stringify(this.persistent);
     },
     scale: function () {
-      var newScale = 1;
       if (html5ks.persistent.settings.scale) {
+        var newScale = 1;
         var height = document.documentElement.clientHeight,
             width = document.documentElement.clientWidth;
         if (height / width <= 0.75) { // widescreen
@@ -56,12 +62,22 @@
         } else {
           newScale = width / 800;
         }
-      } else {
-        newScale = 1;
+
+        var container = html5ks.elements.container;
+        container.style.webkitTransform = "scale(" + newScale + ")";
+        container.style.mozTransform = "scale(" + newScale + ")";
+        container.style.transform = "scale(" + newScale + ")";
+
+        var applyScale = function (el, scale) {
+          el.style.height = scale * 600 + "px";
+          el.style.marginTop = "-" + scale * 300 + "px";
+          el.style.width = scale * 800 + "px";
+          el.style.marginLeft = "-" + scale * 400 + "px";
+        }
+
+        applyScale(html5ks.elements.bg, newScale);
+        applyScale(html5ks.elements.video, newScale);
       }
-      html5ks.elements.container.style.webkitTransform = "scale(" + newScale + ")";
-      html5ks.elements.container.style.mozTransform = "scale(" + newScale + ")";
-      html5ks.elements.container.style.transform = "scale(" + newScale + ")";
     },
     next: function () {},
     initEvents: function () {
@@ -69,6 +85,13 @@
       this.elements.container.addEventListener("mouseup", function () {
         html5ks.next();
       }, false);
+      var deselect = function () {
+        window.getSelection().collapse(this, 0);
+      };
+      document.body.addEventListener("mousemove", deselect, true);
+      document.body.addEventListener("mouseup", deselect, true);
+      document.body.addEventListener("keyup", deselect, true);
+      this.menu.initEvents();
     },
     warnUnsupported: function () {
       if (!html5ks.persistent.settings.gotit) {
@@ -101,7 +124,7 @@
     winload: function () {
       this.fetch("script", "a1-monday").then(function () {
         html5ks.api.movie_cutscene("4ls").then(function () {
-          html5ks.api.iscene("en_NOP1")
+          html5ks.menu.mainMenu();
         });
       });
     },
@@ -114,7 +137,7 @@
             deferred.resolve();
           } else {
             var xhr = new XMLHttpRequest();
-            xhr.open("GET", "/scripts/script-" + name + ".json");
+            xhr.open("GET", "scripts/script-" + name + ".json");
             xhr.onreadystatechange = function () {
               script[name] = true;
               if (xhr.readyState === 4) {

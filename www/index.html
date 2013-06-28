@@ -11,24 +11,24 @@
         };
         window.define.amd = {};
     </script>
-    <link rel="shortcut icon" type="image/png" href="/dump/ui/icon.png">
-    <link rel="apple-touch-icon" href="/dump/ui/icon.png">
-    <link rel="stylesheet" type="text/css" href="/css/anim.css">
-    <link rel="stylesheet" type="text/css" href="/css/index.css">
-    <script src="/js/lib/when/when.js"></script>
-    <script src="/js/lib/jquery-2.0.2.min.js"></script>
-    <script src="/js/lib/modernizr.custom.44609.js"></script>
-    <script src="/js/html5ks.js"></script>
-    <script src="/js/api.js"></script>
-    <script src="/js/play.js"></script>
-    <script src="/js/images.js"></script>
-    <script src="/js/characters.js"></script>
+    <link rel="shortcut icon" type="image/png" href="dump/ui/icon.png">
+    <link rel="apple-touch-icon" href="dump/ui/icon.png">
+    <link rel="stylesheet" type="text/css" href="css/anim.css">
+    <link rel="stylesheet" type="text/css" href="css/index.css">
+    <script src="js/lib/when/when.js"></script>
+    <script src="js/lib/modernizr.custom.44609.js"></script>
+    <script src="js/html5ks.js"></script>
+    <script src="js/menu.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/play.js"></script>
+    <script src="js/images.js"></script>
+    <script src="js/characters.js"></script>
   </head>
-  <body><div id="all">
+  <body><div id="all" style="height: 100%; position: absolute; width: 100%;">
     <div id="warn-container">
       <div id="gray"></div>
       <div id="warn">
-        <div id="notwork">We use a lot of new features in this; your browser seems to have some issues...</div>
+        <h2>We use a lot of new features in this; your browser seems to have some issues...</h2>
         <ul id="warns">
           <noscript><li id="js">It doesn't seem to have JavaScript enabled. This site doesn't work at all without it. Really. <a href="http://enable-javascript.com">Don't know how to enable JS?</a></li></noscript>
           <li id="video">It doesn't seem to support <a href="https://en.wikipedia.org/wiki/HTML5_video">HTML5 video</a>, which means that you won't be able to see any of the videos (obviously). Unless stated below, though, transitions should still work. <a href="http://caniuse.com/#feat=video">You should strongly consider upgrading.</a></li>
@@ -38,17 +38,44 @@
           <li id="csstransitions">It doesn't seem to support <a href="https://developer.mozilla.org/en-US/docs/Web/Guide/CSS/Using_CSS_transitions">CSS transitions</a>, which means that transitions won't work. Videos should still work though, unless stated above. <a href="http://caniuse.com/#feat=css-transitions">You should definitely try upgrading.</a></li>
           <li id="html-svg-filter">It might not support SVG filters on HTML content, which means that filters like the sunset in the tea room will display as regular images. <a href="http://caniuse.com/#feat=svg-html">Unfortunately, this is only implemented in Firefox now.</a></li>
         </ul>
-        <div id="gotit" class="button">I know it's broken, let me play!</div>
+        <div id="gotit" class="button button-enabled">I know it's broken, let me play!</div>
       </div>
     </div>
+    <div id="bg"></div>
     <div id="container">
-      <div id="bg"></div>
       <div id="window" style="display: none;">
-        <img id="window-image" src="/dump/ui/bg-say.png" alt="">
+        <img id="window-image" src="dump/ui/bg-say.png" alt="">
         <div id="who"></div>
         <div id="say"></div>
       </div>
-      <video id="vid"></video>
+      <div id="main-menu" style="display: none;">
+        <div id="main-menu-buttons" style="top: 377px; position: absolute; left: 81px;">
+          <div id="start" class="button button-enabled">Start</div>
+          <div id="load" class="button button-disabled">Load</div>
+          <div id="extras" class="button button-disabled">Extras</div>
+          <div id="options-button" class="button button-enabled">Options</div>
+          <div id="quit" class="button button-disabled">Quit</div>
+        </div>
+        <div id="version" style="position: absolute; bottom: 10px; right: 15px; font: 8px/8px Playtime; opacity: 0.4">
+          Katawa Shoujo v1.0
+          <br>
+          HTML5KS 0.0.1
+        </div>
+      </div>
+      <div id="dialogs" style="display: none; position: absolute; top: 50%; width: 504px; height: 395px; background: url(dump/ui/bg-config.png); left: 50%; margin-left: -252px; margin-top: -197.5px;">
+        <div id="options" style="padding: 10px 20px;">
+          <h2>Options</h2>
+          <label class="button button-enabled"><input type="checkbox" id="hdisable"> <span>Disable adult content</span></label>
+          <label class="button button-enabled"><input type="checkbox" id="fullscreen"> <span>Fullscreen mode</span></label>
+          <label class="button button-enabled"><input type="checkbox" id="skip-unread"> <span>Skip unread text</span></label>
+          <label class="button button-enabled"><input type="checkbox" id="skip-after-choices"> <span>Keep skipping after choices</span></label>
+        </div>
+        <div id="return" class="button button-enabled" style="position: absolute; bottom: 15px; right: 20px;">
+          <img src="dump/ui/bt-return.png">
+          Return
+        </div>
+      </div>
     </div>
+    <video id="vid"></video>
   </div></body>
 </html>

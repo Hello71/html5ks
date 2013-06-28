@@ -25,7 +25,7 @@ window.html5ks.api = {
     // TODO: fade
     var deferred = when.defer(),
         audio = html5ks.elements.audio[channel];
-    audio.src = "/dump/" + (channel === "music" ? "bgm/" + html5ks.data.music[name] + ".ogg" : html5ks.data.sfx[name]);
+    audio.src = "dump/" + (channel === "music" ? "bgm/" + html5ks.data.music[name] + ".ogg" : html5ks.data.sfx[name]);
     audio.load();
     audio.volume = fade ? 0 : 1;
     audio.play();
@@ -56,16 +56,30 @@ window.html5ks.api = {
   },
   movie_cutscene: function (vid_src) {
     var deferred = when.defer(),
-        video = html5ks.elements.video;
-    video.src = "/dump/video/" + vid_src + ".webm";
+        video = html5ks.elements.video,
+        src = "dump/video/" + vid_src + ".";
+
+    if (Modernizr.video.webm) {
+      video.src = src + "webm";
+    } else if (Modernizr.video.ogg) {
+      video.src = src + "ogg";
+    } else if (Modernizr.video.h264) {
+      video.src = src + "mp4";
+    }
+
     video.load();
+    video.style.display = "block";
     video.play();
     var done = function () {
       this.style.display = "none";
       this.pause();
       deferred.resolve();
     };
-    video.addEventListener("mouseup", done, false);
+    video.addEventListener("click", function (e) {
+      if (e.button === 0) {
+        done.call(this);
+      }
+    }, false);
     video.addEventListener("ended", done, false);
     video.addEventListener("error", function () {
       deferred.reject(this.error);
@@ -81,10 +95,15 @@ window.html5ks.api = {
     var label = html5ks.data.script[target],
         i = 0;
     (function run() {
-      html5ks.api.runInst(label[i]).then(run, console.error);
-      i++;
+      if (label[i]) {
+        html5ks.api.runInst(label[i]).then(run, console.error);
+        i++;
+      } else {
+        html5ks.mainMenu();
+      }
     }());
   },
+
   window: function (action, transition) {
     var windw = html5ks.elements.window,
         deferred = when.defer();
@@ -96,6 +115,7 @@ window.html5ks.api = {
     deferred.resolve(action);
     return deferred.promise;
   },
+
   // NOT iscene
   scene: function (type, name) {
     var deferred = when.defer(),
@@ -122,15 +142,20 @@ window.html5ks.api = {
     }
     img.onload = function () {
       console.debug("setting bg " + img.src);
-      html5ks.elements.bg.style.background = "url(" + img.src + ")";
+      var bg = html5ks.elements.bg;
+      bg.style.background = "url(" + img.src + ") no-repeat 0 0 / cover black";
       deferred.resolve();
     };
     img.onerror = function () {
       throw new Error("bg could not load");
     };
-    img.src = "/dump/" + image.image;
+    if (Modernizr.webp) {
+      image.image = image.image.replace(/\.[a-z]+$/, ".webp");
+    }
+    img.src = "dump/" + image.image;
     return deferred.promise;
   },
+
   show: function () {
     var deferred = when.defer();
     deferred.resolve();
@@ -141,9 +166,11 @@ window.html5ks.api = {
     deferred.resolve();
     return deferred.promise;
   },
+
   with: function (transition, action) {
     return this.runInst(action);
   },
+
   runInst: function (inst) {
     var cmd = inst[0],
         args = inst.slice(1);
@@ -163,6 +190,7 @@ window.html5ks.api = {
       }
     }
   },
+
   character: function (name, str) {
     var deferred = when.defer(),
         text = str,

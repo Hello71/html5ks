@@ -1,16 +1,16 @@
 @font-face {
   font-family: "Playtime";
   /* src: url("playtime.ttf"); */
-  src: url("PlaytimeWithHotToddies.svg");
-  src: url("PlaytimeWithHotToddies.ttf");
-  src: url("PlaytimeWithHotToddies.woff");
+  src: url("font/PlaytimeWithHotToddies.svg");
+  src: url("font/PlaytimeWithHotToddies.ttf");
+  src: url("font/PlaytimeWithHotToddies.woff");
 }
 @font-face {
   font-family: "Gentium";
   /* src: url("gentium.ttf"); */
-  src: url("GentiumPlus.svg");
-  src: url("GentiumPlus.ttf");
-  src: url("GentiumPlus.woff");
+  src: url("font/GentiumPlus.svg");
+  src: url("font/GentiumPlus.ttf");
+  src: url("font/GentiumPlus.woff");
 }
 body {
   margin: 0;
@@ -18,14 +18,22 @@ body {
   background: gray;
   font: 22px/27px Playtime, sans-serif;
 }
-#container {
-  cursor: url("/dump/ui/mousecursor.png"), auto;
-  width: 800px;
-  height: 600px;
+* {
+  -moz-user-select: -moz-none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+#container, #bg, #vid {
+  cursor: url("../dump/ui/mousecursor.png"), default;
   position: absolute;
   top: 50%;
-  margin-top: -300px;
   left: 50%;
+}
+#container {
+  width: 800px;
+  height: 600px;
+  margin-top: -300px;
   margin-left: -400px;
 }
 @keyframes toright {
@@ -35,11 +43,6 @@ body {
   to {
     left: -190px;
   }
-}
-#bg,#vid {
-  position: absolute;
-  width: 800px;
-  height: 600px;
 }
 #who {
   color: black;
@@ -55,10 +58,6 @@ body {
   position: absolute;
   top: 493px;
   left: 28px;
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
 }
 #window-image {
   position: absolute;
@@ -94,9 +93,10 @@ html.no-js #warn-container {
   width: 600px;
   z-index: 10;
 }
-#notwork {
-  font: 28px/34px Playtime;
+h2 {
+  font: 20px/28px Playtime;
   font-weight: bold;
+  opacity: 0.4;
 }
 html.no-js #warn li:not(#js) { display: none; }
 html.video #warn li#video { display: none; }
@@ -106,10 +106,16 @@ html.csstransforms #warn li#csstransforms { display: none; }
 html.csstransitions #warn li#csstransitions { display: none; }
 html #warn li#html-svg-filter { display: none; }
 .button {
-  cursor: pointer;
+  display: block;
+}
+.button-enabled {
+/* cursor: pointer; */
   opacity: 0.4;
 }
-.button:hover {
+.button-disabled {
+  opacity: 0.1;
+}
+.button-enabled:hover {
   opacity: 1;
 }
 #gotit {
@@ -117,4 +123,20 @@ html #warn li#html-svg-filter { display: none; }
 }
 html.no-js #gotit {
   display: none;
+}
+#main-menu-buttons .button {
+  margin: 4px;
+}
+input[type="checkbox"] {
+  display: none;
+}
+input[type="checkbox"] + span:before {
+  display: inline-block;
+  height: 19px;
+  width: 20px;
+  content: "";
+  background: url("../dump/ui/bt-cf-unchecked.png") no-repeat left bottom;
+}
+input[type="checkbox"]:checked + span:before {
+  background: url("../dump/ui/bt-cf-checked.png") no-repeat left bottom;
 }
