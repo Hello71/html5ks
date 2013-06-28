@@ -92,16 +92,18 @@ window.html5ks.api = {
   },
   iscene: function (target, is_h, is_end) {
     this.scene_register(target);
-    var label = html5ks.data.script[target],
+    var deferred = when.defer(),
+        label = html5ks.data.script[target],
         i = 0;
     (function run() {
       if (label[i]) {
         html5ks.api.runInst(label[i]).then(run, console.error);
         i++;
       } else {
-        html5ks.mainMenu();
+        deferred.resolve();
       }
     }());
+    return deferred.promise;
   },
 
   window: function (action, transition) {

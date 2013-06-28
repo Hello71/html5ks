@@ -20,7 +20,7 @@ html5ks.menu = {
   initEvents: function () {
     document.getElementById("start").addEventListener("click", function () {
       html5ks.elements.mainMenu.style.display = "none";
-      html5ks.api.iscene("en_NOP1");
+      html5ks.api.iscene("en_NOP1").then(html5ks.menu.mainMenu);
     }, false);
     document.getElementById("options-button").addEventListener("click", function () {
       html5ks.menu.dialog("options");
