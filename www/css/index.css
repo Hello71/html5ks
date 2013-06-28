@@ -99,6 +99,7 @@ h2 {
   opacity: 0.4;
 }
 html.no-js #warn li:not(#js) { display: none; }
+           #warn li#id { display: none; }
 html.video #warn li#video { display: none; }
 html.audio #warn li#audio { display: none; }
 html.fontface #warn li#fontface { display: none; }
