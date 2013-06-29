@@ -35,13 +35,7 @@
         who: document.getElementById("who"),
         say: document.getElementById("say"),
         bg: document.getElementById("bg"),
-        window: document.getElementById("window"),
-        mainMenu: document.getElementById("main-menu"),
-        dialogs: document.getElementById("dialogs"),
-        dialog: {
-          options: document.getElementById("options"),
-          return: document.getElementById("return")
-        }
+        window: document.getElementById("window")
       };
       this.elements.audio.music.loop = true;
       this.elements.audio.ambient.loop = true;
@@ -73,7 +67,7 @@
           el.style.marginTop = "-" + scale * 300 + "px";
           el.style.width = scale * 800 + "px";
           el.style.marginLeft = "-" + scale * 400 + "px";
-        }
+        };
 
         applyScale(html5ks.elements.bg, newScale);
         applyScale(html5ks.elements.video, newScale);
@@ -91,7 +85,6 @@
       document.body.addEventListener("mousemove", deselect, true);
       document.body.addEventListener("mouseup", deselect, true);
       document.body.addEventListener("keyup", deselect, true);
-      this.menu.initEvents();
     },
     warnUnsupported: function () {
       if (!html5ks.persistent.settings.gotit) {
@@ -126,7 +119,8 @@
       this.initEvents();
       if (!this.warnUnsupported()) {
         this.start();
-      };
+      }
+      this.menu.init();
     },
     start: function () {
       this.fetch("script", "a1-monday").then(function () {
@@ -137,13 +131,13 @@
     },
     fetch: function (type, name) {
       var deferred = when.defer();
+      var xhr = new XMLHttpRequest();
       switch (type) {
         case "script":
           var script = html5ks.data.script;
           if (script[name]) {
             deferred.resolve();
           } else {
-            var xhr = new XMLHttpRequest();
             xhr.open("GET", "scripts/script-" + name + ".json");
             xhr.onreadystatechange = function () {
               script[name] = true;
@@ -157,6 +151,16 @@
             };
             xhr.send();
           }
+          break;
+        case "imachine":
+          xhr.open("GET", "scripts/imachine.json");
+          xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+              html5ks.data.imachine = JSON.parse(xhr.responseText);
+              deferred.resolve();
+            }
+          };
+          xhr.send();
           break;
         default:
           throw new Error("fetchtype " + type + " not implemented");

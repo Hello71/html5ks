@@ -106,7 +106,7 @@ html.fontface #warn li#fontface { display: none; }
 html.csstransforms #warn li#csstransforms { display: none; }
 html.csstransitions #warn li#csstransitions { display: none; }
 html #warn li#html-svg-filter { display: none; }
-.button {
+label {
   display: block;
 }
 .button-enabled {

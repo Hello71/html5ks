@@ -26,7 +26,6 @@
   </head>
   <body><div id="all" style="height: 100%; position: absolute; width: 100%;">
     <div id="warn-container">
-      <div id="gray"></div>
       <div id="warn">
         <h2>We use a lot of new features in this; your browser seems to have some issues...</h2>
         <ul id="warns">
@@ -44,6 +43,7 @@
     </div>
     <div id="bg"></div>
     <div id="container">
+      <div id="gray" style="display: none;"></div>
       <div id="window" style="display: none;">
         <img id="window-image" src="dump/ui/bg-say.png" alt="">
         <div id="who"></div>
@@ -70,6 +70,14 @@
           <label class="button button-enabled"><input type="checkbox" id="fullscreen"> <span>Fullscreen mode</span></label>
           <label class="button button-enabled"><input type="checkbox" id="skip-unread"> <span>Skip unread text</span></label>
           <label class="button button-enabled"><input type="checkbox" id="skip-after-choices"> <span>Keep skipping after choices</span></label>
+          <label class="button button-enabled"><input type="checkbox" id="use-webp"> <span>Use WebP images (less bandwidth, more CPU)</span></label>
+          <label class="button button-enabled"><input type="checkbox" id="scale-video"> <span>Scale video to fullscreen (decreases performance)</span></label>
+
+          <label><input type="range" id="text-speed"> <span class="tr">Text speed</span></label>
+          <label><input type="range" id="auto-mode-delay"> <span class="tr">Auto mode delay</span></label>
+
+          <label><input type="range" id="music-volume"> <span class="tr">Music volume</span></label>
+          <label><input type="range" id="sfx-volume"> <span class="tr">SFX volume</span> <span id="test-sfx" class="button button-enabled"><img src="dump/ui/bt-musicplay.png"> Test</span></label>
         </div>
         <div id="return" class="button button-enabled" style="position: absolute; bottom: 15px; right: 20px;">
           <img src="dump/ui/bt-return.png">

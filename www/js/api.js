@@ -198,7 +198,7 @@ window.html5ks.api = {
         text = str,
         char = html5ks.data.characters[name];
     if (!char) {
-      char = { name: name }
+      char = { name: name };
     }
     if (char.what_prefix) {
       text = char.what_prefix + text;
