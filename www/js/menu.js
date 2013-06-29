@@ -38,7 +38,7 @@
       this.elements.main.start.addEventListener("click", function () {
         if (this._imachine_loaded) {
           this.elements.mainMenu.style.display = "none";
-          html5ks.api.iscene("en_NOP1").then(this.mainMenu.bind(this));
+          html5ks.imachine.start().then(this.mainMenu.bind(this));
         }
       }.bind(this), false);
       this.elements.main.optionsButton.addEventListener("click", function () {

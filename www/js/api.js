@@ -54,6 +54,7 @@ window.html5ks.api = {
     deferred.resolve();
     return deferred.promise;
   },
+
   movie_cutscene: function (vid_src) {
     var deferred = when.defer(),
         video = html5ks.elements.video,
@@ -104,6 +105,30 @@ window.html5ks.api = {
       }
     }());
     return deferred.promise;
+  },
+
+  with: function (transition, action) {
+    return this.runInst(action);
+  },
+
+  runInst: function (inst) {
+    var cmd = inst[0],
+        args = inst.slice(1);
+    if (html5ks.data.characters[cmd]) {
+      return this.character(cmd, args);
+    } else {
+      if (this[cmd]) {
+        return this[cmd].apply(this, args);
+      } else if (/^[A-Z]/.test(cmd)) {
+        console.log("cmd starts with caps, probably character");
+        return this.character(cmd, args);
+      } else {
+        console.error("no such cmd " + cmd);
+        var deferred = when.defer();
+        deferred.resolve();
+        return deferred.promise;
+      }
+    }
   },
 
   window: function (action, transition) {
@@ -169,30 +194,6 @@ window.html5ks.api = {
     return deferred.promise;
   },
 
-  with: function (transition, action) {
-    return this.runInst(action);
-  },
-
-  runInst: function (inst) {
-    var cmd = inst[0],
-        args = inst.slice(1);
-    if (html5ks.data.characters[cmd]) {
-      return this.character(cmd, args);
-    } else {
-      if (this[cmd]) {
-        return this[cmd].apply(this, args);
-      } else if (/^[A-Z]/.test(cmd)) {
-        console.log("cmd starts with caps, probably character");
-        return this.character(cmd, args);
-      } else {
-        console.error("no such cmd " + cmd);
-        var deferred = when.defer();
-        deferred.resolve();
-        return deferred.promise;
-      }
-    }
-  },
-
   character: function (name, str) {
     var deferred = when.defer(),
         text = str,
@@ -218,7 +219,9 @@ window.html5ks.api = {
       deferred.resolve(text);
       html5ks.next = function () {};
     };
-    if (html5ks.state.auto) {
+    if (html5ks.state.skip) {
+      html5ks.next();
+    } else if (html5ks.state.auto) {
       setTimeout(html5ks.next, 1000 + html5ks.persistent.settings.autospeed * text.length);
     }
     return deferred.promise;
