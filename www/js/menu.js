@@ -14,15 +14,16 @@
     activeDialog: null,
 
     dialog: function (name) {
-      this.activeDialog = html5ks.elements.dialog[name];
+      this.activeDialog = this.elements.dialog[name];
       this.activeDialog.style.display = "block";
-      html5ks.elements.dialogs.style.display = "block";
+      this.elements.dialogs.style.display = "block";
     },
 
     initElements: function () {
       this.elements = {
         dialogs: document.getElementById("dialogs"),
         dialog: {
+          options: document.getElementById("options"),
           return: document.getElementById("return")
         },
         mainMenu: document.getElementById("main-menu"),
@@ -33,8 +34,34 @@
       };
     },
 
+    initOptions: function () {
+      var options = document.getElementsByClassName("option"),
+          values = html5ks.persistent.settings;
+
+      for (var i = options.length - 1; i >= 0; i--) {
+        var option = options[i];
+        switch (option.type) {
+          case "checkbox":
+            option.checked = values[option.id];
+            option.addEventListener("change", function () {
+                    values[this.id] = this.checked;
+            }, false);
+            break;
+          case "range":
+            option.value = values[option.id];
+            option.addEventListener("change", function () {
+                    values[this.id] = this.value;
+            }, false);
+            break;
+          default:
+            console.error("unknown option type %s", option.type);
+        }
+      }
+    },
+
     init: function () {
       this.initElements();
+      this.initOptions();
       this.elements.main.start.addEventListener("click", function () {
         if (this._imachine_loaded) {
           this.elements.mainMenu.style.display = "none";
@@ -46,7 +73,7 @@
       }, false);
       this.elements.dialog.return.addEventListener("click", function (e) {
         html5ks.menu.activeDialog.style.display = "none";
-        html5ks.elements.dialogs.style.display = "none";
+        html5ks.menu.elements.dialogs.style.display = "none";
       }, false);
       html5ks.fetch("imachine").then(function () {
         var start = this.elements.main.start;

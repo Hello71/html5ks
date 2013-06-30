@@ -1,5 +1,14 @@
 "use strict";
 window.html5ks.api = {
+  init: function () {
+    var chars = html5ks.data.characters;
+    for (var ch in chars) {
+      var char = chars[ch];
+      if (char.name) {
+        char.name = this.tag(char.name);
+      }
+    }
+  },
   seen_scene: function (scene) {
     return !!html5ks.persistent.seen_scenes[scene];
   },
@@ -43,6 +52,11 @@ window.html5ks.api = {
     return deferred.promise;
   },
   stop: function (channel, fade) {
+    if (channel === "all") {
+      this.stop("music");
+      this.stop("sound");
+      return this.stop("ambient");
+    }
     var deferred = when.defer(),
         audio = html5ks.elements.audio[channel],
         fadeSet = html5ks.persistent.settings.fade;
@@ -67,6 +81,8 @@ window.html5ks.api = {
     } else if (Modernizr.video.h264) {
       video.src = src + "mp4";
     }
+
+    this.stop("all");
 
     video.load();
     video.style.display = "block";
@@ -115,13 +131,13 @@ window.html5ks.api = {
     var cmd = inst[0],
         args = inst.slice(1);
     if (html5ks.data.characters[cmd]) {
-      return this.character(cmd, args);
+      return this.character(cmd, args[0]);
     } else {
       if (this[cmd]) {
         return this[cmd].apply(this, args);
       } else if (/^[A-Z]/.test(cmd)) {
         console.log("cmd starts with caps, probably character");
-        return this.character(cmd, args);
+        return this.character(cmd, args[0]);
       } else {
         console.error("no such cmd " + cmd);
         var deferred = when.defer();
@@ -194,38 +210,92 @@ window.html5ks.api = {
     return deferred.promise;
   },
 
-  character: function (name, str) {
+  tag: function (str) {
+    var tags = [
+      /&/g, "&amp;",
+      /</g, "&lt;",
+      />/g, "&gt;",
+      /{b}/g, "<b>",
+      /{\/b}/g, "</b>",
+      /{s}/g, "<s>",
+      /{\/s}/g, "</s>",
+      /{size=(\d*)}/g, "<span style='color: $1'>",
+      /{\/size}/g, "</span>",
+      /{color=(\d*)}/g, "<span style='color: $1'>",
+      /{\/color}/g, "</span>",
+      /{w(=\d*\.\d*)?}.*/, "",
+      /{nw}/, "",
+      /{fast}/, ""
+    ];
+    for (var i = 0; i < tags.length - 1; i += 2) {
+      str = str.replace(tags[i], tags[i+1]);
+    }
+    return str;
+  },
+
+  character: function (name, str, extend) {
     var deferred = when.defer(),
-        text = str,
-        char = html5ks.data.characters[name];
+        text = this.tag(str),
+        char = html5ks.data.characters[name],
+        w = /{w(=\d*\.\d*)?}/.exec(str);
+
     if (!char) {
       char = { name: name };
     }
-    if (char.what_prefix) {
+    if (!extend && char.what_prefix) {
       text = char.what_prefix + text;
     }
-    if (char.what_suffix) {
+    if ((!w || !w[1] || extend) && char.what_suffix) {
       text = text + char.what_suffix;
     }
     var who = html5ks.elements.who;
-    who.textContent = char.name;
-    if (char.color) {
-      who.style.color = char.color;
-    } else {
-      who.style.color = "#ffffff";
+    if (!extend) {
+      who.innerHTML = char.name;
+      if (char.color) {
+        who.style.color = char.color;
+      } else {
+        who.style.color = "#ffffff";
+      }
     }
-    html5ks.elements.say.textContent = text;
-    html5ks.next = function () {
-      deferred.resolve(text);
-      html5ks.next = function () {};
-    };
-    if (html5ks.state.skip) {
+
+    if (extend) {
+      html5ks.elements.say.innerHTML += text;
+    } else {
+      html5ks.elements.say.innerHTML = text;
+    }
+
+    if (w) {
+      html5ks.next = function () {
+        html5ks.next = function () {};
+        html5ks.api.extend(str.substring(w.index + w[0].length)).then(function () {
+          deferred.resolve();
+        });
+      };
+      if (w[1]) {
+        setTimeout(html5ks.next, parseFloat(w[1].substring(1), 10) * 1000);
+        return deferred.promise;
+      }
+    } else {
+      html5ks.next = function () {
+        html5ks.elements.ctc.style.display = "none";
+        deferred.resolve(text);
+        html5ks.next = function () {};
+      };
+    }
+    if (html5ks.state.skip || str.indexOf("{nw}") > -1) {
       html5ks.next();
     } else if (html5ks.state.auto) {
       setTimeout(html5ks.next, 1000 + html5ks.persistent.settings.autospeed * text.length);
+    } else {
+      html5ks.elements.ctc.style.display = "block";
     }
     return deferred.promise;
   },
+
+  extend: function (str) {
+    return this.character(null, str, true);
+  },
+
   Pause: function (duration) {
     var deferred = when.defer();
     setTimeout(function () {

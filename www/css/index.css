@@ -27,6 +27,8 @@ body {
 #container, #bg, #vid {
   cursor: url("../dump/ui/mousecursor.png"), default;
   position: absolute;
+}
+#container.scale, #bg.scale, #vid.scale {
   top: 50%;
   left: 50%;
 }
@@ -96,7 +98,6 @@ html.no-js #warn-container {
 h2 {
   font: 20px/28px Playtime;
   font-weight: bold;
-  opacity: 0.4;
 }
 html.no-js #warn li:not(#js) { display: none; }
            #warn li#ie { display: none; }
@@ -109,8 +110,7 @@ html #warn li#html-svg-filter { display: none; }
 label {
   display: block;
 }
-.button-enabled {
-/* cursor: pointer; */
+.button, h2, label {
   opacity: 0.4;
 }
 .button-disabled {
@@ -140,4 +140,12 @@ input[type="checkbox"] + span:before {
 }
 input[type="checkbox"]:checked + span:before {
   background: url("../dump/ui/bt-cf-checked.png") no-repeat left bottom;
+}
+#ctc {
+  position: absolute;
+  bottom: 20px;
+  right: 10px;
+  -webkit-animation: blink 2s infinite;
+  -moz-animation: blink 2s infinite;
+  animation: blink 2s infinite;
 }
