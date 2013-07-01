@@ -40,7 +40,10 @@ window.html5ks = {
       say: document.getElementById("say"),
       bg: document.getElementById("bg"),
       window: document.getElementById("window"),
-      ctc: document.getElementById("ctc")
+      ctc: document.getElementById("ctc"),
+      nvl: document.getElementById("nvl"),
+      nvlsay: document.getElementById("nvlsay"),
+      nvlctc: document.getElementById("nvlctc")
     };
     this.elements.audio.music.loop = true;
     this.elements.audio.ambient.loop = true;

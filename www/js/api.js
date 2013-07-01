@@ -225,13 +225,27 @@ window.html5ks.api = {
       /{\/color}/g, "</span>",
       /{w(=\d*\.\d*)?}.*/, "",
       /{nw}/, "",
-      /{fast}/, ""
+      /{fast}/, "",
+      /\n/g, "<br>"
     ];
     for (var i = 0; i < tags.length - 1; i += 2) {
       str = str.replace(tags[i], tags[i+1]);
     }
     return str;
   },
+
+  nvlsay: function (text) {
+    var deferred = when.defer();
+    html5ks.elements.nvlsay.innerHTML += text + "<br>";
+    html5ks.elements.nvlctc.style.display = "block";
+    html5ks.next = function () {
+      html5ks.elements.nvlctc.style.display = "none";
+      deferred.resolve();
+      html5ks.next = function () {};
+    };
+    return deferred.promise;
+  },
+
 
   character: function (name, str, extend) {
     var deferred = when.defer(),
@@ -248,46 +262,52 @@ window.html5ks.api = {
     if ((!w || !w[1] || extend) && char.what_suffix) {
       text = text + char.what_suffix;
     }
-    var who = html5ks.elements.who;
-    if (!extend) {
-      who.innerHTML = char.name;
-      if (char.color) {
-        who.style.color = char.color;
+
+    if (char.kind === "nvl") {
+      this.nvlsay(text).then(function () {
+        deferred.resolve();
+      });
+    } else {
+      var who = html5ks.elements.who;
+      if (!extend) {
+        who.innerHTML = char.name;
+        if (char.color) {
+          who.style.color = char.color;
+        } else {
+          who.style.color = "#ffffff";
+        }
+      }
+
+      if (extend) {
+        html5ks.elements.say.innerHTML += text;
       } else {
-        who.style.color = "#ffffff";
+        html5ks.elements.say.innerHTML = text;
       }
-    }
 
-    if (extend) {
-      html5ks.elements.say.innerHTML += text;
-    } else {
-      html5ks.elements.say.innerHTML = text;
-    }
-
-    if (w) {
-      html5ks.next = function () {
-        html5ks.next = function () {};
-        html5ks.api.extend(str.substring(w.index + w[0].length)).then(function () {
-          deferred.resolve();
-        });
-      };
-      if (w[1]) {
-        setTimeout(html5ks.next, parseFloat(w[1].substring(1), 10) * 1000);
-        return deferred.promise;
+      if (w) {
+        html5ks.next = function () {
+          html5ks.next = function () {};
+          html5ks.api.extend(str.substring(w.index + w[0].length)).then(function () {
+            deferred.resolve();
+          });
+        };
+        if (w[1]) {
+          setTimeout(html5ks.next, parseFloat(w[1].substring(1), 10) * 1000);
+          return deferred.promise;
+        }
+      } else {
+        html5ks.next = function () {
+          html5ks.elements.ctc.style.display = "none";
+          deferred.resolve(text);
+          html5ks.next = function () {};
+        };
       }
-    } else {
-      html5ks.next = function () {
-        html5ks.elements.ctc.style.display = "none";
-        deferred.resolve(text);
-        html5ks.next = function () {};
-      };
+      html5ks.elements.ctc.style.display = "block";
     }
     if (html5ks.state.skip || str.indexOf("{nw}") > -1) {
       html5ks.next();
     } else if (html5ks.state.auto) {
       setTimeout(html5ks.next, 1000 + html5ks.persistent.settings.autospeed * text.length);
-    } else {
-      html5ks.elements.ctc.style.display = "block";
     }
     return deferred.promise;
   },
@@ -301,6 +321,28 @@ window.html5ks.api = {
     setTimeout(function () {
       deferred.resolve();
     }, duration * 1000);
+    return deferred.promise;
+  },
+
+  nvl: function (action, transition) {
+    var deferred = when.defer(),
+        nvl = html5ks.elements.nvl;
+    switch (action) {
+      case "show":
+        nvl.style.display = "block";
+        deferred.resolve();
+        break;
+      case "hide":
+        nvl.style.display = "none";
+        deferred.resolve();
+        break;
+      case "clear":
+        html5ks.elements.nvlsay.innerHTML = "";
+        deferred.resolve();
+        break;
+      default:
+        console.error("no such nvl action " + action);
+    }
     return deferred.promise;
   }
 };
