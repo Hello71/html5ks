@@ -1,8 +1,13 @@
 todo ordered by most to least important... ish
+all of this should be completed for a 1.0 release
 
 - nvl
 - menu
 - show command
+- redo images.js using json including ALL transitions
 - transitions. ALL THE TRANSITIONS
 - fix cursor to apply to all document
 - cache script.json files
+- organize the CSS into a reasonable order
+- convert characters.js into json and load with html5ks.fetch
+- remove reference to this from README

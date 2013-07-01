@@ -1,0 +1,8 @@
+This is an HTML5 implementation of the game Katawa Shoujo. [0]
+
+It's still very much a WIP, but at least the first scene displays half-credibly.
+
+If I haven't finished the TODO (probably), check /TODO for a list of things that need to be worked on. *snip* knows I could use another hand on this.
+
+[0] http://www.katawa-shoujo.com/
+[1] https://github.com/cujojs/when/
