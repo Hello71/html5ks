@@ -55,8 +55,10 @@ body {
   left: 12px;
   font-weight: bold;
 }
-#say {
+.say {
   color: white;
+}
+#say {
   width: 750px;
   height: 90px;
   position: absolute;
@@ -164,9 +166,17 @@ input[type="checkbox"]:checked + span:before {
 }
 #nvlsay {
   padding: 15px 35px;
-  color: white;
 }
 .nvl-block {
   display: block;
   margin: 10px 8px;
+}
+#centered {
+  width: 100%;
+  text-align: center;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  height: 0;
+  margin: auto;
 }

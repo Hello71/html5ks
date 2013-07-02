@@ -155,8 +155,7 @@ window.html5ks.api = {
     }
     deferred.resolve(action);
     return deferred.promise;
-  },
-
+  }, 
   // NOT iscene
   scene: function (type, name) {
     var deferred = when.defer(),
@@ -341,6 +340,17 @@ window.html5ks.api = {
       default:
         console.error("no such nvl action " + action);
     }
+    return deferred.promise;
+  },
+
+  centered: function (text) {
+    var deferred = when.defer(),
+        centered = document.getElementById("centered");
+    centered.innerHTML = this.tag(text);
+    html5ks.next = function () {
+      centered.innerHTML = "";
+      deferred.resolve();
+    };
     return deferred.promise;
   },
 
