@@ -5,7 +5,7 @@ all of this should (read: must) be completed for a 1.0 release
 - show command
 - redo images.js using json including ALL transitions
 - transitions. ALL THE TRANSITIONS
-- text reveal
+- ltr text reveal
 - wallodrugs
 - fix cursor to apply to all document
 - cache script.json files

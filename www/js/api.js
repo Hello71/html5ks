@@ -9,26 +9,25 @@ window.html5ks.api = {
       }
     }
   },
-  seen_scene: function (scene) {
-    return !!html5ks.persistent.seen_scenes[scene];
-  },
-  scene_register: function (scene) {
-    html5ks.persistent.seen_scenes.scene = true;
-  },
-  fading: function (audio, dir, fade) {
-    var fadeSet = html5ks.persistent.settings.fade,
-        step = fadeSet / (fade * 1000),
-        over = audio.volume + step * dir;
-    if (over > 1) {
-      audio.volume = 1;
-    } else if (over < 0) {
-      audio.volume = 0;
-    } else {
-      audio.volume += step * dir;
-      setTimeout(function () {
-        html5ks.api.fading(audio, dir, fade);
-      }, fadeSet);
-    }
+  set_volume: function (volume, delay, channel) {
+    var deferred = when.defer(),
+        audio = html5ks.elements.audio[channel],
+        chg = volume - audio.volume,
+        step = chg / (delay * 10);
+    var f = setInterval(function () {
+      var newv = audio.volume + step;
+      if (newv > 1) {
+        audio.volume = 1;
+        clearInterval(f);
+      } else if (newv < 0) {
+        audio.volume = 0;
+        clearInterval(f);
+      } else {
+        audio.volume = newv;
+      }
+    }, 100);
+    deferred.resolve();
+    return deferred.promise;
   },
   play: function (channel, name, fade) {
     // TODO: fade
@@ -42,7 +41,7 @@ window.html5ks.api = {
       audio.removeEventListener("playing", playing, false);
       deferred.resolve();
       if (fade) {
-        html5ks.api.fading(audio, 1, fade);
+        html5ks.api.set_volume(1, fade, channel);
       }
     }, false);
     audio.addEventListener("error", function error() {
@@ -61,7 +60,7 @@ window.html5ks.api = {
         audio = html5ks.elements.audio[channel],
         fadeSet = html5ks.persistent.settings.fade;
     if (fade) {
-      this.fading(audio, -1, fade);
+      this.set_volume(0, fade, channel);
     } else {
       audio.pause();
     }
@@ -108,7 +107,6 @@ window.html5ks.api = {
     return this.movie_cutscene(this_video.slice(0,-4));
   },
   iscene: function (target, is_h, is_end) {
-    this.scene_register(target);
     var deferred = when.defer(),
         label = html5ks.data.script[target],
         i = 0;
@@ -236,7 +234,7 @@ window.html5ks.api = {
 
   nvlsay: function (text) {
     var deferred = when.defer();
-    html5ks.elements.nvlsay.innerHTML += text + "<br>";
+    html5ks.elements.nvlsay.innerHTML += "<span class='nvl-block'>" + text + "</span>";
     html5ks.elements.nvlctc.style.display = "block";
     html5ks.next = function () {
       html5ks.elements.nvlctc.style.display = "none";
@@ -344,5 +342,28 @@ window.html5ks.api = {
         console.error("no such nvl action " + action);
     }
     return deferred.promise;
+  },
+
+  menu: function (char, str, choices) {
+    var deferred = when.defer();
+    this.character(char, str).then(function () {
+      var menu = html5ks.elements.choices,
+          frag = document.createDocumentFragment(),
+          choice = document.createElement("div");
+
+      choice.className = "choice";
+
+      for (var i in choices) {
+        choice.innerHTML = i;
+        choice.addEventListener("click", function () {
+          deferred.resolve(choices[i]);
+        }, false);
+        frag.appendChild(choice);
+        choice = choice.cloneNode(false);
+      }
+
+      html5ks.elements.choices.innerHTML = "";
+      html5ks.elements.choices.appendChild(frag);
+    });
   }
 };

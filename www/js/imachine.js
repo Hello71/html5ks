@@ -1,12 +1,18 @@
 html5ks.imachine = (function () {
   "use strict";
   return {
+    seen_scene: function (scene) {
+      return !!html5ks.store.seen_scenes[scene];
+    },
+    scene_register: function (scene) {
+      html5ks.store.seen_scenes[scene] = true;
+    },
     start: function () {
       return this.run("imachine");
     },
     run: function (label) {
       var deferred = when.defer(),
-          ilabel = html5ks.data.imachine[label],
+          ilabel = typeof label === "string" ? html5ks.data.imachine[label] : label,
           i = 0,
           runInst = function () {
             var inst = ilabel[i++];
@@ -20,6 +26,7 @@ html5ks.imachine = (function () {
               case "object":
                 switch (inst[0]) {
                   case "iscene":
+                    this.scene_register(inst[1]);
                   case "act_op":
                     switch (inst[1]) {
                       case "op_vid1":
@@ -31,9 +38,9 @@ html5ks.imachine = (function () {
                     break;
                   case "seen_scene":
                     if (this.seen_scene(inst[1])) {
-                      runInst(inst[2]);
+                      this.run(inst[2]);
                     } else {
-                      runInst(inst[3]);
+                      this.run(inst[3]);
                     }
                     break;
                   case "attraction_sc":

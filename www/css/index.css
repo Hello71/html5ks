@@ -151,6 +151,9 @@ input[type="checkbox"]:checked + span:before {
   -moz-animation: blink 2s infinite;
   animation: blink 2s infinite;
 }
+#nvlctc {
+  bottom: 25px;
+}
 #nvl {
   position: absolute;
   top: 0;
@@ -160,6 +163,10 @@ input[type="checkbox"]:checked + span:before {
   background: url("../dump/ui/bg-nvl.png") no-repeat top left;
 }
 #nvlsay {
-  padding: 25px 35px;
+  padding: 15px 35px;
   color: white;
+}
+.nvl-block {
+  display: block;
+  margin: 10px 8px;
 }
