@@ -24,6 +24,8 @@ html5ks.imachine = (function () {
                 this.run(inst);
                 break;
               case "object":
+                var cmd = inst[0];
+                var args = inst.slice(1);
                 switch (inst[0]) {
                   case "iscene":
                     this.scene_register(inst[1]);
@@ -33,7 +35,7 @@ html5ks.imachine = (function () {
                         html5ks.api.movie_cutscene("op_1").then(runInst);
                         break;
                       default:
-                        html5ks.api[inst[0]](inst[1]).then(runInst);
+                        html5ks.api[cmd].apply(html5ks.api, args).then(runInst);
                     }
                     break;
                   case "seen_scene":
