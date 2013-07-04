@@ -35,8 +35,13 @@ html5ks.imachine = (function () {
                         html5ks.api.movie_cutscene("op_1").then(runInst);
                         break;
                       default:
-                        html5ks.api[cmd].apply(html5ks.api, args).then(runInst);
+                        html5ks.api[cmd].apply(html5ks.api, args).then(function () { runInst(); });
                     }
+                    break;
+                  case "imenu":
+                    html5ks.api.menu(args[0]).then(function (choice) {
+                      html5ks.imachine.run(args[1][choice] || args[1].else);
+                    });
                     break;
                   case "seen_scene":
                     if (this.seen_scene(inst[1])) {
@@ -45,17 +50,16 @@ html5ks.imachine = (function () {
                       this.run(inst[3]);
                     }
                     break;
-                  case "attraction_sc":
-                  case "attraction_hanako":
-                  case "attraction_kenji":
-                    if (typeof inst[1] === "number") {
-                      if (html5ks.persistent.store[inst[0]] > inst[1]) {
+                  case "attraction":
+                    if (typeof inst[2] === "number") {
+                      if (html5ks.store.attraction[inst[1]] > inst[2]) {
                         runInst(inst[3]);
                       } else {
                         runInst(inst[4]);
                       }
                     } else {
-                      html5ks.persistent.store[inst[0]]++;
+                      html5ks.store.attraction[inst[1]]++;
+                      runInst();
                     }
                     break;
                   case "path_end":

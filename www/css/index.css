@@ -171,7 +171,7 @@ input[type="checkbox"]:checked + span:before {
   display: block;
   margin: 10px 8px;
 }
-#centered {
+.centered {
   width: 100%;
   text-align: center;
   position: absolute;
@@ -179,4 +179,8 @@ input[type="checkbox"]:checked + span:before {
   bottom: 0;
   height: 0;
   margin: auto;
+}
+.choice {
+  background: url("../dump/ui/bg-choice.png") no-repeat top center;
+  height: 35px;
 }

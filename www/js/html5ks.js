@@ -5,11 +5,6 @@ window.html5ks = {
   },
   persistent: {
     seen_scenes: {},
-    attraction: {
-      kenji: 0,
-      sc: 0,
-      hanako: 0
-    },
     settings: {
       fade: 100,
       gotit: false,
@@ -26,7 +21,12 @@ window.html5ks = {
     }
   },
   store: {
-    seen_scenes: {}
+    seen_scenes: {},
+    attraction: {
+      kenji: 0,
+      sc: 0,
+      hanako: 0
+    },
   },
   state: {},
   initElements: function () {
@@ -45,7 +45,8 @@ window.html5ks = {
       ctc: document.getElementById("ctc"),
       nvl: document.getElementById("nvl"),
       nvlsay: document.getElementById("nvlsay"),
-      nvlctc: document.getElementById("nvlctc")
+      nvlctc: document.getElementById("nvlctc"),
+      choices: document.getElementById("choices")
     };
     this.elements.audio.music.loop = true;
     this.elements.audio.ambient.loop = true;

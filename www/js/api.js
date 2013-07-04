@@ -110,12 +110,12 @@ window.html5ks.api = {
     var deferred = when.defer(),
         label = html5ks.data.script[target],
         i = 0;
-    (function run() {
+    (function run(ret) {
       if (label[i]) {
         html5ks.api.runInst(label[i]).then(run, console.error);
         i++;
       } else {
-        deferred.resolve();
+        deferred.resolve(ret);
       }
     }());
     return deferred.promise;
@@ -244,7 +244,7 @@ window.html5ks.api = {
   },
 
 
-  character: function (name, str, extend) {
+  character: function (name, str, extend, noc) {
     var deferred = when.defer(),
         text = this.tag(str),
         char = html5ks.data.characters[name],
@@ -264,23 +264,25 @@ window.html5ks.api = {
       this.nvlsay(text).then(function () {
         deferred.resolve();
       });
-    } else {
-      var who = html5ks.elements.who;
-      if (!extend) {
-        who.innerHTML = char.name;
-        if (char.color) {
-          who.style.color = char.color;
-        } else {
-          who.style.color = "#ffffff";
-        }
-      }
-
-      if (extend) {
-        html5ks.elements.say.innerHTML += text;
+      return deferred.promise;
+    }
+    var who = html5ks.elements.who;
+    if (!extend) {
+      who.innerHTML = char.name;
+      if (char.color) {
+        who.style.color = char.color;
       } else {
-        html5ks.elements.say.innerHTML = text;
+        who.style.color = "#ffffff";
       }
+    }
 
+    if (extend) {
+      html5ks.elements.say.innerHTML += text;
+    } else {
+      html5ks.elements.say.innerHTML = text;
+    }
+
+    if (!noc) {
       if (w) {
         html5ks.next = function () {
           html5ks.next = function () {};
@@ -300,11 +302,11 @@ window.html5ks.api = {
         };
       }
       html5ks.elements.ctc.style.display = "block";
-    }
-    if (html5ks.state.skip || str.indexOf("{nw}") > -1) {
-      html5ks.next();
-    } else if (html5ks.state.auto) {
-      setTimeout(html5ks.next, 1000 + html5ks.persistent.settings.autospeed * text.length);
+      if (html5ks.state.skip || str.indexOf("{nw}") > -1) {
+        html5ks.next();
+      } else if (html5ks.state.auto) {
+        setTimeout(html5ks.next, 1000 + html5ks.persistent.settings.autospeed * text.length);
+      }
     }
     return deferred.promise;
   },
@@ -354,26 +356,30 @@ window.html5ks.api = {
     return deferred.promise;
   },
 
-  menu: function (char, str, choices) {
-    var deferred = when.defer();
-    this.character(char, str).then(function () {
-      var menu = html5ks.elements.choices,
-          frag = document.createDocumentFragment(),
-          choice = document.createElement("div");
+  menu: function (label) {
+    var deferred = when.defer(),
+        menu = html5ks.data.script[label],
+        char = menu[1],
+        str = menu[2],
+        choices = menu[3];
+    this.character(char, str, null, true);
+    var menu = html5ks.elements.choices,
+        frag = document.createDocumentFragment(),
+        choice = document.createElement("div");
 
-      choice.className = "choice";
+    choice.className = "choice button button-enabled";
 
-      for (var i in choices) {
-        choice.innerHTML = i;
-        choice.addEventListener("click", function () {
-          deferred.resolve(choices[i]);
-        }, false);
-        frag.appendChild(choice);
-        choice = choice.cloneNode(false);
-      }
+    for (var i in choices) {
+      choice.innerHTML = i;
+      choice.addEventListener("click", function () {
+        html5ks.elements.choices.innerHTML = "";
+        deferred.resolve(choices[i]);
+      }, false);
+      frag.appendChild(choice);
+      choice = choice.cloneNode(false);
+    }
 
-      html5ks.elements.choices.innerHTML = "";
-      html5ks.elements.choices.appendChild(frag);
-    });
+    html5ks.elements.choices.appendChild(frag);
+    return deferred.promise;
   }
 };
