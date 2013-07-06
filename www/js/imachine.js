@@ -12,7 +12,7 @@ html5ks.imachine = (function () {
     },
     run: function (label) {
       var deferred = when.defer(),
-          ilabel = typeof label === "string" ? html5ks.data.imachine[label] : label,
+          ilabel = typeof label === "string" ? html5ks.data.imachine[label] || label : label,
           i = 0,
           runInst = function () {
             var inst = ilabel[i++];
@@ -40,7 +40,8 @@ html5ks.imachine = (function () {
                     break;
                   case "imenu":
                     html5ks.api.menu(args[0]).then(function (choice) {
-                      html5ks.imachine.run(args[1][choice] || args[1].else);
+                      var next = args[1][choice] || args[1].else;
+                      html5ks.imachine.run(typeof next[0] === "string" ? [next] : next);
                     });
                     break;
                   case "seen_scene":

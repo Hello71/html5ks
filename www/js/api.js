@@ -373,7 +373,7 @@ window.html5ks.api = {
       choice.innerHTML = i;
       choice.addEventListener("click", function () {
         html5ks.elements.choices.innerHTML = "";
-        deferred.resolve(choices[i]);
+        deferred.resolve(choices[this.innerHTML]);
       }, false);
       frag.appendChild(choice);
       choice = choice.cloneNode(false);
