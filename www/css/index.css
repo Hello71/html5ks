@@ -28,25 +28,15 @@ body {
   cursor: url("../dump/ui/mousecursor.png"), default;
   position: absolute;
 }
-#container.scale, #bg.scale, #vid.scale {
+#container, #bg.scale, #vid.scale {
   top: 50%;
   left: 50%;
 }
 #container {
   width: 800px;
   height: 600px;
-  left: 50%;
-  top: 50%;
   margin-top: -300px;
   margin-left: -400px;
-}
-@keyframes toright {
-  from {
-    left: -100px;
-  }
-  to {
-    left: -190px;
-  }
 }
 #who {
   color: black;
@@ -103,14 +93,14 @@ h2 {
   font: 20px/28px Playtime;
   font-weight: bold;
 }
-html.no-js #warn li:not(#js) { display: none; }
-           #warn li#ie { display: none; }
-html.video #warn li#video { display: none; }
-html.audio #warn li#audio { display: none; }
-html.fontface #warn li#fontface { display: none; }
-html.csstransforms #warn li#csstransforms { display: none; }
+html.no-js          #warn li:not(#js) { display: none; }
+                    #warn li#ie { display: none; }
+html.video          #warn li#video { display: none; }
+html.audio          #warn li#audio { display: none; }
+html.fontface       #warn li#fontface { display: none; }
+html.csstransforms  #warn li#csstransforms { display: none; }
 html.csstransitions #warn li#csstransitions { display: none; }
-html #warn li#html-svg-filter { display: none; }
+html                #warn li#html-svg-filter { display: none; }
 label {
   display: block;
 }

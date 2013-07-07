@@ -21,6 +21,9 @@ html5ks.imachine = (function () {
               case "undefined":
                 break;
               case "string": // jump_out
+                if (!html5ks.data.imachine[inst]) {
+                  throw new Error("label does not exist");
+                }
                 this.run(inst);
                 break;
               case "object":
@@ -69,7 +72,7 @@ html5ks.imachine = (function () {
                     break;
                   default:
                     console.error("unknown imachine inst");
-                    console.error(inst);
+                    console.log(inst);
                 }
             }
           }.bind(this);
