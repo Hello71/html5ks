@@ -1,8 +1,8 @@
 todo ordered by most to least important... ish
 all of this should (read: must) be completed for a 1.0 release
 
-- menu (doesn't work)
-- show command
+- menu (doesn't go back up call stack)
+- show command (somehow deletes bg)
 - redo images.js using json including ALL transitions
 - transitions. ALL THE TRANSITIONS
 - ltr text reveal (for nvl too)
@@ -10,4 +10,5 @@ all of this should (read: must) be completed for a 1.0 release
 - fix cursor to apply to all document
 - organize the CSS into a reasonable order
 - convert characters.js into json and load with html5ks.fetch
+- rewrite all the JS, the structure is <redacted>.
 - remove reference to this from README

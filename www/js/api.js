@@ -68,7 +68,7 @@ window.html5ks.api = {
     return deferred.promise;
   },
 
-  movie_cutscene: function (vid_src) {
+  movie_cutscene: function (vid_src, skippable) {
     var deferred = when.defer(),
         video = html5ks.elements.video,
         src = "dump/video/" + vid_src + ".";
@@ -87,13 +87,25 @@ window.html5ks.api = {
     video.style.display = "block";
     video.play();
     var done = function () {
-      this.style.display = "none";
-      this.pause();
+      video.style.display = "none";
+      // clear event listeners
+      var oldVideo = document.getElementById("vid");
+      oldVideo.pause();
+      var newVideo = video.cloneNode(true);
+      oldVideo.parentNode.replaceChild(newVideo, oldVideo);
+      html5ks.elements.video = newVideo;
       deferred.resolve();
     };
-    video.addEventListener("click", function (e) {
-      if (e.button === 0) {
-        done.call(this);
+    document.addEventListener("keyup", function keyupListener(e) {
+      if (e.keyCode === 27) {
+        done();
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    }, false);
+    video.addEventListener("click", function clickListener(e) {
+      if (e.button === 0 && skippable) {
+        done();
       }
     }, false);
     video.addEventListener("ended", done, false);
@@ -171,9 +183,11 @@ window.html5ks.api = {
       }[type];
       image = typ.dir + "/" + name + "." + typ.ext;
     }
+    var bg = html5ks.elements.bg;
     if (typeof image == "string") {
       if (image.substring(0,1) == "#") {
-        html5ks.elements.bg.style.background = image;
+        bg.style.background = "";
+        bg.style.backgroundColor = image;
         deferred.resolve();
         return deferred.promise;
       } else {
@@ -182,8 +196,9 @@ window.html5ks.api = {
     }
     img.onload = function () {
       console.debug("setting bg " + img.src);
-      var bg = html5ks.elements.bg;
-      bg.style.background = "url(" + img.src + ") no-repeat 0 0 / cover black";
+      bg.style.background = "";
+      bg.style.backgroundImage = "url(" + img.src + ")";
+      bg.style.backgroundSize = "cover";
       deferred.resolve();
     };
     img.onerror = function () {
@@ -196,13 +211,66 @@ window.html5ks.api = {
     return deferred.promise;
   },
 
-  show: function () {
+  show: function (name, type, location) {
     var deferred = when.defer();
+    var el = document.getElementById(name) || document.createElement("img");
+    el.onload = function () {
+      if (location) {
+        // calculate position
+        // we don't actually know how big the image is till we fetch it
+        var positions = {
+          left: { xpos: 0.0, xanchor: 0.0, ypos: 1.0, yanchor: 1.0 },
+          right: { xpos: 1.0, xanchor: 1.0, ypos: 1.0, yanchor: 1.0 },
+          center: { xpos: 0.5, xanchor: 0.5, ypos: 1.0, yanchor: 1.0 },
+          truecenter: { xpos: 0.5, xanchor: 0.5, ypos: 0.5, yanchor: 0.5 },
+          topleft: { xpos: 0.0, xanchor: 0.0, ypos: 0.0, yanchor: 0.0 },
+          topright: { xpos: 1.0, xanchor: 1.0, ypos: 0.0, yanchor: 0.0 },
+          top: { xpos: 0.5, xanchor: 0.5, ypos: 0.0, yanchor: 0.0 },
+          twoleft: { xpos: 0.3, xanchor: 0.5, ypos: 1.0, yanchor: 1.0 },
+          tworight: { xpos: 0.7, xanchor: 0.5, ypos: 1.0, yanchor: 1.0 },
+          closeleft: { xpos: 0.25, xanchor: 0.5, ypos: 1.0, yanchor: 1.0 },
+          closeright: { xpos: 0.75, xanchor: 0.5, ypos: 1.0, yanchor: 1.0 },
+          twoleftoff: { xpos: 0.32, xanchor: 0.5, ypos: 1.0, yanchor: 1.0 },
+          tworightoff: { xpos: 0.68, xanchor: 0.5, ypos: 1.0, yanchor: 1.0 },
+          centeroff: { xpos: 0.52, xanchor: 0.5, ypos: 1.0, yanchor: 1.0 },
+          bgleft: { xpos: 0.4, xanchor: 0.5, ypos: 1.0, yanchor: 1.0 },
+          bgright: { xpos: 0.6, xanchor: 0.5, ypos: 1.0, yanchor: 1.0 }
+        };
+        var pos = positions[location];
+        el.style.left = pos.xpos * 800 + "px";
+        el.style.top = pos.ypos * 600 + "px";
+        el.style.marginLeft = "-" + pos.xanchor * el.width + "px";
+        el.style.marginTop = "-" + pos.yanchor * el.height + "px";
+        el.style.display = "block";
+      }
+      deferred.resolve();
+    };
+    el.onerror = function () {
+      // TODO: check if img is really in images.js
+      deferred.resolve();
+    };
+    var src = "dump/sprites/" + name + "/" + name + "_" + type + ".";
+    if (html5ks.persistent.settings.useWebP) {
+      src += "webp";
+    } else {
+      src += "png";
+    }
+    el.id = name;
+    el.src = src;
+    // prevent FOUIPC (flash of incorrectly placed content)
+    if (location) el.style.display = "none";
+    html5ks.elements.show.appendChild(el);
     deferred.resolve();
     return deferred.promise;
   },
-  hide: function () {
+  hide: function (name) {
     var deferred = when.defer();
+    var show = html5ks.elements.show.children;
+    for (var i = show.length - 1; i >= 0; i--) {
+      if (show[i].id === name) {
+        html5ks.elements.show.removeChild(show[i]);
+      }
+    }
     deferred.resolve();
     return deferred.promise;
   },
@@ -251,7 +319,11 @@ window.html5ks.api = {
         w = /{w(=\d*\.\d*)?}/.exec(str);
 
     if (!char) {
-      char = { name: name };
+      char = {
+        name: name,
+        what_prefix: "“",
+        what_suffix: "”"
+      };
     }
     if (!extend && char.what_prefix) {
       text = char.what_prefix + text;

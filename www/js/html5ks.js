@@ -1,4 +1,5 @@
 "use strict";
+console.log("HELP")
 window.html5ks = {
   data: {
     script: {}
@@ -46,7 +47,8 @@ window.html5ks = {
       nvl: document.getElementById("nvl"),
       nvlsay: document.getElementById("nvlsay"),
       nvlctc: document.getElementById("nvlctc"),
-      choices: document.getElementById("choices")
+      choices: document.getElementById("choices"),
+      show: document.getElementById("show")
     };
     this.elements.audio.music.loop = true;
     this.elements.audio.ambient.loop = true;
@@ -123,9 +125,11 @@ window.html5ks = {
       if (/MSIE/.test(navigator.userAgent)) {
         document.getElementById("ie").style.display = "block";
       }
+      /* svg not actually implemented yet
       if (!(/Firefox/.test(navigator.userAgent))) {
         document.getElementById("html-svg-filter").style.display = "block";
       }
+      */
       for (var i = 0; i < warns.length; i++) {
         if (window.getComputedStyle(warns[i]).getPropertyValue("display") !== "none") {
           warn.style.visibility = "visible";
@@ -157,7 +161,7 @@ window.html5ks = {
   },
   start: function () {
     this.fetch("script", "a1-monday").then(function () {
-      html5ks.api.movie_cutscene("4ls").then(function () {
+      html5ks.api.movie_cutscene("4ls", true).then(function () {
         html5ks.menu.mainMenu();
       });
     });
