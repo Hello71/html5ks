@@ -125,11 +125,6 @@ window.html5ks = {
       if (/MSIE/.test(navigator.userAgent)) {
         document.getElementById("ie").style.display = "block";
       }
-      /* svg not actually implemented yet
-      if (!(/Firefox/.test(navigator.userAgent))) {
-        document.getElementById("html-svg-filter").style.display = "block";
-      }
-      */
       for (var i = 0; i < warns.length; i++) {
         if (window.getComputedStyle(warns[i]).getPropertyValue("display") !== "none") {
           warn.style.visibility = "visible";

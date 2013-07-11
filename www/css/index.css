@@ -100,7 +100,6 @@ html.audio          #warn li#audio { display: none; }
 html.fontface       #warn li#fontface { display: none; }
 html.csstransforms  #warn li#csstransforms { display: none; }
 html.csstransitions #warn li#csstransitions { display: none; }
-html                #warn li#html-svg-filter { display: none; }
 label {
   display: block;
 }
