@@ -30,7 +30,6 @@ window.html5ks.api = {
     return deferred.promise;
   },
   play: function (channel, name, fade) {
-    // TODO: fade
     var deferred = when.defer(),
         audio = html5ks.elements.audio[channel];
     audio.src = "dump/" + (channel === "music" ? "bgm/" + html5ks.data.music[name] + ".ogg" : html5ks.data.sfx[name]);
@@ -202,11 +201,14 @@ window.html5ks.api = {
           bgright: { xpos: 0.6, xanchor: 0.5, ypos: 1.0, yanchor: 1.0 }
         };
         var pos = positions[location];
-        el.style.left = pos.xpos * 800 + "px";
-        el.style.top = pos.ypos * 600 + "px";
-        el.style.marginLeft = "-" + pos.xanchor * el.width + "px";
-        el.style.marginTop = "-" + pos.yanchor * el.height + "px";
-        el.style.display = "block";
+        // TODO: implement transitions
+        if (pos) {
+          el.style.left = pos.xpos * 800 + "px";
+          el.style.top = pos.ypos * 600 + "px";
+          el.style.marginLeft = "-" + pos.xanchor * el.width + "px";
+          el.style.marginTop = "-" + pos.yanchor * el.height + "px";
+          el.style.display = "block";
+        }
       }
       deferred.resolve();
     };

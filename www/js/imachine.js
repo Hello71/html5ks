@@ -19,6 +19,7 @@ html5ks.imachine = (function () {
             console.log(inst);
             switch (typeof inst) {
               case "undefined":
+                deferred.resolve();
                 break;
               case "string": // jump_out
                 if (!html5ks.data.imachine[inst]) {
@@ -44,15 +45,18 @@ html5ks.imachine = (function () {
                   case "imenu":
                     html5ks.api.menu(args[0]).then(function (choice) {
                       var next = args[1][choice] || args[1].else;
-                      html5ks.imachine.run(typeof next[0] === "string" ? [next] : next);
+                      return html5ks.imachine.run(typeof next[0] === "string" ? [next] : next).then(runInst);
                     });
                     break;
                   case "seen_scene":
+                    var next;
                     if (this.seen_scene(inst[1])) {
-                      this.run(inst[2]);
+                      next = inst[2];
                     } else {
-                      this.run(inst[3]);
+                      next = inst[3];
                     }
+                    // TODO: there's probably an easier way to do this
+                    this.run(typeof next[0] === "string" ? [next] : next).then(runInst);
                     break;
                   case "attraction":
                     if (typeof inst[2] === "number") {
