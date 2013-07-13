@@ -1,12 +1,15 @@
 This is an HTML5 implementation of the game Katawa Shoujo. [0]
 
+jQuery is not used, but when.js [1] is used as a sensible Promises/A+ implementation.
+
 It's still very much a WIP, but at least the first scene displays half-credibly.
 
 Run nginx.sh to start nginx with appropriate options for development, then connect to localhost:8080.
 
 lighttpd -f lighttpd.conf should also work, but is not actively tested.
 
-If I haven't finished the TODO (probably), check /TODO for a list of things that need to be worked on. *snip* knows I could use another hand on this.
+Check Bugzilla for things that need to be done. [2]
 
 [0] http://www.katawa-shoujo.com/
 [1] https://github.com/cujojs/when/
+[2] https://bugzilla.happinessforme.com/buglist.cgi?cmdtype=runnamed&namedcmd=All+open+bugs

@@ -41,7 +41,6 @@ window.html5ks = {
       },
       who: document.getElementById("who"),
       say: document.getElementById("say"),
-      bg: document.getElementById("bg"),
       window: document.getElementById("window"),
       ctc: document.getElementById("ctc"),
       nvl: document.getElementById("nvl"),
@@ -91,7 +90,6 @@ window.html5ks = {
         }
       };
 
-      applyScale(html5ks.elements.bg, newScale);
       if (html5ks.persistent.settings.scaleVideo) {
         applyScale(html5ks.elements.video, newScale);
       }

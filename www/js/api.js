@@ -170,50 +170,15 @@ window.html5ks.api = {
   }, 
   // NOT iscene
   scene: function (type, name) {
-    var deferred = when.defer(),
-        nom = type;
-    if (name) {
-      nom = type + "_" + name;
-    }
-    var img = new Image();
-    var image = html5ks.data.images[nom];
-    if (!image) {
-      var typ = {
-        "bg": {dir:"bgs",ext:"jpg"}
-      }[type];
-      image = typ.dir + "/" + name + "." + typ.ext;
-    }
-    var bg = html5ks.elements.bg;
-    if (typeof image == "string") {
-      if (image.substring(0,1) == "#") {
-        bg.style.background = "";
-        bg.style.backgroundColor = image;
-        deferred.resolve();
-        return deferred.promise;
-      } else {
-        image = {image: image};
-      }
-    }
-    img.onload = function () {
-      console.debug("setting bg " + img.src);
-      bg.style.background = "";
-      bg.style.backgroundImage = "url(" + img.src + ")";
-      bg.style.backgroundSize = "cover";
-      deferred.resolve();
-    };
-    img.onerror = function () {
-      throw new Error("bg could not load");
-    };
-    if (Modernizr.webp) {
-      image.image = image.image.replace(/\.[a-z]+$/, ".webp");
-    }
-    img.src = "dump/" + image.image;
-    return deferred.promise;
+    html5ks.elements.show.innerHTML = "";
+    return this.show.apply(this, arguments);
   },
 
   show: function (name, type, location) {
     var deferred = when.defer();
-    var el = document.getElementById(name) || document.createElement("img");
+    var lookup = document.getElementById(name),
+        el = lookup || document.createElement("img");
+    if (!location && !lookup) location = "center";
     el.onload = function () {
       if (location) {
         // calculate position
@@ -249,17 +214,49 @@ window.html5ks.api = {
       // TODO: check if img is really in images.js
       deferred.resolve();
     };
-    var src = "dump/sprites/" + name + "/" + name + "_" + type + ".";
+    var nom = name;
+    if (type) {
+      nom = name + "_" + type;
+    }
+    var image = html5ks.data.images[nom];
+    if (typeof image == "undefined") {
+      switch (name) {
+        case "bg":
+          image = "bgs/" + type + ".jpg";
+          break;
+        case "url":
+          name = type;
+          image = type;
+          break;
+        default:
+          image = "sprites/" + name + "/" + name + "_" + type + ".png";
+      }
+    }
+    if (typeof image == "string") {
+      if (image.substring(0,1) == "#") {
+        el.style.backgroundColor = image;
+        el.style.width = "100%";
+        el.style.height = "100%";
+        el.src = "";
+        deferred.resolve();
+        return deferred.promise;
+      } else {
+        image = {image: image};
+      }
+    }
+    var src = "";
     if (html5ks.persistent.settings.useWebP) {
-      src += "webp";
+      src = image.image.replace(/\.[a-z]+$/, ".webp");
     } else {
-      src += "png";
+      src = image.image;
     }
     el.id = name;
-    el.src = src;
+    el.src = "dump/" + src;
     // prevent FOUIPC (flash of incorrectly placed content)
-    if (location) el.style.display = "none";
-    html5ks.elements.show.appendChild(el);
+    if (!lookup) {
+      el.style.display = "none";
+      html5ks.elements.show.appendChild(el);
+    }
     deferred.resolve();
     return deferred.promise;
   },
@@ -439,7 +436,7 @@ window.html5ks.api = {
         frag = document.createDocumentFragment(),
         choice = document.createElement("div");
 
-    choice.className = "choice button button-enabled";
+    choice.className = "choice button";
 
     for (var i in choices) {
       choice.innerHTML = i;

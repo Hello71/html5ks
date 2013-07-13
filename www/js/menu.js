@@ -7,7 +7,7 @@
       html5ks.api.stop("ambient");
       html5ks.api.window("hide");
       html5ks.api.play("music", "music_menus");
-      html5ks.elements.bg.style.background = "url(dump/ui/main/bg-main.png) 0 0 / cover";
+      html5ks.api.show("url", "ui/main/bg-main.png");
       this.elements.mainMenu.style.display = "block";
     },
 
@@ -77,7 +77,7 @@
       }, false);
       html5ks.fetch("imachine").then(function () {
         var start = this.elements.main.start;
-        start.className = start.className.replace("button-disabled", "button-enabled");
+        start.className = start.className.replace("button-disabled", "");
         this._imachine_loaded = true;
       }.bind(this));
     }
