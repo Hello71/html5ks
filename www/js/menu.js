@@ -30,6 +30,7 @@
         main: {
           start: document.getElementById("start"),
           optionsButton: document.getElementById("options-button"),
+          quit: document.getElementById("quit")
         }
       };
     },
@@ -57,29 +58,45 @@
             console.error("unknown option type %s", option.type);
         }
       }
+
+      this.elements.main.optionsButton.addEventListener("click", function () {
+        html5ks.menu.dialog("options");
+      }, false);
     },
 
     init: function () {
       this.initElements();
       this.initOptions();
+
       this.elements.main.start.addEventListener("click", function () {
         if (this._imachine_loaded) {
           this.elements.mainMenu.style.display = "none";
           html5ks.imachine.start().then(this.mainMenu.bind(this));
         }
       }.bind(this), false);
-      this.elements.main.optionsButton.addEventListener("click", function () {
-        html5ks.menu.dialog("options");
-      }, false);
-      this.elements.dialog.return.addEventListener("click", function (e) {
-        html5ks.menu.activeDialog.style.display = "none";
-        html5ks.menu.elements.dialogs.style.display = "none";
-      }, false);
       html5ks.fetch("imachine").then(function () {
         var start = this.elements.main.start;
         start.className = start.className.replace("button-disabled", "");
         this._imachine_loaded = true;
       }.bind(this));
+
+      this.elements.dialog.return.addEventListener("click", function (e) {
+        html5ks.menu.activeDialog.style.display = "none";
+        html5ks.menu.elements.dialogs.style.display = "none";
+      }, false);
+
+      ["AppleWebKit", "MSIE", "Trident"].forEach(function (ua) {
+        if (navigator.userAgent.indexOf(ua) > -1) {
+          var quit = this.elements.main.quit;
+          quit.className = quit.className.replace("button-disabled", "");
+          this.elements.main.quit.addEventListener("click", function () {
+            window.close();
+            top.open('','_self','');
+            top.close();
+          }, false);
+          return false;
+        }
+      }, this);
     }
   };
 }());

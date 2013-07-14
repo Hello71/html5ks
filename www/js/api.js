@@ -200,15 +200,15 @@ window.html5ks.api = {
           bgleft: { xpos: 0.4, xanchor: 0.5, ypos: 1.0, yanchor: 1.0 },
           bgright: { xpos: 0.6, xanchor: 0.5, ypos: 1.0, yanchor: 1.0 }
         };
-        var pos = positions[location];
+        var pos = positions[location] || positions["center"];
         // TODO: implement transitions
         if (pos) {
           el.style.left = pos.xpos * 800 + "px";
           el.style.top = pos.ypos * 600 + "px";
           el.style.marginLeft = "-" + pos.xanchor * el.width + "px";
           el.style.marginTop = "-" + pos.yanchor * el.height + "px";
-          el.style.display = "block";
         }
+        el.style.display = "block";
       }
       deferred.resolve();
     };
@@ -231,7 +231,7 @@ window.html5ks.api = {
           image = type;
           break;
         default:
-          image = "sprites/" + name + "/" + name + "_" + type + ".png";
+          image = "sprites/" + name + "/" + (type && type.indexOf("_close") > -1 ? "close/" : "") + name + "_" + type + ".png";
       }
     }
     if (typeof image == "string") {
