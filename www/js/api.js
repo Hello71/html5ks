@@ -9,55 +9,55 @@ window.html5ks.api = {
       }
     }
   },
-  set_volume: function (volume, delay, channel) {
+
+
+  set_volume: function (target, delay, channel) {
     var deferred = when.defer(),
         audio = html5ks.elements.audio[channel],
-        chg = volume - audio.volume,
-        step = chg / (delay * 10);
+        step = (target - audio.volume) / (delay * 20);
     var f = setInterval(function () {
-      var newv = audio.volume + step;
-      if (newv > 1) {
-        audio.volume = 1;
+      // clamp new volume 0-1
+      audio.volume = Math.min(Math.max(audio.volume + step, 0), 1);
+      if (audio.volume === 0 || audio.volume === 1) {
         clearInterval(f);
-      } else if (newv < 0) {
-        audio.volume = 0;
-        clearInterval(f);
-      } else {
-        audio.volume = newv;
       }
-    }, 100);
+    }, 50);
     deferred.resolve();
     return deferred.promise;
   },
-  play: function (channel, name, fade) {
+
+  play: function (channel, name, ignore, fade) {
+    this.stop(channel);
     var deferred = when.defer(),
-        audio = html5ks.elements.audio[channel];
+        audio = new Audio();
+    if (channel === "music" || channel === "ambient") {
+      audio.loop = true;
+    }
+    html5ks.elements.audio[channel] = audio;
     audio.src = "dump/" + (channel === "music" ? "bgm/" + html5ks.data.music[name] + ".ogg" : html5ks.data.sfx[name]);
     audio.load();
     audio.volume = fade ? 0 : 1;
     audio.play();
     audio.addEventListener("playing", function playing() {
-      audio.removeEventListener("playing", playing, false);
       deferred.resolve();
       if (fade) {
         html5ks.api.set_volume(1, fade, channel);
       }
     }, false);
     audio.addEventListener("error", function error() {
-      audio.removeEventListener("error", error, false);
       deferred.reject(this.error);
     }, false);
     return deferred.promise;
   },
-  stop: function (channel, fade) {
+
+  stop: function (channel, ignore, fade) {
     if (channel === "all") {
-      this.stop("music");
-      this.stop("sound");
-      return this.stop("ambient");
+      this.stop("music", ignore, fade);
+      this.stop("sound", ignore, fade);
+      return this.stop("ambient", ignore, fade);
     }
     var deferred = when.defer(),
-        audio = html5ks.elements.audio[channel],
-        fadeSet = html5ks.persistent.settings.fade;
+        audio = html5ks.elements.audio[channel];
     if (fade) {
       this.set_volume(0, fade, channel);
     } else {
@@ -66,6 +66,7 @@ window.html5ks.api = {
     deferred.resolve();
     return deferred.promise;
   },
+
 
   movie_cutscene: function (vid_src, skippable) {
     var deferred = when.defer(),
@@ -113,13 +114,16 @@ window.html5ks.api = {
     }, false);
     return deferred.promise;
   },
+
   act_op: function (this_video) {
     // strip off extension
     return this.movie_cutscene(this_video.slice(0,-4));
   },
+
+
   iscene: function (target, is_h, is_end) {
     var deferred = when.defer(),
-        label = html5ks.data.script[target],
+        label = html5ks.data.script[html5ks.persistent.settings.language + "_" + target],
         i = 0;
     (function run(ret) {
       if (label[i]) {
@@ -132,18 +136,18 @@ window.html5ks.api = {
     return deferred.promise;
   },
 
-  with: function (transition, action) {
-    return this.runInst(action);
-  },
 
   runInst: function (inst) {
-    var cmd = inst[0],
+    var cmd = inst[0].replace(/"/g, ''),
         args = inst.slice(1);
     if (html5ks.data.characters[cmd]) {
       return this.character(cmd, args[0]);
     } else {
       if (this[cmd]) {
         return this[cmd].apply(this, args);
+      } else if (inst.length === 1) {
+        console.log("hopefully this is dialogue");
+        return this.character("name_only", cmd);
       } else if (/^[A-Z]/.test(cmd)) {
         console.log("cmd starts with caps, probably character");
         return this.character(cmd, args[0]);
@@ -156,6 +160,7 @@ window.html5ks.api = {
     }
   },
 
+
   window: function (action, transition) {
     var windw = html5ks.elements.window,
         deferred = when.defer();
@@ -167,11 +172,13 @@ window.html5ks.api = {
     deferred.resolve(action);
     return deferred.promise;
   }, 
-  // NOT iscene
+
+
   scene: function (type, name) {
     html5ks.elements.show.innerHTML = "";
     return this.show.apply(this, arguments);
   },
+
 
   show: function (name, type, location) {
     var deferred = when.defer();
@@ -200,7 +207,7 @@ window.html5ks.api = {
           bgleft: { xpos: 0.4, xanchor: 0.5, ypos: 1.0, yanchor: 1.0 },
           bgright: { xpos: 0.6, xanchor: 0.5, ypos: 1.0, yanchor: 1.0 }
         };
-        var pos = positions[location] || positions["center"];
+        var pos = positions[location] || positions.center;
         // TODO: implement transitions
         if (pos) {
           el.style.left = pos.xpos * 800 + "px";
@@ -213,38 +220,37 @@ window.html5ks.api = {
       deferred.resolve();
     };
     el.onerror = function () {
-      // TODO: check if img is really in images.js
-      deferred.resolve();
+      deferred.reject();
     };
     var nom = name;
     if (type) {
       nom = name + "_" + type;
     }
     var image = html5ks.data.images[nom];
-    if (typeof image == "undefined") {
-      switch (name) {
-        case "bg":
-          image = "bgs/" + type + ".jpg";
-          break;
-        case "url":
-          name = type;
-          image = type;
-          break;
-        default:
-          image = "sprites/" + name + "/" + (type && type.indexOf("_close") > -1 ? "close/" : "") + name + "_" + type + ".png";
-      }
-    }
-    if (typeof image == "string") {
-      if (image.substring(0,1) == "#") {
+    switch (typeof image) {
+      case "string":
+        el = document.createElement("div");
         el.style.backgroundColor = image;
         el.style.width = "100%";
         el.style.height = "100%";
         el.src = "";
         deferred.resolve();
         return deferred.promise;
-      } else {
-        image = {image: image};
-      }
+      case "undefined":
+        switch (name) {
+          case "bg":
+            image = "bgs/" + type + ".jpg";
+            break;
+          case "url":
+            name = type;
+            image = type;
+            break;
+          default:
+            image = "sprites/" + name + "/" + (type && type.indexOf("_close") > -1 ? "close/" : "") + name + "_" + type + ".png";
+        }
+    }
+    if (typeof image === "string") {
+      image = {image: image};
     }
     var src = "";
     if (html5ks.persistent.settings.useWebP) {
@@ -429,10 +435,10 @@ window.html5ks.api = {
 
   menu: function (label) {
     var deferred = when.defer(),
-        menu = html5ks.data.script[label],
-        char = menu[1],
-        str = menu[2],
-        choices = menu[3];
+        imenu = html5ks.data.script[label],
+        char = imenu[1],
+        str = imenu[2],
+        choices = imenu[3];
     this.character(char, str, null, true);
     var menu = html5ks.elements.choices,
         frag = document.createDocumentFragment(),
@@ -442,13 +448,14 @@ window.html5ks.api = {
 
     for (var i in choices) {
       choice.innerHTML = i;
-      choice.addEventListener("click", function () {
-        html5ks.elements.choices.innerHTML = "";
-        deferred.resolve(choices[this.innerHTML]);
-      }, false);
       frag.appendChild(choice);
       choice = choice.cloneNode(false);
     }
+
+    menu.addEventListener("click", function (e) {
+      html5ks.elements.choices.innerHTML = "";
+      deferred.resolve(choices[e.target.innerHTML]);
+    }, false);
 
     html5ks.elements.choices.appendChild(frag);
     return deferred.promise;

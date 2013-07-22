@@ -1,5 +1,4 @@
 "use strict";
-console.log("HELP")
 window.html5ks = {
   data: {
     script: {}
@@ -13,12 +12,14 @@ window.html5ks = {
       skipUnread: false,
       skipAfterChoices: false,
       useWebP: null,
-      fullscreen: true,
+      fullscreen: false,
+      scaleAll: true,
       scaleVideo: true,
       textSpeed: 0.5,
       autoModeDelay: 0.2,
       musicVolume: 1,
-      sfxVolume: 1
+      sfxVolume: 1,
+      language: "en"
     }
   },
   store: {
@@ -30,8 +31,10 @@ window.html5ks = {
     },
   },
   state: {},
+  next: function () {},
   initElements: function () {
     this.elements = {
+      all: document.getElementById("all"),
       container: document.getElementById("container"),
       video: document.getElementById("vid"),
       audio: {
@@ -49,8 +52,6 @@ window.html5ks = {
       choices: document.getElementById("choices"),
       show: document.getElementById("show")
     };
-    this.elements.audio.music.loop = true;
-    this.elements.audio.ambient.loop = true;
   },
   load: function () {
     if (localStorage.persistent) {
@@ -62,7 +63,7 @@ window.html5ks = {
     localStorage.persistent = JSON.stringify(this.persistent);
   },
   scale: function () {
-    if (html5ks.persistent.settings.fullscreen) {
+    if (html5ks.persistent.settings.scaleAll) {
       var newScale = 1;
       var height = document.documentElement.clientHeight,
           width = document.documentElement.clientWidth;
@@ -95,18 +96,24 @@ window.html5ks = {
       }
     }
   },
-  next: function () {},
+  fullscreen: function () {
+    var all = html5ks.elements.all;
+    if (all.requestFullscreen) {
+      all.requestFullscreen();
+    } else if (all.mozRequestFullScreen) {
+      all.mozRequestFullScreen();
+    } else if (all.webkitRequestFullscreen) {
+      all.webkitRequestFullscreen();
+    }
+  },
   initEvents: function () {
     window.addEventListener("resize", html5ks.scale, false);
     this.elements.container.addEventListener("mouseup", function () {
       html5ks.next();
     }, false);
-    var deselect = function () {
-      window.getSelection().collapse(this, 0);
-    };
-    document.body.addEventListener("mousemove", deselect, true);
-    document.body.addEventListener("mouseup", deselect, true);
-    document.body.addEventListener("keyup", deselect, true);
+    window.addEventListener("dragstart", function (e) {
+      e.preventDefault();
+    }, false);
   },
   warnUnsupported: function () {
     if (!html5ks.persistent.settings.gotit) {
@@ -141,6 +148,12 @@ window.html5ks = {
     }
     this.api.init();
     this.menu.init();
+    if (this.persistent.settings.fullscreen) {
+      document.body.addEventListener("click", function onclick() {
+        this.removeEventListener("click", onclick, false);
+        html5ks.fullscreen();
+      }, false);
+    }
   },
   winload: function () {
     if (!this.loaded) {

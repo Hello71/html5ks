@@ -1,3 +1,5 @@
+/unrpyc/renpy
 # ignore 'copyrighted' contents similar to emulators
+/www/scripts
 /www/dump
 /rpy

@@ -45,13 +45,13 @@
           case "checkbox":
             option.checked = values[option.id];
             option.addEventListener("change", function () {
-                    values[this.id] = this.checked;
+              values[this.id] = this.checked;
             }, false);
             break;
           case "range":
             option.value = values[option.id];
             option.addEventListener("change", function () {
-                    values[this.id] = this.value;
+              values[this.id] = this.value;
             }, false);
             break;
           default:
