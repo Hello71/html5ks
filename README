@@ -4,9 +4,15 @@ jQuery is not used, but when.js [1] is used as a sensible Promises/A+ implementa
 
 It's still very much a WIP, but at least the first scene displays half-credibly.
 
-Run nginx.sh to start nginx with appropriate options for development, then connect to localhost:8080.
+How to use:
+0. Get Katawa Shoujo.
+1. Follow steps in unrpyc/README
+2. Extract files from data.rpa with an appropriate tool. Put files in www/dump.
+3. Modify www/dump/ui/bt-cf-{un,}checked.png to remove empty borders.
 
-lighttpd -f lighttpd.conf should also work, but is not actively tested.
+4. Run nginx.sh to start nginx with appropriate options for development, then connect to localhost:8080.
+-- or --
+4. lighttpd -f lighttpd.conf should also work, but is not actively tested.
 
 Check Bugzilla for things that need to be done. [2]
 

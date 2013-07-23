@@ -29,7 +29,7 @@ window.html5ks.api = {
   play: function (channel, name, ignore, fade) {
     this.stop(channel);
     var deferred = when.defer(),
-        audio = new Audio();
+        audio = html5ks.elements.audio[channel];
     if (channel === "music" || channel === "ambient") {
       audio.loop = true;
     }
@@ -38,15 +38,15 @@ window.html5ks.api = {
     audio.load();
     audio.volume = fade ? 0 : 1;
     audio.play();
-    audio.addEventListener("playing", function playing() {
+    audio.onplaying = function () {
       deferred.resolve();
       if (fade) {
         html5ks.api.set_volume(1, fade, channel);
       }
-    }, false);
-    audio.addEventListener("error", function error() {
+    };
+    audio.onerror = function () {
       deferred.reject(this.error);
-    }, false);
+    };
     return deferred.promise;
   },
 
@@ -88,30 +88,25 @@ window.html5ks.api = {
     video.play();
     var done = function () {
       video.style.display = "none";
-      // clear event listeners
-      var oldVideo = document.getElementById("vid");
-      oldVideo.pause();
-      var newVideo = video.cloneNode(true);
-      oldVideo.parentNode.replaceChild(newVideo, oldVideo);
-      html5ks.elements.video = newVideo;
+      video.pause();
       deferred.resolve();
     };
     document.addEventListener("keyup", function keyupListener(e) {
+      document.removeEventListener("keyup", keyupListener, false);
       if (e.keyCode === 27) {
         done();
         e.preventDefault();
-        e.stopPropagation();
       }
     }, false);
-    video.addEventListener("click", function clickListener(e) {
+    video.onclick = function (e) {
       if (e.button === 0 && skippable) {
         done();
       }
-    }, false);
-    video.addEventListener("ended", done, false);
-    video.addEventListener("error", function () {
+    };
+    video.onended = done;
+    video.onerror = function () {
       deferred.reject(this.error);
-    }, false);
+    };
     return deferred.promise;
   },
 
@@ -207,7 +202,7 @@ window.html5ks.api = {
           bgleft: { xpos: 0.4, xanchor: 0.5, ypos: 1.0, yanchor: 1.0 },
           bgright: { xpos: 0.6, xanchor: 0.5, ypos: 1.0, yanchor: 1.0 }
         };
-        var pos = positions[location] || positions.center;
+        var pos = positions[location];
         // TODO: implement transitions
         if (pos) {
           el.style.left = pos.xpos * 800 + "px";
@@ -229,13 +224,16 @@ window.html5ks.api = {
     var image = html5ks.data.images[nom];
     switch (typeof image) {
       case "string":
-        el = document.createElement("div");
-        el.style.backgroundColor = image;
-        el.style.width = "100%";
-        el.style.height = "100%";
-        el.src = "";
-        deferred.resolve();
-        return deferred.promise;
+        if (image.substring(0, 1) === "#") {
+          el = document.createElement("div");
+          el.style.backgroundColor = image;
+          el.style.width = "100%";
+          el.style.height = "100%";
+          el.src = "";
+          deferred.resolve();
+          return deferred.promise;
+        }
+        break;
       case "undefined":
         switch (name) {
           case "bg":
@@ -326,9 +324,11 @@ window.html5ks.api = {
     if (!char) {
       char = {
         name: name,
-        what_prefix: "“",
-        what_suffix: "”"
       };
+    }
+    if (typeof char.what_prefix === "undefined") {
+      char.what_prefix = "“";
+      char.what_suffix = "”";
     }
     if (!extend && char.what_prefix) {
       text = char.what_prefix + text;
@@ -433,13 +433,8 @@ window.html5ks.api = {
     return deferred.promise;
   },
 
-  menu: function (label) {
-    var deferred = when.defer(),
-        imenu = html5ks.data.script[label],
-        char = imenu[1],
-        str = imenu[2],
-        choices = imenu[3];
-    this.character(char, str, null, true);
+  menu: function (choices) {
+    var deferred = when.defer();
     var menu = html5ks.elements.choices,
         frag = document.createDocumentFragment(),
         choice = document.createElement("div");
@@ -448,13 +443,14 @@ window.html5ks.api = {
 
     for (var i in choices) {
       choice.innerHTML = i;
+      choice.id = choices[i];
       frag.appendChild(choice);
       choice = choice.cloneNode(false);
     }
 
     menu.addEventListener("click", function (e) {
       html5ks.elements.choices.innerHTML = "";
-      deferred.resolve(choices[e.target.innerHTML]);
+      deferred.resolve(e.target.id);
     }, false);
 
     html5ks.elements.choices.appendChild(frag);

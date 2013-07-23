@@ -43,7 +43,7 @@ html5ks.imachine = (function () {
                     }
                     break;
                   case "imenu":
-                    html5ks.api.menu(args[0]).then(function (choice) {
+                    html5ks.api.iscene(args[0]).then(function (choice) {
                       var next = args[1][choice] || args[1].else;
                       return html5ks.imachine.run(typeof next[0] === "string" ? [next] : next).then(runInst);
                     });

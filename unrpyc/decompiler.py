@@ -21,6 +21,7 @@
 import ast as python_ast
 import renpy.ast as ast
 import renpy.atl as atl
+import code
 
 DECOMPILE_SCREENS = False
 firstLabel = True
@@ -176,7 +177,7 @@ def print_imspec(f, imspec):
 
     # at
     if len(imspec[3]) > 0:
-        f.write(' at ')
+        f.write('", "')
         delim = ''
         for s in imspec[3]:
           f.write(delim + escape_string(s))
@@ -275,6 +276,8 @@ class PrintRenPython(python_ast.NodeVisitor):
         self.f.write(self.visit(node.func))
         self.f.write(', ')
         self.f.write(', '.join(map(self.visit, node.args)))
+        self.f.write(', ')
+        self.f.write(', '.join(map(self.visit, node.keywords)))
         self.f.write('],\n')
 
     def quote(self, string):
@@ -291,6 +294,9 @@ class PrintRenPython(python_ast.NodeVisitor):
 
     def visit_Str(self, node):
         return self.quote(escape_string(node.s))
+
+    def visit_keyword(self, node):
+        return self.visit(node.value)
 
 def print_Python(f, stmt, indent_level, early=False):
     code_src = stmt.code.source

@@ -12,5 +12,7 @@ clean:
 test: all
 	jshint --show-non-errors *.json
 
-.PHONY: all clean test
-.PRECIOUS: %.json.o
+install: all
+	install -t ../www/scripts *.json
+
+.PHONY: all clean test install

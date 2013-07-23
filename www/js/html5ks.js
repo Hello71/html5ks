@@ -107,7 +107,7 @@ window.html5ks = {
     }
   },
   initEvents: function () {
-    window.addEventListener("resize", html5ks.scale, false);
+    window.onresize = html5ks.scale;
     this.elements.container.addEventListener("mouseup", function () {
       html5ks.next();
     }, false);

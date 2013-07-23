@@ -1,4 +1,6 @@
 /unrpyc/renpy
+/unrpyc/*.json
+/unrpyc/*.rpyc
 # ignore 'copyrighted' contents similar to emulators
 /www/scripts
 /www/dump

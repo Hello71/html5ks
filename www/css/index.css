@@ -194,4 +194,5 @@ html.no-js #gotit {
 .choice {
   background: url("../dump/ui/bg-choice.png") no-repeat top center;
   height: 35px;
+  line-height: 30px;
 }

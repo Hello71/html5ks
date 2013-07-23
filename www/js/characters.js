@@ -1,5 +1,5 @@
 window.html5ks.data.characters = {
-  name_only: {name: ""},
+  name_only: {name: "", what_prefix: "", what_suffix: ""},
   
   hi: {name: "Hisao", color: "#629276"},
   
@@ -47,7 +47,7 @@ window.html5ks.data.characters = {
   hh_: {name: "Slim girl", color: "#6299FF"},
   emm_: {name: "Woman with braid", color: "#995050"},
   
-  n: {name: null, kind: "nvl"},
+  n: {name: null, kind: "nvl", what_prefix: "", what_suffix: ""},
   
   nb: {name: null, 
      ctc: null,
