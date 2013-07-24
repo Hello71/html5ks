@@ -39,20 +39,31 @@
       var options = document.getElementsByClassName("option"),
           values = html5ks.persistent.settings;
 
+      options[0].parentNode.parentNode.addEventListener("change", function (e) {
+        var target = e.target;
+        values[target.id] = typeof target.checked !== "undefined" ? target.checked : target.value;
+        switch (target.id) {
+          case "fullscreen":
+            html5ks.fullscreen();
+            break;
+          case "scaleAll":
+          case "scaleVideo":
+            html5ks.scale();
+            break;
+          case "musicVolume":
+          case "sfxVolume":
+            html5ks.elements.audio[target.id.replace("Volume", "")].volume = target.value;
+            break;
+        }
+      }, false);
       for (var i = options.length - 1; i >= 0; i--) {
         var option = options[i];
         switch (option.type) {
           case "checkbox":
             option.checked = values[option.id];
-            option.addEventListener("change", function () {
-              values[this.id] = this.checked;
-            }, false);
             break;
           case "range":
             option.value = values[option.id];
-            option.addEventListener("change", function () {
-              values[this.id] = this.value;
-            }, false);
             break;
           default:
             console.error("unknown option type %s", option.type);

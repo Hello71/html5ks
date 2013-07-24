@@ -10,6 +10,8 @@ How to use:
 4. Run "make" with appropriate -j options (yay auto-parallelization)
 5. Run "make install".
 
-If you want to hack on the code, have fun. This is all the documentation you get.
+If you're on Windows, sucks for you. Use a better OS.
+
+If you want to hack on the code, have fun. The code sucks, and this is all the documentation you get.
 
 https://github.com/yuriks/unrpyc

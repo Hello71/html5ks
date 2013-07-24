@@ -36,7 +36,7 @@ window.html5ks.api = {
     html5ks.elements.audio[channel] = audio;
     audio.src = "dump/" + (channel === "music" ? "bgm/" + html5ks.data.music[name] + ".ogg" : html5ks.data.sfx[name]);
     audio.load();
-    audio.volume = fade ? 0 : 1;
+    audio.volume = fade ? 0 : html5ks.persistent.settings.musicVolume;
     audio.play();
     audio.onplaying = function () {
       deferred.resolve();

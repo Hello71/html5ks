@@ -9,6 +9,7 @@ How to use:
 1. Follow steps in unrpyc/README
 2. Extract files from data.rpa with an appropriate tool. Put files in www/dump.
 3. Modify www/dump/ui/bt-cf-{un,}checked.png to remove empty borders.
+4. Re-encode (sigh) dump/video/* into .mp4, .webm and .ogg files. reencode.sh can be used to do this, but spinning your own is fine too.
 
 4. Run nginx.sh to start nginx with appropriate options for development, then connect to localhost:8080.
 -- or --

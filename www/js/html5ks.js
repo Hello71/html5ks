@@ -114,6 +114,12 @@ window.html5ks = {
     window.addEventListener("dragstart", function (e) {
       e.preventDefault();
     }, false);
+    if (html5ks.persistent.settings.fullscreen) {
+      window.addEventListener("click", function click() {
+        window.removeEventListener("click", click, false);
+        html5ks.fullscreen();
+      }, false);
+    }
   },
   warnUnsupported: function () {
     if (!html5ks.persistent.settings.gotit) {
