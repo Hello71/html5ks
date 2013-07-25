@@ -172,7 +172,7 @@ window.html5ks = {
     }
   },
   start: function () {
-    this.fetch("script", "a1-monday").then(function () {
+    this.fetch("script").then(function () {
       html5ks.api.movie_cutscene("4ls", true).then(function () {
         html5ks.menu.mainMenu();
       });
@@ -183,18 +183,15 @@ window.html5ks = {
     var xhr = new XMLHttpRequest();
     switch (type) {
       case "script":
-        var script = html5ks.data.script;
-        if (script[name]) {
+        if (html5ks.data._scriptFetched) {
           deferred.resolve();
         } else {
-          xhr.open("GET", "scripts/script-" + name + ".json");
+          xhr.open("GET", "scripts/script.json");
           xhr.onreadystatechange = function () {
-            script[name] = true;
             if (xhr.readyState === 4) {
-              var resp = JSON.parse(xhr.responseText);
-              for (var label in resp) {
-                script[label] = resp[label];
-              }
+              html5ks.data._scriptFetched = true;
+              var script = JSON.parse(xhr.responseText);
+              html5ks.data.script = script;
               deferred.resolve();
             }
           };
