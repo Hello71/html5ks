@@ -1,6 +1,10 @@
+# unrpyc built code
 /unrpyc/renpy
+/unrpyc/*.json.o
 /unrpyc/*.json
 /unrpyc/*.rpyc
+# generated nginx conf
+/nginx.gen.conf
 # ignore 'copyrighted' contents similar to emulators
 /www/scripts
 /www/dump
