@@ -36,12 +36,13 @@ window.html5ks.api = {
     html5ks.elements.audio[channel] = audio;
     audio.src = "dump/" + (channel === "music" ? "bgm/" + html5ks.data.music[name] + ".ogg" : html5ks.data.sfx[name]);
     audio.load();
-    audio.volume = fade ? 0 : html5ks.persistent.settings.musicVolume;
+    var volume = html5ks.persistent.settings[channel + "Volume"];
+    audio.volume = fade ? 0 : volume;
     audio.play();
     audio.onplaying = function () {
       deferred.resolve();
       if (fade) {
-        html5ks.api.set_volume(1, fade, channel);
+        html5ks.api.set_volume(volume, fade, channel);
       }
     };
     audio.onerror = function () {
