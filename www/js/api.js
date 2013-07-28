@@ -15,13 +15,17 @@ window.html5ks.api = {
     var deferred = when.defer(),
         audio = html5ks.elements.audio[channel],
         step = (target - audio.volume) / (delay * 20);
-    var f = setInterval(function () {
-      // clamp new volume 0-1
-      audio.volume = Math.min(Math.max(audio.volume + step, 0), 1);
-      if (audio.volume === 0 || audio.volume === 1) {
-        clearInterval(f);
-      }
-    }, 50);
+    if (!delay) {
+      audio.volume = target;
+    } else {
+      var f = setInterval(function () {
+        // clamp new volume 0-1
+        audio.volume = Math.min(Math.max(audio.volume + step, 0), 1);
+        if (audio.volume === 0 || audio.volume === 1) {
+          clearInterval(f);
+        }
+      }, 50);
+    }
     deferred.resolve();
     return deferred.promise;
   },
@@ -36,7 +40,7 @@ window.html5ks.api = {
     html5ks.elements.audio[channel] = audio;
     audio.src = "dump/" + (channel === "music" ? "bgm/" + html5ks.data.music[name] + ".ogg" : html5ks.data.sfx[name]);
     audio.load();
-    var volume = html5ks.persistent.settings[channel + "Volume"];
+    var volume = html5ks.persistent[channel + "Volume"];
     audio.volume = fade ? 0 : volume;
     audio.play();
     audio.onplaying = function () {
@@ -86,6 +90,7 @@ window.html5ks.api = {
 
     video.load();
     video.style.display = "block";
+    video.volume = html5ks.persistent.musicVolume;
     video.play();
     var done = function () {
       video.style.display = "none";
@@ -119,7 +124,7 @@ window.html5ks.api = {
 
   iscene: function (target, is_h, is_end) {
     var deferred = when.defer(),
-        label = html5ks.data.script[html5ks.persistent.settings.language + "_" + target],
+        label = html5ks.data.script[html5ks.persistent.language + "_" + target],
         i = 0;
     (function run(ret) {
       if (label[i]) {
@@ -252,7 +257,7 @@ window.html5ks.api = {
       image = {image: image};
     }
     var src = "";
-    if (html5ks.persistent.settings.useWebP) {
+    if (html5ks.persistent.useWebP) {
       src = image.image.replace(/\.[a-z]+$/, ".webp");
     } else {
       src = image.image;
@@ -383,7 +388,7 @@ window.html5ks.api = {
       if (html5ks.state.skip || str.indexOf("{nw}") > -1) {
         html5ks.next();
       } else if (html5ks.state.auto) {
-        setTimeout(html5ks.next, 1000 + html5ks.persistent.settings.autospeed * text.length);
+        setTimeout(html5ks.next, 1000 + html5ks.persistent.autospeed * text.length);
       }
     }
     return deferred.promise;

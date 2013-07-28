@@ -37,25 +37,44 @@
 
     initOptions: function () {
       var options = document.getElementsByClassName("option"),
-          values = html5ks.persistent.settings;
+          values = html5ks.persistent;
 
-      options[0].parentNode.parentNode.addEventListener("change", function (e) {
+      if (!html5ks.persistent.scaleAll) {
+        document.getElementById("scaleVideo").parentNode.className += " button-disabled";
+      }
+
+      var change = function (e) {
         var target = e.target;
-        values[target.id] = typeof target.checked !== "undefined" ? target.checked : target.value;
+        values[target.id] = target.type === "checkbox" ? target.checked : target.value;
         switch (target.id) {
           case "fullscreen":
-            html5ks.fullscreen();
+            if (target.checked) {
+              html5ks.fullscreen();
+            } else {
+              html5ks.fullscreen(false);
+            }
             break;
           case "scaleAll":
+            var scaleVideo = document.getElementById("scaleVideo");
+            if (!target.checked) {
+              scaleVideo.checked = false;
+              scaleVideo.parentNode.className += " button-disabled";
+            } else {
+              scaleVideo.checked = true;
+              scaleVideo.parentNode.className = scaleVideo.parentNode.className.replace("button-disabled", "");
+            }
           case "scaleVideo":
             html5ks.scale();
             break;
           case "musicVolume":
           case "sfxVolume":
-            html5ks.elements.audio[target.id.replace("Volume", "")].volume = target.value;
+            html5ks.api.set_volume(target.value, 0, target.id.replace("Volume", ""))
             break;
         }
-      }, false);
+      };
+
+      options[0].parentNode.parentNode.addEventListener("change", change, false);
+      options[0].parentNode.parentNode.addEventListener("input", change, false);
       for (var i = options.length - 1; i >= 0; i--) {
         var option = options[i];
         switch (option.type) {

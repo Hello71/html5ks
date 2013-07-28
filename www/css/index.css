@@ -28,7 +28,7 @@ body {
   font: 22px/27px Playtime, sans-serif;
 }
 h2 {
-  font: 20px/28px Playtime; /* yes, h2 has *smaller* font */
+  font: 20px/24px Playtime; /* yes, h2 has *smaller* font */
   font-weight: bold;
 }
 
@@ -106,15 +106,15 @@ html.no-js #gotit {
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
 }
-#container, #vid.scale {
+#container, #vid {
   top: 50%;
   left: 50%;
-}
-#container {
   width: 800px;
   height: 600px;
   margin-top: -300px;
   margin-left: -400px;
+}
+#container {
   overflow: hidden;
 }
 #show img {

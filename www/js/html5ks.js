@@ -3,9 +3,9 @@ window.html5ks = {
   data: {
     script: {}
   },
-  persistent: {
-    seen_scenes: {},
-    settings: {
+  persistent: {},
+  init: function () {
+    var defaultPersistent = {
       fade: 100,
       gotit: false,
       hdisable: false,
@@ -20,6 +20,22 @@ window.html5ks = {
       musicVolume: 1,
       sfxVolume: 1,
       language: "en"
+    };
+    var loaded = localStorage.persistent ? JSON.parse(localStorage.persistent) : {};
+    for (var k in defaultPersistent) {
+      (function () {
+        var v = typeof loaded[k] === "undefined" ? defaultPersistent[k] : loaded[k];
+        Object.defineProperty(html5ks.persistent, k, {
+          get: function () {
+            return v;
+          },
+          set: function (value) {
+            v = value;
+            localStorage.persistent = JSON.stringify(html5ks.persistent);
+          },
+          enumerable: true
+        });
+      }());
     }
   },
   store: {
@@ -53,18 +69,9 @@ window.html5ks = {
       show: document.getElementById("show")
     };
   },
-  load: function () {
-    if (localStorage.persistent) {
-      this.persistent = JSON.parse(localStorage.persistent);
-      this.loaded = true;
-    }
-  },
-  save: function () {
-    localStorage.persistent = JSON.stringify(this.persistent);
-  },
   scale: function () {
-    if (html5ks.persistent.settings.scaleAll) {
-      var newScale = 1;
+    var newScale = 1;
+    if (html5ks.persistent.scaleAll) {
       var height = document.documentElement.clientHeight,
           width = document.documentElement.clientWidth;
       if (height / width <= 0.75) { // widescreen
@@ -72,39 +79,54 @@ window.html5ks = {
       } else {
         newScale = width / 800;
       }
+    }
 
-      var container = html5ks.elements.container;
-      container.style.webkitTransform = "scale(" + newScale + ")";
-      container.style.mozTransform = "scale(" + newScale + ")";
-      container.style.transform = "scale(" + newScale + ")";
-      if (container.className.indexOf("scale") === -1) {
-        container.className += " scale";
+    var container = html5ks.elements.container;
+    container.style.webkitTransform = "scale(" + newScale + ")";
+    container.style.mozTransform = "scale(" + newScale + ")";
+    container.style.transform = "scale(" + newScale + ")";
+    if (container.className.indexOf("scale") === -1) {
+      container.className += " scale";
+    }
+
+    var applyScale = function (el, scale) {
+      el.style.height = scale * 600 + "px";
+      el.style.marginTop = "-" + scale * 300 + "px";
+      el.style.width = scale * 800 + "px";
+      el.style.marginLeft = "-" + scale * 400 + "px";
+      if (el.className.indexOf("scale") === -1) {
+        el.className += " scale";
       }
+    };
 
-      var applyScale = function (el, scale) {
-        el.style.height = scale * 600 + "px";
-        el.style.marginTop = "-" + scale * 300 + "px";
-        el.style.width = scale * 800 + "px";
-        el.style.marginLeft = "-" + scale * 400 + "px";
-        if (el.className.indexOf("scale") === -1) {
-          el.className += " scale";
-        }
-      };
-
-      if (html5ks.persistent.settings.scaleVideo) {
-        applyScale(html5ks.elements.video, newScale);
-      }
+    if (html5ks.persistent.scaleVideo) {
+      applyScale(html5ks.elements.video, newScale);
     }
   },
-  fullscreen: function () {
-    var all = html5ks.elements.all;
-    if (all.requestFullscreen) {
-      all.requestFullscreen();
-    } else if (all.mozRequestFullScreen) {
-      all.mozRequestFullScreen();
-    } else if (all.webkitRequestFullscreen) {
-      all.webkitRequestFullscreen();
+  fullscreen: function (onoff) {
+    if (onoff !== false) {
+      var all = html5ks.elements.all;
+      if (all.requestFullscreen) {
+        all.requestFullscreen();
+      } else if (all.mozRequestFullScreen) {
+        all.mozRequestFullScreen();
+      } else if (all.webkitRequestFullscreen) {
+        all.webkitRequestFullscreen();
+      } else {
+        return false;
+      }
+    } else {
+      if (document.requestFullscreen) {
+        document.requestFullscreen();
+      } else if (document.mozCancelFullScreen) {
+        document.mozCancelFullScreen();
+      } else if (document.webkitCancelFullscreen) {
+        document.webkitCancelFullscreen();
+      } else {
+        return false;
+      }
     }
+    return true;
   },
   initEvents: function () {
     window.onresize = html5ks.scale;
@@ -114,22 +136,31 @@ window.html5ks = {
     window.addEventListener("dragstart", function (e) {
       e.preventDefault();
     }, false);
-    if (html5ks.persistent.settings.fullscreen) {
+    if (html5ks.persistent.fullscreen) {
       window.addEventListener("click", function click() {
         window.removeEventListener("click", click, false);
         html5ks.fullscreen();
       }, false);
     }
+    var fullscreenchange = function () {
+      if (!(document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement)) {
+        html5ks.persistent.fullscreen = false;
+        document.getElementById("fullscreen").checked = false;
+      }
+    };
+    document.addEventListener("mozfullscreenchange", fullscreenchange, false);
+    document.addEventListener("webkitfullscreenchange", fullscreenchange, false);
+    document.addEventListener("fullscreenchange", fullscreenchange, false);
   },
   warnUnsupported: function () {
-    if (!html5ks.persistent.settings.gotit) {
+    if (!html5ks.persistent.gotit) {
       var warn = document.getElementById("warn-container");
       document.getElementById("gotit").addEventListener("mouseup", function () {
         warn.style.mozAnimation = "0.5s dissolveout";
         warn.style.webkitAnimation = "0.5s dissolveout";
         warn.style.animation = "0.5s dissolveout";
         warn.style.opacity = 0;
-        html5ks.persistent.settings.gotit = true;
+        html5ks.persistent.gotit = true;
         html5ks.start();
       }, false);
       var warns = document.getElementById("warns").children;
@@ -146,7 +177,6 @@ window.html5ks = {
   },
   onload: function () {
     this.initElements();
-    this.load();
     this.scale();
     this.initEvents();
     if (!this.warnUnsupported()) {
@@ -154,21 +184,11 @@ window.html5ks = {
     }
     this.api.init();
     this.menu.init();
-    if (this.persistent.settings.fullscreen) {
+    if (this.persistent.fullscreen) {
       document.body.addEventListener("click", function onclick() {
         this.removeEventListener("click", onclick, false);
         html5ks.fullscreen();
       }, false);
-    }
-  },
-  winload: function () {
-    if (!this.loaded) {
-      this.persistent.settings.useWebP = Modernizr.webp;
-    }
-    if (!Modernizr.webp && this.persistent.settings.useWebP) {
-      var webpjs = document.createElement("script");
-      webpjs.src = "js/webpjs-0.0.2.min.js";
-      document.head.appendChild(webpjs);
     }
   },
   start: function () {
@@ -214,9 +234,7 @@ window.html5ks = {
     return deferred.promise;
   }
 };
+html5ks.init();
 document.addEventListener("DOMContentLoaded", function () {
   html5ks.onload();
-}, false);
-window.addEventListener("onload", function () {
-  html5ks.winload();
 }, false);
