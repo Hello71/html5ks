@@ -43,14 +43,15 @@ window.html5ks.api = {
     var volume = html5ks.persistent[channel + "Volume"];
     audio.volume = fade ? 0 : volume;
     audio.play();
-    audio.onplaying = function () {
-      deferred.resolve();
+    audio.addEventListener("playing", function playing() {
+      audio.removeEventListener("playing", playing, false);
       if (fade) {
         html5ks.api.set_volume(volume, fade, channel);
       }
-    };
+      deferred.resolve();
+    }, false);
     audio.onerror = function () {
-      deferred.reject(this.error);
+      throw new Error();
     };
     return deferred.promise;
   },
