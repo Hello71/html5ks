@@ -18,7 +18,7 @@ window.html5ks = {
       textSpeed: 0.5,
       autoModeDelay: 0.2,
       musicVolume: 1,
-      sfxVolume: 1,
+      soundVolume: 1,
       language: "en"
     };
     var loaded = localStorage.persistent ? JSON.parse(localStorage.persistent) : {};
@@ -198,7 +198,7 @@ window.html5ks = {
       });
     });
   },
-  fetch: function (type, name) {
+  fetch: function (type) {
     var deferred = when.defer();
     var xhr = new XMLHttpRequest();
     switch (type) {

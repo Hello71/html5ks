@@ -172,10 +172,10 @@ window.html5ks.api = {
     }
     deferred.resolve(action);
     return deferred.promise;
-  }, 
+  },
 
 
-  scene: function (type, name) {
+  scene: function () {
     html5ks.elements.show.innerHTML = "";
     return this.show.apply(this, arguments);
   },
@@ -224,7 +224,7 @@ window.html5ks.api = {
       deferred.reject();
     };
     var nom = name;
-    if (type) {
+    if (type && type !== "None") {
       nom = name + "_" + type;
     }
     var image = html5ks.data.images[nom];
@@ -233,9 +233,8 @@ window.html5ks.api = {
         if (image.substring(0, 1) === "#") {
           el = document.createElement("div");
           el.style.backgroundColor = image;
-          el.style.width = "100%";
           el.style.height = "100%";
-          el.src = "";
+          html5ks.elements.show.appendChild(el);
           deferred.resolve();
           return deferred.promise;
         }

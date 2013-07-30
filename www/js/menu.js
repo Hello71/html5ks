@@ -67,8 +67,8 @@
             html5ks.scale();
             break;
           case "musicVolume":
-          case "sfxVolume":
-            html5ks.api.set_volume(target.value, 0, target.id.replace("Volume", ""))
+          case "soundVolume":
+            html5ks.api.set_volume(target.value, 0, target.id.replace("Volume", ""));
             break;
         }
       };
@@ -110,7 +110,7 @@
         this._imachine_loaded = true;
       }.bind(this));
 
-      this.elements.dialog.return.addEventListener("click", function (e) {
+      this.elements.dialog.return.addEventListener("click", function () {
         html5ks.menu.activeDialog.style.display = "none";
         html5ks.menu.elements.dialogs.style.display = "none";
       }, false);
