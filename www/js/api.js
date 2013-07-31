@@ -219,10 +219,6 @@ window.html5ks.api = {
         }
         el.style.display = "block";
       }
-      deferred.resolve();
-    };
-    el.onerror = function () {
-      deferred.reject();
     };
     var nom = name;
     if (type && type !== "None") {
@@ -339,7 +335,7 @@ window.html5ks.api = {
     if (!extend && char.what_prefix) {
       text = char.what_prefix + text;
     }
-    if ((!w || !w[1] || extend) && char.what_suffix) {
+    if ((!w || !w[1]) && !extend && char.what_suffix) {
       text = text + char.what_suffix;
     }
 

@@ -18,6 +18,7 @@ window.html5ks = {
       textSpeed: 0.5,
       autoModeDelay: 0.2,
       musicVolume: 1,
+      ambientVolume: 1,
       soundVolume: 1,
       language: "en"
     };
