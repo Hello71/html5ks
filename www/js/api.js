@@ -324,18 +324,25 @@ window.html5ks.api = {
         w = /{w(=\d*\.\d*)?}/.exec(str);
 
     if (!char) {
-      char = {
-        name: name,
-      };
+      if (name) {
+        char = {
+          name: name,
+        };
+      } else {
+        char = this._lastchar;
+      }
     }
     if (typeof char.what_prefix === "undefined") {
       char.what_prefix = "“";
       char.what_suffix = "”";
     }
+
+    this._lastchar = char;
+
     if (!extend && char.what_prefix) {
       text = char.what_prefix + text;
     }
-    if ((!w || !w[1]) && !extend && char.what_suffix) {
+    if ((!w || !w[1]) && char.what_suffix) {
       text = text + char.what_suffix;
     }
 
