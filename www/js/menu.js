@@ -30,19 +30,15 @@
         main: {
           start: document.getElementById("start"),
           optionsButton: document.getElementById("options-button"),
-          quit: document.getElementById("quit")
-        }
+        },
+        context: document.getElementById("context"),
+        contextMenu: document.getElementById("context-menu"),
+        contextInfo: document.getElementById("context-info"),
       };
     },
 
-    initOptions: function () {
-      var options = document.getElementsByClassName("option"),
-          values = html5ks.persistent;
-
-      if (!html5ks.persistent.scaleAll) {
-        document.getElementById("scaleVideo").parentNode.className += " button-disabled";
-      }
-
+    initEvents: function () {
+      var options = document.getElementsByClassName("option");
       var change = function (e) {
         var target = e.target;
         values[target.id] = target.type === "checkbox" ? target.checked : target.value;
@@ -75,6 +71,20 @@
 
       options[0].parentNode.parentNode.addEventListener("change", change, false);
       options[0].parentNode.parentNode.addEventListener("input", change, false);
+
+      this.elements.main.optionsButton.addEventListener("click", function () {
+        html5ks.menu.dialog("options");
+      }, false);
+    },
+
+    initOptions: function () {
+      var options = document.getElementsByClassName("option"),
+          values = html5ks.persistent;
+
+      if (!html5ks.persistent.scaleAll) {
+        document.getElementById("scaleVideo").parentNode.className += " button-disabled";
+      }
+
       for (var i = options.length - 1; i >= 0; i--) {
         var option = options[i];
         switch (option.type) {
@@ -88,14 +98,11 @@
             console.error("unknown option type %s", option.type);
         }
       }
-
-      this.elements.main.optionsButton.addEventListener("click", function () {
-        html5ks.menu.dialog("options");
-      }, false);
     },
 
     init: function () {
       this.initElements();
+      this.initEvents();
       this.initOptions();
 
       this.elements.main.start.addEventListener("click", function () {
@@ -117,16 +124,35 @@
 
       ["AppleWebKit", "MSIE", "Trident"].forEach(function (ua) {
         if (navigator.userAgent.indexOf(ua) > -1) {
-          var quit = this.elements.main.quit;
-          quit.className = quit.className.replace("button-disabled", "");
-          this.elements.main.quit.addEventListener("click", function () {
-            window.close();
-            top.open('','_self','');
-            top.close();
-          }, false);
+          var quit = document.getElementsByClassName("quit");
+          for (var i = quit.length - 1; i >= 0; i++) {
+            quit[i].className = quit.className.replace("button-disabled", "");
+            quit[i].addEventListener("click", function () {
+              window.close();
+              top.open('','_self','');
+              top.close();
+            }, false);
+          }
           return false;
         }
       }, this);
+    },
+
+    context: function (show) {
+      switch (show) {
+        case true:
+          html5ks.elements.gray.style.display = "block";
+          html5ks.elements.window.style.display = "none";
+          this.elements.context.style.display = "block";
+          break;
+        case false:
+          html5ks.elements.gray.style.display = "none";
+          html5ks.elements.window.style.display = "block";
+          this.elements.context.style.display = "none";
+          break;
+        default:
+          this.context(html5ks.elements.gray.style.display !== "block");
+      }
     }
   };
 }());

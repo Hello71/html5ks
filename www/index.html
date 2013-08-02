@@ -31,12 +31,12 @@
         <h2>We use a lot of new features in this; your browser seems to have some issues...</h2>
         <ul id="warns">
           <noscript><li id="js">It doesn't seem to have JavaScript enabled. This site doesn't work at all without it. Really. <a href="http://enable-javascript.com">Don't know how to enable JS?</a></li></noscript>
-          <li id="ie">You're using Internet Explorer. Please upgrade to any other browser. <a href="//getfirefox.com">Firefox</a> and <a href="//google.com/chrome">Chrome</a> are both fine options. If you insist on IE, don't expect anything to work properly.</li>
+          <li id="ie">You're using Internet Explorer. Please upgrade to any other browser. <a href="//getfirefox.com">Firefox</a> and <a href="//google.com/chrome">Chrome</a> are both fine options. Nothing will work in IE. I promise.</li>
           <li id="video">It doesn't seem to support <a href="https://en.wikipedia.org/wiki/HTML5_video">HTML5 video</a>, which means that you won't be able to see any of the videos (obviously). Unless stated below, though, transitions should still work. <a href="http://caniuse.com/#feat=video">You should strongly consider upgrading.</a></li>
           <li id="audio">It doesn't seem to support <a href="https://en.wikipedia.org/wiki/HTML5_audio">HTML5 audio</a>, which means you won't be able to hear any of the amazing music. <a href="http://caniuse.com/#feat=audio">You should strongly consider upgrading.</a></li>
           <li id="fontface">It doesn't seem to support <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face">the @font-face at-rule</a>, which lets us display the Playtime and Gentium fonts used in Katawa Shoujo. <a href="http://caniuse.com/#feat=fontface">Any browser released in the last 2 years or so should support it.</a></li>
           <li id="csstransforms">It doesn't seem to support <a href="https://developer.mozilla.org/en-US/docs/Web/Guide/CSS/Using_CSS_transforms">CSS transforms</a>, which means that we won't be able to scale the window or show most transitions. <a href="http://caniuse.com/#feat=transforms2d">Any browser released in the last 2 years ago should work.</a></li>
-          <li id="csstransitions">It doesn't seem to support <a href="https://developer.mozilla.org/en-US/docs/Web/Guide/CSS/Using_CSS_transitions">CSS transitions</a>, which means that almost all animations won't work. Videos should still work though, unless stated above. <a href="http://caniuse.com/#feat=css-transitions">You should definitely try upgrading.</a></li>
+          <li id="csstransitions">It doesn't seem to support <a href="https://developer.mozilla.org/en-US/docs/Web/Guide/CSS/Using_CSS_transitions">CSS transitions</a>, which means that almost all animations won't work. Videos should still work though, unless stated above. <a href="http://caniuse.com/#feat=css-transitions">You should definitely consider upgrading.</a></li>
         </ul> <div id="gotit" class="button">I know it's broken, let me play!</div>
       </div>
     </div>
@@ -60,15 +60,15 @@
           <div id="load" class="button button-disabled">Load</div>
           <div id="extras" class="button button-disabled">Extras</div>
           <div id="options-button" class="button">Options</div>
-          <div id="quit" class="button button-disabled">Quit</div>
+          <div class="quit button button-disabled">Quit</div>
         </div>
-        <div id="version" style="position: absolute; bottom: 10px; right: 15px; font: 8px/8px Playtime; opacity: 0.4">
+        <div id="version" style="">
           Katawa Shoujo v1.1
           <br>
           HTML5KS 0.1.0
         </div>
       </div>
-      <div id="dialogs" style="display: none; position: absolute; top: 50%; width: 504px; height: 395px; background: url(dump/ui/bg-config.png); left: 50%; margin-left: -252px; margin-top: -197.5px;">
+      <div id="dialogs" style="display: none; width: 504px; height: 395px; background: url(dump/ui/bg-config.png); margin-left: -252px; margin-top: -197.5px;" class="centered">
         <div id="options" style="padding: 10px 20px;">
           <h2>Options</h2>
           <label class="button"><input type="checkbox" class="option" id="hdisable"> <span>Disable adult content</span></label>
@@ -88,6 +88,25 @@
         <div id="return" class="button" style="position: absolute; bottom: 15px; right: 20px;">
           <img src="dump/ui/bt-return.png">
           Return
+        </div>
+      </div>
+      <div id="context" style="display: none;">
+        <div id="context-menu" class="centered">
+          <div id="context-return" class="button">Return</div>
+          <div id="show-image" class="button">Show image</div>
+          <div id="text-history" class="button button-disabled">Text history</div>
+          <div id="skip-mode" class="button">Skip mode</div>
+          <div id="auto-mode" class="button">Auto mode</div>
+          <div id="options" class="button">Options</div>
+          <div id="save" class="button">Save</div>
+          <div id="load" class="button">Load</div>
+          <div id="main-menu" class="button">Main menu</div>
+          <div class="quit button button-disabled">Quit</div>
+        </div>
+        <div id="context-info" class="centered">
+          <div>Play time: <span id="play-time"></span></div>
+          <div>Current scene: <span id="current-scene"></span></div>
+          <div>Current music track: <span id="current-music-track"></span></div>
         </div>
       </div>
     </div>

@@ -59,6 +59,7 @@ window.html5ks = {
         ambient: new Audio(),
         sound: new Audio()
       },
+      gray: document.getElementById("gray"),
       who: document.getElementById("who"),
       say: document.getElementById("say"),
       window: document.getElementById("window"),
@@ -131,8 +132,20 @@ window.html5ks = {
   },
   initEvents: function () {
     window.onresize = html5ks.scale;
-    this.elements.container.addEventListener("mouseup", function () {
-      html5ks.next();
+    this.elements.container.addEventListener("mouseup", function (e) {
+      switch (e.button) {
+        case 0:
+          html5ks.next();
+          break;
+        case 1:
+          html5ks.menu.showImage();
+          break;
+      }
+      e.preventDefault();
+    }, false);
+    this.elements.container.addEventListener("contextmenu", function (e) {
+      html5ks.menu.context();
+      e.preventDefault();
     }, false);
     window.addEventListener("dragstart", function (e) {
       e.preventDefault();
