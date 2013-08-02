@@ -156,12 +156,9 @@ html.no-js #gotit {
 }
 .centered {
   position: absolute;
-  top: 0;
-  bottom: 0;
-  height: 0;
-  width: 100%;
   margin: auto;
-  text-align: center;
+  left: 50%;
+  top: 50%;
 }
 .choice {
   background: url("../dump/ui/bg-choice.png") no-repeat top center;
@@ -170,6 +167,7 @@ html.no-js #gotit {
 }
 #context > div {
   z-index: 20;
+  text-align: center;
 }
 #context-menu {
   background: url("../dump/ui/bg-gm.png") no-repeat top center;
@@ -188,9 +186,9 @@ html.no-js #gotit {
 #context-info {
   font: 19px/22px Playtime;
   position: absolute;
-  top: auto;
-  height: auto;
   bottom: 10px;
+  text-align: center;
+  width: 100%;
 }
 
 /* main menu */
