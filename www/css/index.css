@@ -212,10 +212,10 @@ label {
 .button, h2, label {
   opacity: 0.4;
 }
-.button-disabled {
+.disabled {
   opacity: 0.1;
 }
-.button:not(.button-disabled):hover {
+.button:not(.disabled):hover {
   opacity: 1;
 }
 input[type="checkbox"] {

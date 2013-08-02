@@ -54,10 +54,10 @@
             var scaleVideo = document.getElementById("scaleVideo");
             if (!target.checked) {
               scaleVideo.checked = false;
-              scaleVideo.parentNode.className += " button-disabled";
+              scaleVideo.parentNode.className += " disabled";
             } else {
               scaleVideo.checked = true;
-              scaleVideo.parentNode.className = scaleVideo.parentNode.className.replace("button-disabled", "");
+              scaleVideo.parentNode.className = scaleVideo.parentNode.className.replace("disabled", "");
             }
           case "scaleVideo":
             html5ks.scale();
@@ -82,7 +82,7 @@
           values = html5ks.persistent;
 
       if (!html5ks.persistent.scaleAll) {
-        document.getElementById("scaleVideo").parentNode.className += " button-disabled";
+        document.getElementById("scaleVideo").parentNode.className += " disabled";
       }
 
       for (var i = options.length - 1; i >= 0; i--) {
@@ -113,7 +113,7 @@
       }.bind(this), false);
       html5ks.fetch("imachine").then(function () {
         var start = this.elements.main.start;
-        start.className = start.className.replace("button-disabled", "");
+        start.className = start.className.replace("disabled", "");
         this._imachine_loaded = true;
       }.bind(this));
 
@@ -126,7 +126,7 @@
         if (navigator.userAgent.indexOf(ua) > -1) {
           var quit = document.getElementsByClassName("quit");
           for (var i = quit.length - 1; i >= 0; i++) {
-            quit[i].className = quit.className.replace("button-disabled", "");
+            quit[i].className = quit.className.replace("disabled", "");
             quit[i].addEventListener("click", function () {
               window.close();
               top.open('','_self','');
