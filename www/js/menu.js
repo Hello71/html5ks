@@ -193,7 +193,7 @@
       }.bind(this));
     },
 
-    context: function (show, transitional) {
+    context: function (show) {
       switch (show) {
         case true:
           this._hadWindow = html5ks.elements.window.style.display !== "none";

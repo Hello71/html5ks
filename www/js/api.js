@@ -332,7 +332,6 @@ window.html5ks.api = {
     }
 
     if (char.kind === "nvl") {
-      var deferred = when.defer();
       html5ks.elements.nvlsay.innerHTML += "<span class='nvl-block'>" + text + "</span>";
       html5ks.elements.nvlctc.style.display = "block";
       html5ks.next = function () {

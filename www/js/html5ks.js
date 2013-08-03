@@ -23,20 +23,20 @@ window.html5ks = {
       language: "en"
     };
     var loaded = localStorage.persistent ? JSON.parse(localStorage.persistent) : {};
+    var defProp = function (v) {
+      Object.defineProperty(html5ks.persistent, k, {
+        get: function () {
+          return v;
+        },
+        set: function (value) {
+          v = value;
+          localStorage.persistent = JSON.stringify(html5ks.persistent);
+        },
+        enumerable: true
+      });
+    };
     for (var k in defaultPersistent) {
-      (function () {
-        var v = typeof loaded[k] === "undefined" ? defaultPersistent[k] : loaded[k];
-        Object.defineProperty(html5ks.persistent, k, {
-          get: function () {
-            return v;
-          },
-          set: function (value) {
-            v = value;
-            localStorage.persistent = JSON.stringify(html5ks.persistent);
-          },
-          enumerable: true
-        });
-      }());
+      defProp(typeof loaded[k] === "undefined" ? defaultPersistent[k] : loaded[k]);
     }
   },
   store: {
