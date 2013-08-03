@@ -134,6 +134,8 @@ window.html5ks = {
     window.onresize = html5ks.scale;
     this.elements.container.addEventListener("mouseup", function (e) {
       if (html5ks.state.status === "scene") {
+        html5ks.api.speed("skip", false);
+        html5ks.api.speed("auto", false);
         switch (e.button) {
           case 0:
             html5ks.next();

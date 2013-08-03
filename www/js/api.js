@@ -79,6 +79,10 @@ window.html5ks.api = {
         video = html5ks.elements.video,
         src = "dump/video/" + vid_src + ".";
 
+    this.stop("all");
+    this.speed("auto", false);
+    this.speed("skip", false);
+
     if (Modernizr.video.webm) {
       video.src = src + "webm";
     } else if (Modernizr.video.ogg) {
@@ -86,8 +90,6 @@ window.html5ks.api = {
     } else if (Modernizr.video.h264) {
       video.src = src + "mp4";
     }
-
-    this.stop("all");
 
     video.load();
     video.style.display = "block";
@@ -149,10 +151,8 @@ window.html5ks.api = {
       if (this[cmd]) {
         return this[cmd].apply(this, args);
       } else if (inst.length === 1) {
-        console.log("hopefully this is dialogue");
         return this.character("name_only", cmd);
       } else if (/^[A-Z]/.test(cmd)) {
-        console.log("cmd starts with caps, probably character");
         return this.character(cmd, args[0]);
       } else {
         console.error("no such cmd " + cmd);
@@ -305,33 +305,17 @@ window.html5ks.api = {
     return str;
   },
 
-  nvlsay: function (text) {
-    var deferred = when.defer();
-    html5ks.elements.nvlsay.innerHTML += "<span class='nvl-block'>" + text + "</span>";
-    html5ks.elements.nvlctc.style.display = "block";
-    html5ks.next = function () {
-      html5ks.elements.nvlctc.style.display = "none";
-      deferred.resolve();
-      html5ks.next = function () {};
-    };
-    return deferred.promise;
-  },
 
-
-  character: function (name, str, extend, noc) {
+  character: function (charName, str, extend) {
     var deferred = when.defer(),
         text = this.tag(str),
-        char = html5ks.data.characters[name],
-        w = /{w(=\d*\.\d*)?}/.exec(str);
+        char = typeof charName === "string" ? html5ks.data.characters[charName] : charName,
+        w = /{w=?(\d*\.\d*)?}(.*)/.exec(str);
 
     if (!char) {
-      if (name) {
-        char = {
-          name: name,
-        };
-      } else {
-        char = this._lastchar;
-      }
+      char = {
+        name: name
+      };
     }
     if (typeof char.what_prefix === "undefined") {
       char.what_prefix = "“";
@@ -348,9 +332,14 @@ window.html5ks.api = {
     }
 
     if (char.kind === "nvl") {
-      this.nvlsay(text).then(function () {
+      var deferred = when.defer();
+      html5ks.elements.nvlsay.innerHTML += "<span class='nvl-block'>" + text + "</span>";
+      html5ks.elements.nvlctc.style.display = "block";
+      html5ks.next = function () {
+        html5ks.elements.nvlctc.style.display = "none";
         deferred.resolve();
-      });
+        html5ks.next = function () {};
+      };
       return deferred.promise;
     }
     var who = html5ks.elements.who;
@@ -369,37 +358,35 @@ window.html5ks.api = {
       html5ks.elements.say.innerHTML = text;
     }
 
-    if (!noc) {
-      if (w) {
-        html5ks.next = function () {
-          html5ks.next = function () {};
-          html5ks.api.extend(str.substring(w.index + w[0].length)).then(function () {
-            deferred.resolve();
-          });
-        };
-        if (w[1]) {
-          setTimeout(html5ks.next, parseFloat(w[1].substring(1), 10) * 1000);
-          return deferred.promise;
-        }
-      } else {
-        html5ks.next = function () {
-          html5ks.elements.ctc.style.display = "none";
-          deferred.resolve(text);
-          html5ks.next = function () {};
-        };
+    if (w) {
+      html5ks.next = function () {
+        html5ks.next = function () {};
+        html5ks.api.extend(w[2]).then(function () {
+          deferred.resolve();
+        });
+      };
+      if (w[1]) {
+        setTimeout(html5ks.next, parseFloat(w[1], 10) * 1000);
+        return deferred.promise;
       }
-      html5ks.elements.ctc.style.display = "block";
-      if (html5ks.state.skip || str.indexOf("{nw}") > -1) {
-        html5ks.next();
-      } else if (html5ks.state.auto) {
-        setTimeout(html5ks.next, 1000 + html5ks.persistent.autoModeDelay * text.length);
-      }
+    } else {
+      html5ks.next = function () {
+        html5ks.elements.ctc.style.display = "none";
+        deferred.resolve(text);
+        html5ks.next = function () {};
+      };
+    }
+    html5ks.elements.ctc.style.display = "block";
+    if (html5ks.state.skip || str.indexOf("{nw}") > -1) {
+      html5ks.next();
+    } else if (html5ks.state.auto) {
+      setTimeout(html5ks.next, 3.5 * html5ks.persistent.autoModeDelay * (3000 + text.length));
     }
     return deferred.promise;
   },
 
   extend: function (str) {
-    return this.character(null, str, true);
+    return this.character(this._lastchar, str, true);
   },
 
   Pause: function (duration) {

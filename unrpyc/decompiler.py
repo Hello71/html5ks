@@ -24,7 +24,9 @@ import renpy.atl as atl
 import code
 
 DECOMPILE_SCREENS = False
+global firstLabel
 firstLabel = True
+global warnedATL
 warnedATL = False
 
 def pretty_print_ast(out_file, ast):
@@ -64,7 +66,7 @@ def print_atl(f, atl_block, indent_level):
         f.write('pass\n')
     for stmt in atl_block.statements:
         indent(f, indent_level)
-        
+
         if type(stmt) is atl.RawMultipurpose:
             # warper
             if stmt.warp_function:
@@ -76,38 +78,38 @@ def print_atl(f, atl_block, indent_level):
             elif stmt.duration.strip() != '0':
                 f.write('pause')
                 f.write(" %s" % (stmt.duration.strip(), ))
-            
+
             # revolution
             if stmt.revolution:
                 f.write("%s " % (stmt.revolution, ))
-            
+
             # circles
             if stmt.circles != "0":
                 f.write("circles %s " % (stmt.circles.strip(), ))
-            
+
             # splines
             for (name, exprs) in stmt.splines:
                 f.write("%s " % (name, ))
                 for expr in exprs:
                     f.write("knot %s " % (expr.strip(), ))
-            
+
             # properties
             for (k, v) in stmt.properties:
                 f.write("%s %s " % (k, v.strip()))
-            
+
             # with
             for (expr, with_expr) in stmt.expressions:
                 f.write("%s " % (expr.strip(), ))
                 if with_expr:
                     f.write("with %s " % (with_expr, ))
-            
+
             f.write("\n")
-        
+
         elif type(stmt) is atl.RawBlock:
             # what does stmt.animation do?
             f.write("block:\n")
             print_atl(f, stmt, indent_level + 1)
-        
+
         elif type(stmt) is atl.RawChoice:
             first = True
             for (chance, block) in stmt.choices:
@@ -115,22 +117,22 @@ def print_atl(f, atl_block, indent_level):
                     first = False
                 else:
                     indent(f, indent_level)
-                
+
                 f.write("choice")
                 if chance != "1.0":
                     f.write(" %s" % (chance, ))
                 f.write(":\n")
                 print_atl(f, block, indent_level + 1)
-        
+
         elif type(stmt) is atl.RawContainsExpr:
             f.write("contains %s\n" % (stmt.expression, ))
-        
+
         elif type(stmt) is atl.RawEvent:
             f.write("event %s\n" % (stmt.name, ))
-        
+
         elif type(stmt) is atl.RawFunction:
             f.write("function %s\n" % (stmt.expr, ))
-        
+
         elif type(stmt) is atl.RawOn:
             first = True
             for name, block in list(stmt.handlers.items()):
@@ -138,10 +140,10 @@ def print_atl(f, atl_block, indent_level):
                     first = False
                 else:
                     indent(f, indent_level)
-                
+
                 f.write("on %s:\n" % (name, ))
                 print_atl(f, block, indent_level + 1)
-        
+
         elif type(stmt) is atl.RawParallel:
             first = True
             for block in stmt.blocks:
@@ -149,19 +151,19 @@ def print_atl(f, atl_block, indent_level):
                     first = False
                 else:
                     indent(f, indent_level)
-                
+
                 f.write("parallel:\n")
                 print_atl(f, block, indent_level + 1)
-        
+
         elif type(stmt) is atl.RawRepeat:
             f.write("repeat")
             if stmt.repeats:
                 f.write(" %s" % (stmt.repeats, )) # not sure if this is even a string
             f.write("\n")
-        
+
         elif type(stmt) is atl.RawTime:
             f.write("time %s\n" % (stmt.time, ))
-        
+
         else:
             f.write("TODO atl.%s\n" % type(stmt).__name__)
 
@@ -467,16 +469,16 @@ def print_params(f, paraminfo):
     f.write(")")
 
 # Print while command, from http://forum.cheatengine.org/viewtopic.php?p=5377683
-def print_While(f, stmt, indent_level): 
-    f.write("while %s:\n" % (stmt.condition, )) 
-    for inner_stmt in stmt.block: 
+def print_While(f, stmt, indent_level):
+    f.write("while %s:\n" % (stmt.condition, ))
+    for inner_stmt in stmt.block:
         print_statement(f, inner_stmt, indent_level + 1)
 
 # Print define command, by iAmGhost
-def print_Define(f, stmt, indent_level): 
+def print_Define(f, stmt, indent_level):
     f.write("define %s = %s\n" % (stmt.varname, stmt.code.source,))
-    
-    
+
+
 statement_printer_dict = {
         ast.Label: print_Label,
         ast.Say: print_Say,

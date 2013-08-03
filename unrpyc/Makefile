@@ -1,7 +1,7 @@
 all: script.json.gz
 
 script.json.gz: script.json
-	gzip -c script.json > script.json.gz
+	gzip -9c script.json > script.json.gz
 	touch script.json script.json.gz
 
 script.json: $(patsubst %.rpyc,%.json,$(wildcard *.rpyc))
@@ -16,7 +16,7 @@ script-%.json: script-%.json.o
 	sed -i -e 's/^{//;s/}$$/,/' $@
 
 clean:
-	rm -f *.json.o *.json
+	rm -f *.json.o *.json script.json.gz
 
 test: all
 	jshint --show-non-errors *.json

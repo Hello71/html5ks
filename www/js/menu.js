@@ -43,7 +43,7 @@
       var options = document.getElementsByClassName("option");
       var change = function (e) {
         var target = e.target;
-        values[target.id] = target.type === "checkbox" ? target.checked : target.value;
+        html5ks.persistent[target.id] = target.type === "checkbox" ? target.checked : target.value;
         switch (target.id) {
           case "fullscreen":
             if (target.checked) {
@@ -87,8 +87,6 @@
         switch (html5ks.state.status) {
           case "scene":
           case "context":
-            html5ks.api.speed("skip", false);
-            html5ks.api.speed("auto", false);
             this.context();
         }
         e.preventDefault();
@@ -106,16 +104,17 @@
         e.stopPropagation();
       }, false);
 
+      var close = function () {
+        window.close();
+        top.open('','_self','');
+        top.close();
+      };
       ["AppleWebKit", "MSIE", "Trident"].forEach(function (ua) {
         if (navigator.userAgent.indexOf(ua) > -1) {
           var quit = document.getElementsByClassName("quit");
-          for (var i = quit.length - 1; i >= 0; i++) {
-            quit[i].className = quit.className.replace("disabled", "");
-            quit[i].addEventListener("click", function () {
-              window.close();
-              top.open('','_self','');
-              top.close();
-            }, false);
+          for (var i = quit.length - 1; i >= 0; i--) {
+            quit[i].className = quit[i].className.replace("disabled", "");
+            quit[i].addEventListener("click", close, false);
           }
           return false;
         }
@@ -197,6 +196,7 @@
     context: function (show, transitional) {
       switch (show) {
         case true:
+          this._hadWindow = html5ks.elements.window.style.display !== "none";
           html5ks.state.status = "context";
           html5ks.elements.gray.style.display = "block";
           html5ks.elements.window.style.display = "none";
@@ -205,7 +205,7 @@
         case false:
           html5ks.state.status = "scene";
           html5ks.elements.gray.style.display = "none";
-          if (html5ks.state.status === "scene") {
+          if (html5ks.state.status === "scene" && this._hadWindow) {
             html5ks.elements.window.style.display = "block";
           }
           this.elements.context.style.display = "none";

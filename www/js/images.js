@@ -1171,7 +1171,7 @@ window.html5ks.data.images = {
     },
     "mural_pan": "vfx/mural.jpg",
 
-    rin_exhibition_paintings: "vfx/rin_exhibition_paintings.jpg", 
+    rin_exhibition_paintings: "vfx/rin_exhibition_paintings.jpg",
     rin_exhibition_sold: "vfx/rin_exhibition_sold.jpg",
     rin_exhibition_c: "vfx/rin_exhibition_c.jpg",
 
