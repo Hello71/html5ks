@@ -167,6 +167,12 @@ html.no-js #gotit {
   left: 50%;
   top: 50%;
 }
+.status {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: none;
+}
 .choice {
   background: url("../dump/ui/bg-choice.png") no-repeat top center;
   height: 35px;

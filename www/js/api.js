@@ -392,7 +392,7 @@ window.html5ks.api = {
       if (html5ks.state.skip || str.indexOf("{nw}") > -1) {
         html5ks.next();
       } else if (html5ks.state.auto) {
-        setTimeout(html5ks.next, 1000 + html5ks.persistent.autospeed * text.length);
+        setTimeout(html5ks.next, 1000 + html5ks.persistent.autoModeDelay * text.length);
       }
     }
     return deferred.promise;
@@ -465,5 +465,10 @@ window.html5ks.api = {
 
     html5ks.elements.choices.appendChild(frag);
     return deferred.promise;
+  },
+
+  speed: function (type, status) {
+    html5ks.state[type] = status;
+    document.getElementById(type).style.display = status ? "block" : "none";
   }
 };

@@ -87,8 +87,8 @@
         switch (html5ks.state.status) {
           case "scene":
           case "context":
-            html5ks.state.skip = false;
-            html5ks.state.auto = false;
+            html5ks.api.speed("skip", false);
+            html5ks.api.speed("auto", false);
             this.context();
         }
         e.preventDefault();
@@ -136,13 +136,13 @@
 
       document.getElementById("skip-mode").addEventListener("click", function () {
         html5ks.menu.context(false);
-        html5ks.state.skip = true;
+        html5ks.api.speed("skip", true);
         html5ks.next();
       }, false);
 
       document.getElementById("auto-mode").addEventListener("click", function () {
         html5ks.menu.context(false);
-        html5ks.state.auto = true;
+        html5ks.api.speed("auto", true);
         html5ks.next();
       }, false);
 
