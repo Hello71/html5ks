@@ -53,7 +53,7 @@ html.no-js #warn-container {
   position: absolute;
   top: 10%;
   width: 600px;
-  z-index: 10;
+  z-index: 100;
 }
 html.no-js          #warn li { display: none; }
 html.js             #warn noscript { display: none; }
@@ -95,7 +95,10 @@ html.no-js #gotit {
   height: 100%;
   background-color: rgb(0, 0, 0);
   opacity: 0.5;
-  z-index: 9;
+  z-index: 10;
+}
+#dialogs {
+  z-index: 50;
 }
 #show {
   height: 100%;
@@ -153,6 +156,10 @@ html.no-js #gotit {
 }
 #nvlctc {
   bottom: 25px;
+}
+#centered {
+  text-align: center;
+  width: 100%;
 }
 .centered {
   position: absolute;

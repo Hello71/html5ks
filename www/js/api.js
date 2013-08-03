@@ -124,6 +124,7 @@ window.html5ks.api = {
 
 
   iscene: function (target, is_h, is_end) {
+    html5ks.state.status = "scene";
     var deferred = when.defer(),
         label = html5ks.data.script[html5ks.persistent.language + "_" + target],
         i = 0;

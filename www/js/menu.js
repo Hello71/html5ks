@@ -9,6 +9,7 @@
       html5ks.api.play("music", "music_menus");
       html5ks.api.show("url", "ui/main/bg-main.png");
       this.elements.mainMenu.style.display = "block";
+      html5ks.state.status = "menu";
     },
 
     activeDialog: null,
@@ -17,6 +18,8 @@
       this.activeDialog = this.elements.dialog[name];
       this.activeDialog.style.display = "block";
       this.elements.dialogs.style.display = "block";
+      this.elements.context.style.display = "none";
+      html5ks.elements.gray.style.display = "block";
     },
 
     initElements: function () {
@@ -28,12 +31,11 @@
         },
         mainMenu: document.getElementById("main-menu"),
         main: {
-          start: document.getElementById("start"),
-          optionsButton: document.getElementById("options-button"),
+          start: document.getElementById("start")
         },
         context: document.getElementById("context"),
         contextMenu: document.getElementById("context-menu"),
-        contextInfo: document.getElementById("context-info"),
+        contextInfo: document.getElementById("context-info")
       };
     },
 
@@ -72,8 +74,82 @@
       options[0].parentNode.parentNode.addEventListener("change", change, false);
       options[0].parentNode.parentNode.addEventListener("input", change, false);
 
-      this.elements.main.optionsButton.addEventListener("click", function () {
-        html5ks.menu.dialog("options");
+      var optionsButton = document.getElementsByClassName("options-button");
+
+      for (var i = optionsButton.length - 1; i >= 0; i--) {
+        optionsButton[i].addEventListener("click", function (e) {
+          html5ks.menu.dialog("options");
+          e.stopPropagation();
+        }, false);
+      }
+
+      html5ks.elements.container.addEventListener("contextmenu", function (e) {
+        switch (html5ks.state.status) {
+          case "scene":
+          case "context":
+            html5ks.state.skip = false;
+            html5ks.state.auto = false;
+            this.context();
+        }
+        e.preventDefault();
+      }.bind(this), false);
+
+      this.elements.dialog.return.addEventListener("click", function (e) {
+        html5ks.menu.activeDialog.style.display = "none";
+        html5ks.menu.activeDialog = null;
+        html5ks.menu.elements.dialogs.style.display = "none";
+        if (html5ks.state.status === "context") {
+          html5ks.menu.context(true);
+        } else {
+          html5ks.elements.gray.style.display = "none";
+        }
+        e.stopPropagation();
+      }, false);
+
+      ["AppleWebKit", "MSIE", "Trident"].forEach(function (ua) {
+        if (navigator.userAgent.indexOf(ua) > -1) {
+          var quit = document.getElementsByClassName("quit");
+          for (var i = quit.length - 1; i >= 0; i++) {
+            quit[i].className = quit.className.replace("disabled", "");
+            quit[i].addEventListener("click", function () {
+              window.close();
+              top.open('','_self','');
+              top.close();
+            }, false);
+          }
+          return false;
+        }
+      }, this);
+
+      document.getElementById("context-return").addEventListener("click", function () {
+        html5ks.menu.context(false);
+      }, false);
+
+      document.getElementById("show-image").addEventListener("click", function () {
+        html5ks.menu.context(false);
+        html5ks.elements.window.style.display = "none";
+        html5ks.elements.container.addEventListener("click", function click() {
+          this.removeEventListener("click", click, true);
+          html5ks.menu.context(true);
+        }, true);
+      }, false);
+
+      document.getElementById("skip-mode").addEventListener("click", function () {
+        html5ks.menu.context(false);
+        html5ks.state.skip = true;
+        html5ks.next();
+      }, false);
+
+      document.getElementById("auto-mode").addEventListener("click", function () {
+        html5ks.menu.context(false);
+        html5ks.state.auto = true;
+        html5ks.next();
+      }, false);
+
+      document.getElementById("goto-main-menu").addEventListener("click", function () {
+        html5ks.next = function () {};
+        html5ks.menu.context(false);
+        html5ks.menu.mainMenu();
       }, false);
     },
 
@@ -116,42 +192,26 @@
         start.className = start.className.replace("disabled", "");
         this._imachine_loaded = true;
       }.bind(this));
-
-      this.elements.dialog.return.addEventListener("click", function () {
-        html5ks.menu.activeDialog.style.display = "none";
-        html5ks.menu.elements.dialogs.style.display = "none";
-      }, false);
-
-      ["AppleWebKit", "MSIE", "Trident"].forEach(function (ua) {
-        if (navigator.userAgent.indexOf(ua) > -1) {
-          var quit = document.getElementsByClassName("quit");
-          for (var i = quit.length - 1; i >= 0; i++) {
-            quit[i].className = quit.className.replace("disabled", "");
-            quit[i].addEventListener("click", function () {
-              window.close();
-              top.open('','_self','');
-              top.close();
-            }, false);
-          }
-          return false;
-        }
-      }, this);
     },
 
-    context: function (show) {
+    context: function (show, transitional) {
       switch (show) {
         case true:
+          html5ks.state.status = "context";
           html5ks.elements.gray.style.display = "block";
           html5ks.elements.window.style.display = "none";
           this.elements.context.style.display = "block";
           break;
         case false:
+          html5ks.state.status = "scene";
           html5ks.elements.gray.style.display = "none";
-          html5ks.elements.window.style.display = "block";
+          if (html5ks.state.status === "scene") {
+            html5ks.elements.window.style.display = "block";
+          }
           this.elements.context.style.display = "none";
           break;
         default:
-          this.context(html5ks.elements.gray.style.display !== "block");
+          this.context(this.elements.context.style.display !== "block");
       }
     }
   };
