@@ -83,15 +83,6 @@
         }, false);
       }
 
-      html5ks.elements.container.addEventListener("contextmenu", function (e) {
-        switch (html5ks.state.status) {
-          case "scene":
-          case "context":
-            this.context();
-        }
-        e.preventDefault();
-      }.bind(this), false);
-
       this.elements.dialog.return.addEventListener("click", function (e) {
         html5ks.menu.activeDialog.style.display = "none";
         html5ks.menu.activeDialog = null;
@@ -104,6 +95,7 @@
         e.stopPropagation();
       }, false);
 
+      // quit
       var close = function () {
         window.close();
         top.open('','_self','');
@@ -119,6 +111,16 @@
           return false;
         }
       }, this);
+
+      // context menu
+      html5ks.elements.container.addEventListener("contextmenu", function (e) {
+        switch (html5ks.state.status) {
+          case "scene":
+          case "context":
+            this.context();
+        }
+        e.preventDefault();
+      }.bind(this), false);
 
       document.getElementById("context-return").addEventListener("click", function () {
         html5ks.menu.context(false);
