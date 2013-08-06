@@ -6,12 +6,13 @@ window.html5ks = {
   persistent: {},
   init: function () {
     var defaultPersistent = {
+      version: 0,
       fade: 100,
       gotit: false,
       hdisable: false,
       skipUnread: false,
       skipAfterChoices: false,
-      useWebP: null,
+      useWebP: false,
       fullscreen: false,
       scaleAll: true,
       scaleVideo: true,
@@ -23,6 +24,7 @@ window.html5ks = {
       language: "en"
     };
     var loaded = localStorage.persistent ? JSON.parse(localStorage.persistent) : {};
+    html5ks.state._loaded = typeof loaded.version !== undefined;
     var defProp = function (v) {
       Object.defineProperty(html5ks.persistent, k, {
         get: function () {
@@ -37,6 +39,18 @@ window.html5ks = {
     };
     for (var k in defaultPersistent) {
       defProp(typeof loaded[k] === "undefined" ? defaultPersistent[k] : loaded[k]);
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      html5ks.onload();
+    }, false);
+
+    if (html5ks.state._loaded) {
+      var img = new Image();
+      img.onload = function () {
+        html5ks.persistent.useWebP = img.width === 4;
+      };
+      img.src = 'data:image/webp;base64,UklGRjgAAABXRUJQVlA4ICwAAAAQAgCdASoEAAQAAAcIhYWIhYSIgIIADA1gAAUAAAEAAAEAAP7%2F2fIAAAAA';
     }
   },
   store: {
@@ -248,6 +262,3 @@ window.html5ks = {
   }
 };
 html5ks.init();
-document.addEventListener("DOMContentLoaded", function () {
-  html5ks.onload();
-}, false);

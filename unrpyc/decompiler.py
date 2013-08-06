@@ -63,7 +63,6 @@ def print_atl(f, atl_block, indent_level):
     return
     if not atl_block.statements:
         indent(f, indent_level)
-        f.write('pass\n')
     for stmt in atl_block.statements:
         indent(f, indent_level)
 
@@ -380,21 +379,19 @@ def print_Menu(f, stmt, indent_level):
     f.write('}]\n')
 
 def print_Pass(f, stmt, indent_level):
-    f.write("pass\n")
+    f.write("\n")
 
 def print_Call(f, stmt, indent_level):
-    f.write("call ")
+    f.write("[")
     if stmt.expression:
         f.write("expression %s" % (stmt.label, ))
     else:
-        f.write(stmt.label)
+        f.write('"%s"' % stmt.label)
 
     if stmt.arguments is not None:
-        if stmt.expression:
-            f.write("pass ")
         print_args(f, stmt.arguments)
 
-    f.write('\n')
+    f.write('],\n')
 
 def print_If(f, stmt, indent_level):
     f.write("if %s:\n" % (stmt.entries[0][0], ))
@@ -429,20 +426,11 @@ def print_args(f, arginfo):
     if arginfo is None:
         return
 
-    f.write("(")
-
-    first = True
     for (name, val) in arginfo.arguments:
-        if first:
-            first = False
-        else:
-            f.write(", ")
-
+        f.write(', ')
         if name is not None:
             f.write("%s = " % (name, ))
         f.write(val)
-
-    f.write(")")
 
 # TODO positional?
 def print_params(f, paraminfo):
