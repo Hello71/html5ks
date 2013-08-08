@@ -2,9 +2,9 @@ all: script.json.gz imachine.json.gz
 
 imachine.json.gz: imachine.json
 
-script.json.gz: script.json
-	gzip -9c script.json > script.json.gz
-	touch script.json script.json.gz
+%.json.gz: %.json
+	gzip -9c $< > $@
+	touch $< $@
 
 script.json: $(patsubst %.rpyc,%.json,$(wildcard *.rpyc))
 	cat script-*.json > script.json
@@ -12,6 +12,9 @@ script.json: $(patsubst %.rpyc,%.json,$(wildcard *.rpyc))
 
 %.json.o: %.rpyc *.py
 	python unrpyc.py --clobber $< $@
+
+imachine.json: imachine.json.o
+	node fix.js $< $@
 
 %.json: %.json.o
 	node fix.js $< $@

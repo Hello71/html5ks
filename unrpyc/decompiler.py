@@ -22,6 +22,7 @@ import ast as python_ast
 import renpy.ast as ast
 import renpy.atl as atl
 import code
+import json
 
 DECOMPILE_SCREENS = False
 global firstLabel
@@ -394,7 +395,7 @@ def print_Call(f, stmt, indent_level):
     f.write('],\n')
 
 def print_If(f, stmt, indent_level):
-    f.write("if %s:\n" % (stmt.entries[0][0], ))
+    f.write('["if", "%s", [\n' % (escape_string(stmt.entries[0][0]), ))
     for inner_stmt in stmt.entries[0][1]:
         print_statement(f, inner_stmt, indent_level + 1)
 
@@ -408,15 +409,17 @@ def print_If(f, stmt, indent_level):
 
         for case in elif_entries:
             indent(f, indent_level)
-            f.write("elif %s:\n" % (case[0], ))
+            f.write('], "elif", "%s", [\n' % escape_string(case[0]))
             for inner_stmt in case[1]:
                 print_statement(f, inner_stmt, indent_level + 1)
 
         if else_entry is not None:
             indent(f, indent_level)
-            f.write("else:\n")
+            f.write('], "else", [\n')
             for inner_stmt in else_entry[1]:
                 print_statement(f, inner_stmt, indent_level + 1)
+
+    f.write(']],\n')
 
 def print_EarlyPython(f, stmt, indent_level):
     print_Python(f, stmt, indent_level, early=True)
@@ -428,9 +431,9 @@ def print_args(f, arginfo):
 
     for (name, val) in arginfo.arguments:
         f.write(', ')
-        if name is not None:
-            f.write("%s = " % (name, ))
-        f.write(val)
+#        if name is not None:
+#            f.write("%s = " % json.dumps(name))
+        f.write(json.dumps(val))
 
 # TODO positional?
 def print_params(f, paraminfo):
