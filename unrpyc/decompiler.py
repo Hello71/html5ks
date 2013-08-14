@@ -289,13 +289,13 @@ class PrintRenPython(python_ast.NodeVisitor):
         return self.quote(python_ast.dump(node))
 
     def visit_Num(self, node):
-        return str(node.n)
+        return json.dumps(node.n)
 
     def visit_Name(self, node):
-        return self.quote(node.id)
+        return json.dumps(node.id)
 
     def visit_Str(self, node):
-        return self.quote(escape_string(node.s))
+        return json.dumps(node.s)
 
     def visit_keyword(self, node):
         return self.visit(node.value)
