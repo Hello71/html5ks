@@ -220,6 +220,10 @@ window.html5ks.api = {
         }
         el.style.display = "block";
       }
+      deferred.resolve();
+    };
+    el.onerror = function () {
+      deferred.resolve();
     };
     var nom = name;
     if (type && type !== "None") {
@@ -266,7 +270,6 @@ window.html5ks.api = {
       el.style.display = "none";
       html5ks.elements.show.appendChild(el);
     }
-    deferred.resolve();
     return deferred.promise;
   },
   hide: function (name) {
@@ -365,7 +368,9 @@ window.html5ks.api = {
         });
       };
       if (w[1]) {
-        setTimeout(html5ks.next, parseFloat(w[1], 10) * 1000);
+        setTimeout(function () {
+          html5ks.next();
+        }, parseFloat(w[1], 10) * 1000);
         return deferred.promise;
       }
     } else {

@@ -282,6 +282,13 @@ class PrintRenPython(python_ast.NodeVisitor):
         self.f.write(', '.join(map(self.visit, node.keywords)))
         self.f.write('],\n')
 
+    def visit_Compare(self, node):
+        self.f.write('[')
+        self.f.write(self.visit(node.left))
+        self.f.write(', ')
+        self.f.write(self.visit(node.comparators[0]))
+        self.f.write('], ')
+
     def quote(self, string):
         return '"%s"' % string
 
@@ -395,7 +402,10 @@ def print_Call(f, stmt, indent_level):
     f.write('],\n')
 
 def print_If(f, stmt, indent_level):
-    f.write('["if", "%s", [\n' % (escape_string(stmt.entries[0][0]), ))
+    f.write('["if", ')
+    if_stmt = compile(stmt.entries[0][0], '<unknown>', 'exec', python_ast.PyCF_ONLY_AST).body[0]
+    PrintRenPython(f).visit(if_stmt)
+    f.write('[\n')
     for inner_stmt in stmt.entries[0][1]:
         print_statement(f, inner_stmt, indent_level + 1)
 
@@ -409,7 +419,10 @@ def print_If(f, stmt, indent_level):
 
         for case in elif_entries:
             indent(f, indent_level)
-            f.write('], "elif", "%s", [\n' % escape_string(case[0]))
+            f.write('], "elif", ')
+            elif_stmt = compile(case[0], '<unknown>', 'exec', python_ast.PyCF_ONLY_AST).body[0]
+            PrintRenPython(f).visit(if_stmt)
+            f.write('[\n')
             for inner_stmt in case[1]:
                 print_statement(f, inner_stmt, indent_level + 1)
 
@@ -433,7 +446,7 @@ def print_args(f, arginfo):
         f.write(', ')
 #        if name is not None:
 #            f.write("%s = " % json.dumps(name))
-        f.write(json.dumps(val))
+        f.write(json.dumps(eval(val)))
 
 # TODO positional?
 def print_params(f, paraminfo):

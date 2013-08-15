@@ -159,11 +159,15 @@ html.no-js #gotit {
 }
 #centered {
   text-align: center;
-  width: 100%;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  height: 0;
 }
 .centered {
   position: absolute;
   margin: auto;
+  width: 100%;
   left: 50%;
   top: 50%;
 }
@@ -173,7 +177,11 @@ html.no-js #gotit {
   right: 10px;
   display: none;
 }
+#choices {
+  left: 0;
+}
 .choice {
+  text-align: center;
   background: url("../dump/ui/bg-choice.png") no-repeat top center;
   height: 35px;
   line-height: 30px;

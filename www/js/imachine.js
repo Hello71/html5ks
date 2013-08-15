@@ -12,25 +12,28 @@ html5ks.imachine = (function () {
     },
     run: function (label) {
       var deferred = when.defer(),
-          ilabel = typeof label === "string" ? html5ks.data.imachine[label] || label : label,
+          ilabel = typeof label === "string" ? html5ks.data.imachine[label] : label,
           i = 0,
           runInst = function () {
             var inst = ilabel[i++];
-            console.log(inst);
             switch (typeof inst) {
               case "undefined":
                 deferred.resolve();
-                break;
-              case "string": // jump_out
-                if (!html5ks.data.imachine[inst]) {
-                  throw new Error("label does not exist");
-                }
-                this.run(inst);
                 break;
               case "object":
                 var cmd = inst[0];
                 var args = inst.slice(1);
                 switch (inst[0]) {
+                  case "jump_out":
+                    var newlabel = args[0];
+                    if (newlabel === "restart") {
+                      html5ks.menu.mainMenu();
+                    } else if (!html5ks.data.imachine[newlabel]) {
+                      throw new Error("label does not exist");
+                    } else {
+                      this.run(newlabel);
+                    }
+                    break;
                   case "iscene":
                     this.scene_register(inst[1]);
                   case "act_op":
@@ -44,34 +47,49 @@ html5ks.imachine = (function () {
                     break;
                   case "imenu":
                     html5ks.api.iscene(args[0]).then(function (choice) {
-                      var next = args[1][choice] || args[1].else;
-                      return html5ks.imachine.run(typeof next[0] === "string" ? [next] : next).then(runInst);
-                    });
-                    break;
-                  case "seen_scene":
-                    var next;
-                    if (this.seen_scene(inst[1])) {
-                      next = inst[2];
-                    } else {
-                      next = inst[3];
-                    }
-                    // TODO: there's probably an easier way to do this
-                    this.run(typeof next[0] === "string" ? [next] : next).then(runInst);
-                    break;
-                  case "attraction":
-                    if (typeof inst[2] === "number") {
-                      if (html5ks.store.attraction[inst[1]] > inst[2]) {
-                        runInst(inst[3]);
-                      } else {
-                        runInst(inst[4]);
-                      }
-                    } else {
-                      html5ks.store.attraction[inst[1]]++;
+                      this._return = choice;
                       runInst();
+                    }.bind(this));
+                    break;
+                  case "if":
+                    var cpy = inst.slice(0),
+                        type = '';
+                    el: while (type = cpy.shift()) {
+                      switch (type) {
+                        case "if":
+                        case "elif":
+                          var cond = cpy.shift(),
+                              next = cpy.shift();
+                          switch (cond[0]) {
+                            case "_return":
+                              if (this._return == cond[1]) {
+                                break el;
+                              }
+                              break;
+                            case "seen_scene":
+                              if (this.seen_scene(cond[1])) {
+                                break el;
+                              }
+                              break;
+                            case "attraction_sc":
+                            case "attraction_hanako":
+                            case "attraction_kenji":
+                              if (html5ks.store.attraction[cond[0]] > cond[1]) {
+                                break el;
+                              }
+                            default:
+                              throw new Error("unhandled if statement");
+                          }
+                          break;
+                        case "else":
+                          next = cpy.shift();
+                          break el;
+                      }
                     }
+                    return html5ks.imachine.run(next).then(runInst);
                     break;
                   case "path_end":
-                    // TODO: disp vid
+                    // TODO: disp vid + add to persistent
                     deferred.resolve();
                     break;
                   default:

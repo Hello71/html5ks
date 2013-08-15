@@ -27,7 +27,7 @@ test: all
 	jshint --show-non-errors *.json
 
 install: all
-	install -t ../www/scripts script.json script.json.gz
+	install -t ../www/scripts script.json script.json.gz imachine.json imachine.json.gz
 
 .PHONY: all clean test install
 .PRECIOUS: imachine.json.o
