@@ -3,6 +3,13 @@ All Rights Reserved
 
 I haven't decided on an open-source license; contact me [0] to discuss.
 
-The unrpyc/ subdirectory is released under the license in unrpyc/LICENSE.
+The unrpyc/ subdirectory is released under the license in unrpyc/LICENSE. This should be the MIT license, but the license in that file overrides whatever this says.
+
+The "Playtime With Hot Toddies" font is not licensed, but was found on Font Squirrel [1]:
+
+> This font was found on the internet and did not come with a license. While we try to make sure that all the fonts on fontsquirrel.com are properly licensed for commercial use, there are many fonts that have either been abandoned by their authors or the authors distribute their fonts without an explicit license.
+>
+> It is our opinion that if the unlicensed font is freely available for download from either the original source or from multiple free-font sites then we assume it to be safe to use the font commercially. This is no guarantee of such freedom, but there are so many unlicensed free fonts distributed by primary sources that the intentions must be read that the font is free to use how you like.
 
 [0] mailto:alex.hello71@gmail.com
+[1] http://www.fontsquirrel.com/license/Playtime-With-Hot-Toddies
