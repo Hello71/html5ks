@@ -2,9 +2,9 @@
 @font-face {
   font-family: "Playtime";
   /* src: url("playtime.ttf"); */
-  src: url("font/PlaytimeWithHotToddies.woff") format('woff'),
-       url("font/PlaytimeWithHotToddies.ttf") format('ttf'),
-       url("font/PlaytimeWithHotToddies.svg") format('svg');
+  src: url("font/playtime-webfont.woff") format('woff'),
+       url("font/playtime-webfont.ttf") format('ttf'),
+       url("font/playtime-webfont.svg") format('svg');
 }
 @font-face {
   font-family: "Gentium";

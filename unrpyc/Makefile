@@ -1,7 +1,9 @@
-all: script.json.gz imachine.json.gz imachine_replay.json.gz
+gzip := $(shell ./find-gzip.sh)
+
+all: script.json script.json.gz imachine.json imachine.json.gz imachine_replay.json imachine_replay.json.gz
 
 %.json.gz: %.json
-	gzip -9c $< > $@
+	$(gzip) -c $< > $@
 	touch $< $@
 
 script.json: $(patsubst %.rpyc,%.json,$(wildcard script-*.rpyc))
@@ -25,6 +27,9 @@ test: all
 	jshint --show-non-errors *.json
 
 install: all
-	install -t ../www/scripts script.json script.json.gz imachine.json imachine.json.gz
+	install -t ../www/scripts script.json script.json.gz imachine.json imachine.json.gz imachine_replay.json imachine_replay.json.gz
+
+uninstall:
+	rm -f ../www/scripts/*
 
 .PHONY: all clean test install
