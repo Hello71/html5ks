@@ -1,6 +1,6 @@
 gzip := $(shell ./find-gzip.sh)
 
-all: script.json script.json.gz imachine.json imachine.json.gz imachine_replay.json imachine_replay.json.gz
+all: script.json script.json.gz imachine.json imachine.json.gz imachine_replay.json imachine_replay.json.gz ui-strings.json ui-strings.json.gz
 
 %.json.gz: %.json
 	$(gzip) -c $< > $@
@@ -27,7 +27,7 @@ test: all
 	jshint --show-non-errors *.json
 
 install: all
-	install -t ../www/scripts script.json script.json.gz imachine.json imachine.json.gz imachine_replay.json imachine_replay.json.gz
+	install -t ../www/scripts script.json script.json.gz imachine.json imachine.json.gz imachine_replay.json imachine_replay.json.gz ui-strings.json ui-strings.json.gz
 
 uninstall:
 	rm -f ../www/scripts/*

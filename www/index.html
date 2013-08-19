@@ -37,7 +37,8 @@
           <li id="fontface">It doesn't seem to support <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face">the @font-face at-rule</a>, which lets us display the Playtime and Gentium fonts used in Katawa Shoujo. <a href="http://caniuse.com/#feat=fontface">Any browser released in the last 2 years or so should support it.</a></li>
           <li id="csstransforms">It doesn't seem to support <a href="https://developer.mozilla.org/en-US/docs/Web/Guide/CSS/Using_CSS_transforms">CSS transforms</a>, which means that we won't be able to scale the window or show most transitions. <a href="http://caniuse.com/#feat=transforms2d">Any browser released in the last 2 years ago should work.</a></li>
           <li id="csstransitions">It doesn't seem to support <a href="https://developer.mozilla.org/en-US/docs/Web/Guide/CSS/Using_CSS_transitions">CSS transitions</a>, which means that almost all animations won't work. Videos should still work though, unless stated above. <a href="http://caniuse.com/#feat=css-transitions">You should definitely consider upgrading.</a></li>
-        </ul> <div id="gotit" class="button">I know it's broken, let me play!</div>
+        </ul>
+        <div id="gotit" class="button">I know it's broken, let me play!</div>
       </div>
     </div>
     <div id="container">
@@ -58,11 +59,11 @@
       <img class="status" id="skip" src="dump/ui/sd-skip.png">
       <div id="main-menu" style="display: none;">
         <div id="main-menu-buttons" style="top: 377px; position: absolute; left: 81px;">
-          <div id="start" class="button">Start</div>
-          <div id="load" class="button disabled">Load</div>
-          <div id="extras" class="button disabled">Extras</div>
-          <div class="options-button button">Options</div>
-          <div class="quit button disabled">Quit</div>
+          <div id="start" class="button main_menu_start"></div>
+          <div id="load" class="button main_menu_load disabled"></div>
+          <div id="extras" class="button main_menu_extras disabled"></div>
+          <div class="options-button main_menu_options button"></div>
+          <div class="quit button main_menu_quit disabled"></div>
         </div>
         <div id="version" style="">
           Katawa Shoujo v1.1
@@ -73,19 +74,19 @@
       <div id="dialogs" style="display: none; width: 504px; height: 395px; background: url(dump/ui/bg-config.png); margin-left: -252px; margin-top: -197.5px;" class="centered">
         <div id="options" style="padding: 10px 20px;">
           <h2>Options</h2>
-          <label class="button"><input type="checkbox" class="option" id="hdisable"> <span>Disable adult content</span></label>
-          <label class="button"><input type="checkbox" class="option" id="skipUnread"> <span>Skip unread text</span></label>
-          <label class="button"><input type="checkbox" class="option" id="skipAfterChoices"> <span>Keep skipping after choices</span></label>
-          <label class="button"><input type="checkbox" class="option" id="useWebP"> <span>Use WebP images (less bandwidth, more CPU)</span></label>
-          <label class="button"><input type="checkbox" class="option" id="fullscreen"> <span>Fullscreen</span></label>
-          <label class="button"><input type="checkbox" class="option" id="scaleAll"> <span>Scale content</span></label>
-          <label class="button"><input type="checkbox" class="option" id="scaleVideo"> <span>Scale video</span></label>
+          <label class="button"><input type="checkbox" class="option" id="hdisable"> <span class="hdisabled_label"></span></label>
+          <label class="button"><input type="checkbox" class="option" id="skipUnread"> <span class="config_skip_unseen_label"></span></label>
+          <label class="button"><input type="checkbox" class="option" id="skipAfterChoices"> <span class="config_skip_after_choice_label"></span></label>
+          <label class="button"><input type="checkbox" class="option" id="useWebP"> <span class="config_use_webp_label"></span></label>
+          <label class="button"><input type="checkbox" class="option" id="fullscreen"> <span class="config_fullscreen_label"></span></label>
+          <label class="button"><input type="checkbox" class="option" id="scaleAll"> <span class="config_scale_content_label"></span></label>
+          <label class="button"><input type="checkbox" class="option" id="scaleVideo"> <span class="config_scale_video_label"></span></label>
 
-          <label><input type="range" min="0.0" max="1.0" step="0.001" class="option" id="textSpeed"> <span class="tr">Text speed</span></label>
-          <label><input type="range" min="0.0" max="1.0" step="0.001" class="option" id="autoModeDelay"> <span class="tr">Auto mode delay</span></label>
+          <label><input type="range" min="0.0" max="1.0" step="0.001" class="option" id="textSpeed"> <span class="tr config_textspeed_label"></span></label>
+          <label><input type="range" min="0.0" max="1.0" step="0.001" class="option" id="autoModeDelay"> <span class="tr config_afmspeed_label"></span></label>
 
-          <label><input type="range" min="0.0" max="1.0" step="0.001" class="option" id="musicVolume"> <span class="tr">Music volume</span></label>
-          <label><input type="range" min="0.0" max="1.0" step="0.001" class="option" id="soundVolume"> <span class="tr">SFX volume</span> <span id="test-sound" class="button"><img src="dump/ui/bt-musicplay.png"> Test</span></label>
+          <label><input type="range" min="0.0" max="1.0" step="0.001" class="option" id="musicVolume"> <span class="tr config_musicvol_label"></span></label>
+          <label><input type="range" min="0.0" max="1.0" step="0.001" class="option" id="soundVolume"> <span class="tr config_sfxvol_label"></span> <span id="test-sound" class="button config_sfxtest_label"><img src="dump/ui/bt-musicplay.png"></span></label>
         </div>
         <div id="return" class="button" style="position: absolute; bottom: 15px; right: 20px;">
           <img src="dump/ui/bt-return.png">
@@ -94,21 +95,21 @@
       </div>
       <div id="context" style="display: none;">
         <div id="context-menu" class="centered">
-          <div id="context-return" class="button">Return</div>
-          <div id="show-image" class="button">Show image</div>
-          <div id="text-history" class="button disabled">Text history</div>
-          <div id="skip-mode" class="button">Skip mode</div>
-          <div id="auto-mode" class="button">Auto mode</div>
-          <div class="options-button button">Options</div>
-          <div id="save" class="button">Save</div>
-          <div class="load button">Load</div>
-          <div id="goto-main-menu" class="button">Main menu</div>
-          <div class="quit button disabled">Quit</div>
+          <div id="context-return" class="button game_menu_return"></div>
+          <div id="show-image" class="button game_menu_show"></div>
+          <div id="text-history" class="button game_menu_history disabled"></div>
+          <div id="skip-mode" class="button game_menu_skip"></div>
+          <div id="auto-mode" class="button game_menu_auto"></div>
+          <div class="options-button button game_menu_config"></div>
+          <div id="save" class="button game_menu_save"></div>
+          <div class="load button game_menu_load"></div>
+          <div id="goto-main-menu" class="button game_menu_main"></div>
+          <div class="quit button game_menu_quit"></div>
         </div>
         <div id="context-info">
-          <div>Play time: <span id="play-time"></span></div>
-          <div>Current scene: <span id="current-scene"></span></div>
-          <div>Current music track: <span id="current-music-track"></span></div>
+          <div><span class="play_time_label"></span>: <span id="play-time"></span></div>
+          <div><span class="game_menu_current_scene"></span>: <span id="current-scene"></span></div>
+          <div><span class="game_menu_current_music"></span>: <span id="current-music-track"></span></div>
         </div>
       </div>
     </div>

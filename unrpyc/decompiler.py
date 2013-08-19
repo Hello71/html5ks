@@ -273,6 +273,13 @@ class PrintRenPython(python_ast.NodeVisitor):
     def visit_Attribute(self, node):
         return '"%s"' % node.attr
 
+    def visit_Assign(self, node):
+        if not isinstance(node.targets[0], python_ast.Subscript):
+            self.f.write(self.visit(node.targets[0]))
+            self.f.write(': ')
+            self.f.write(self.visit(node.value))
+            self.f.write(',\n')
+
     def visit_Call(self, node):
         self.f.write('[')
         self.f.write(self.visit(node.func))
@@ -295,6 +302,16 @@ class PrintRenPython(python_ast.NodeVisitor):
     def visit_Dict(self, node):
         return self.quote(python_ast.dump(node))
 
+    def visit_List(self, node):
+        ret = '['
+        delim = ''
+        for elt in node.elts:
+            ret += delim
+            ret += self.visit(elt)
+            delim = ','
+        ret += ']'
+        return ret
+
     def visit_Num(self, node):
         return json.dumps(node.n)
 
@@ -304,6 +321,9 @@ class PrintRenPython(python_ast.NodeVisitor):
     def visit_Str(self, node):
         return json.dumps(node.s)
 
+    def visit_Tuple(self, node):
+        return self.visit_List(node)
+
     def visit_keyword(self, node):
         return self.visit(node.value)
 
@@ -312,20 +332,8 @@ def print_Python(f, stmt, indent_level, early=False):
 
     stripped_code = code_src.strip()
 
-    if stripped_code.count('\n') == 0:
-        stmt = compile(code_src, '<unknown>', 'exec', python_ast.PyCF_ONLY_AST).body[0]
-        PrintRenPython(f).visit(stmt)
-    else:
-        f.write("python")
-        if early:
-            f.write(" early")
-        if stmt.hide:
-            f.write(" hide")
-        f.write(":\n")
-
-        for line in code_src.splitlines(True):
-            indent(f, indent_level + 1)
-            f.write(line)
+    stmt = compile(code_src, '<unknown>', 'exec', python_ast.PyCF_ONLY_AST)
+    PrintRenPython(f).visit(stmt)
 
 def print_Return(f, stmt, indent_level):
     if stmt.expression is not None:
@@ -337,10 +345,6 @@ def print_UserStatement(f, stmt, indent_level):
     f.write('["%s"],\n' % (escape_string(stmt.line).replace(' ', '", "'), ))
 
 def print_Init(f, stmt, indent_level):
-    f.write("init")
-    if stmt.priority != 0:
-        f.write(" %d" % (stmt.priority, ))
-    f.write(":\n")
     for s in stmt.block:
         print_statement(f, s, indent_level + 1)
 
