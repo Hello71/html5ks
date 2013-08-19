@@ -27,9 +27,9 @@ test: all
 	jshint --show-non-errors *.json
 
 install: all
-	install -t ../www/scripts script.json script.json.gz imachine.json imachine.json.gz imachine_replay.json imachine_replay.json.gz ui-strings.json ui-strings.json.gz
+	install -t ../www/json script.json script.json.gz imachine.json imachine.json.gz imachine_replay.json imachine_replay.json.gz ui-strings.json ui-strings.json.gz
 
 uninstall:
-	rm -f ../www/scripts/*
+	rm -f ../www/json/*
 
 .PHONY: all clean test install

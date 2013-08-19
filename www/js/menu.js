@@ -188,7 +188,7 @@
           html5ks.imachine.start().then(this.mainMenu.bind(this));
         }
       }.bind(this), false);
-      html5ks.fetch("imachine").then(function () {
+      html5ks.fetch("json", "imachine").then(function () {
         var start = this.elements.main.start;
         start.className = start.className.replace("disabled", "");
         this._imachine_loaded = true;

@@ -219,41 +219,29 @@ window.html5ks = {
     }
   },
   start: function () {
-    this.fetch("script").then(function () {
+    this.fetch("json", "script").then(function () {
       html5ks.api.movie_cutscene("4ls", true).then(function () {
         html5ks.menu.mainMenu();
       });
     });
   },
-  fetch: function (type) {
+  fetch: function (type, name) {
     var deferred = when.defer();
     var xhr = new XMLHttpRequest();
     switch (type) {
-      case "script":
-        if (html5ks.data._scriptFetched) {
+      case "json":
+        if (html5ks.data[name]) {
           deferred.resolve();
         } else {
-          xhr.open("GET", "scripts/script.json");
+          xhr.open("GET", "json/" + name + ".json");
           xhr.onreadystatechange = function () {
             if (xhr.readyState === 4) {
-              html5ks.data._scriptFetched = true;
-              var script = JSON.parse(xhr.responseText);
-              html5ks.data.script = script;
+              html5ks.data[name] = JSON.parse(xhr.responseText);
               deferred.resolve();
             }
           };
           xhr.send();
         }
-        break;
-      case "imachine":
-        xhr.open("GET", "scripts/imachine.json");
-        xhr.onreadystatechange = function () {
-          if (xhr.readyState === 4) {
-            html5ks.data.imachine = JSON.parse(xhr.responseText);
-            deferred.resolve();
-          }
-        };
-        xhr.send();
         break;
       default:
         throw new Error("fetchtype " + type + " not implemented");
