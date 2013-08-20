@@ -217,6 +217,7 @@ window.html5ks = {
         html5ks.fullscreen();
       }, false);
     }
+    this.i18n.init();
   },
   start: function () {
     this.fetch("json", "script").then(function () {

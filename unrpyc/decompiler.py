@@ -327,6 +327,10 @@ class PrintRenPython(python_ast.NodeVisitor):
     def visit_keyword(self, node):
         return self.visit(node.value)
 
+    def visit(self, node):
+        self.f.write(python_ast.dump(node))
+        return super().visit(node)
+
 def print_Python(f, stmt, indent_level, early=False):
     code_src = stmt.code.source
 
