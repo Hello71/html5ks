@@ -275,10 +275,17 @@ class PrintRenPython(python_ast.NodeVisitor):
 
     def visit_Assign(self, node):
         if not isinstance(node.targets[0], python_ast.Subscript):
-            self.f.write(self.visit(node.targets[0]))
-            self.f.write(': ')
-            self.f.write(self.visit(node.value))
-            self.f.write(',\n')
+            if isinstance(node.targets[0], python_ast.Name):
+                id = node.targets[0].id
+                if id == 'suppress_window_after_timeskip' or id == '_window':
+                    return
+        else:
+            return
+        print(python_ast.dump(node))
+        self.f.write(self.visit(node.targets[0]))
+        self.f.write(': ')
+        self.f.write(self.visit(node.value))
+        self.f.write(',\n')
 
     def visit_Call(self, node):
         self.f.write('[')
@@ -326,10 +333,6 @@ class PrintRenPython(python_ast.NodeVisitor):
 
     def visit_keyword(self, node):
         return self.visit(node.value)
-
-    def visit(self, node):
-        self.f.write(python_ast.dump(node))
-        return super().visit(node)
 
 def print_Python(f, stmt, indent_level, early=False):
     code_src = stmt.code.source
