@@ -13,6 +13,10 @@ script.json: $(patsubst %.rpyc,%.json,$(wildcard script-*.rpyc))
 %.json: %.json.o
 	node fix.js $< $@
 
+ui-strings.json.o: ui-strings.rpyc *.py
+	python unrpyc.py --clobber $< $@
+	sed -i -e 's/    \["init_language", "en", \],//;s/^\]}$$/}/' $@
+
 %.json.o: %.rpyc *.py
 	python unrpyc.py --clobber $< $@
 

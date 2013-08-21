@@ -1,8 +1,6 @@
 "use strict";
 window.html5ks = {
-  data: {
-    script: {}
-  },
+  data: {},
   persistent: {},
   init: function () {
     var defaultPersistent = {
@@ -211,13 +209,13 @@ window.html5ks = {
     }
     this.api.init();
     this.menu.init();
+    this.i18n.init();
     if (this.persistent.fullscreen) {
       document.body.addEventListener("click", function onclick() {
         this.removeEventListener("click", onclick, false);
         html5ks.fullscreen();
       }, false);
     }
-    this.i18n.init();
   },
   start: function () {
     this.fetch("json", "script").then(function () {

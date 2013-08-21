@@ -274,14 +274,12 @@ class PrintRenPython(python_ast.NodeVisitor):
         return '"%s"' % node.attr
 
     def visit_Assign(self, node):
-        if not isinstance(node.targets[0], python_ast.Subscript):
-            if isinstance(node.targets[0], python_ast.Name):
-                id = node.targets[0].id
-                if id == 'suppress_window_after_timeskip' or id == '_window':
-                    return
-        else:
+        if isinstance(node.targets[0], python_ast.Subscript):
             return
-        print(python_ast.dump(node))
+        if isinstance(node.targets[0], python_ast.Name):
+            id = node.targets[0].id
+            if id == 'suppress_window_before_timeskip' or id == 'suppress_window_after_timeskip' or id == '_window':
+                return
         self.f.write(self.visit(node.targets[0]))
         self.f.write(': ')
         self.f.write(self.visit(node.value))
