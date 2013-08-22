@@ -53,13 +53,14 @@ html5ks.imachine = (function () {
                     break;
                   case "if":
                     var cpy = inst.slice(0),
-                        type = '';
+                        type = '',
+                        next = null;
                     el: while (type = cpy.shift()) {
                       switch (type) {
                         case "if":
                         case "elif":
-                          var cond = cpy.shift(),
-                              next = cpy.shift();
+                          var cond = cpy.shift();
+                          next = cpy.shift();
                           switch (cond[0]) {
                             case "_return":
                               if (this._return == cond[1]) {
@@ -77,6 +78,7 @@ html5ks.imachine = (function () {
                               if (html5ks.store.attraction[cond[0]] > cond[1]) {
                                 break el;
                               }
+                              break;
                             default:
                               throw new Error("unhandled if statement");
                           }
@@ -87,7 +89,6 @@ html5ks.imachine = (function () {
                       }
                     }
                     return html5ks.imachine.run(next).then(runInst);
-                    break;
                   case "path_end":
                     // TODO: disp vid + add to persistent
                     deferred.resolve();

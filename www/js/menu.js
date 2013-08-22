@@ -76,11 +76,13 @@
 
       var optionsButton = document.getElementsByClassName("options-button");
 
+      var showOptions = function (e) {
+        html5ks.menu.dialog("options");
+        e.stopPropagation();
+      };
+
       for (var i = optionsButton.length - 1; i >= 0; i--) {
-        optionsButton[i].addEventListener("click", function (e) {
-          html5ks.menu.dialog("options");
-          e.stopPropagation();
-        }, false);
+        optionsButton[i].addEventListener("click", showOptions, false);
       }
 
       this.elements.dialog.return.addEventListener("click", function (e) {
