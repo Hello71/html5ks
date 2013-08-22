@@ -317,7 +317,7 @@ window.html5ks.api = {
 
     if (!char) {
       char = {
-        name: name
+        name: charName
       };
     }
     if (typeof char.what_prefix === "undefined") {
