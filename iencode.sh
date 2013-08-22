@@ -12,7 +12,7 @@ iencode() {
   QUAL="$2"
   export EXT QUAL CWEBP CWEBP_FLAGS
   set -x
-  find . -name \*."${EXT}" -print0 | xargs -0 -n 1 bash -c '
+  find . -name \*."${EXT}" -print0 | xargs -0 -P ${THREADS} -n 1 bash -c '
     IN="$0"
     OUT="${IN%.${EXT}}.webp"
     ${CWEBP} -q "${QUAL}" ${CWEBP_FLAGS} ${IN} -o ${OUT}

@@ -8,15 +8,15 @@ How to use:
 0. Get Katawa Shoujo.
 1. Follow steps in unrpyc/README
 2. Extract files from data.rpa with an appropriate tool. Put files in www/dump.
-3. Modify www/dump/ui/bt-cf-{un,}checked.png to remove empty borders.
-4. Run reencode.sh to make .webm, .mp4, .ogg, .webp files. Use environment variable THREADS to control number of threads/processes spawned.
+3. Run setup.sh [2] to re-encode and fix up files. Use environment variable THREADS to control number of threads/processes spawned.
 
-4. Run nginx.sh to start nginx with appropriate options for development, then connect to localhost:8080.
+4. Run nginx.sh [2] to start nginx with appropriate options for development, then connect to localhost:8080.
 -- or --
 4. lighttpd -f lighttpd.conf should also work, but is not actively tested.
 
-Check Bugzilla for things that need to be done. [2]
+Check Bugzilla for things that need to be done. [3]
 
 [0] http://www.katawa-shoujo.com/
 [1] https://github.com/cujojs/when/
-[2] https://bugzilla.happinessforme.com/buglist.cgi?cmdtype=runnamed&namedcmd=Open+HTML5KS+bugs
+[2] If you're on Windoze, sucks for you. Use a better OS.
+[3] https://bugzilla.happinessforme.com/buglist.cgi?cmdtype=runnamed&namedcmd=Open+HTML5KS+bugs

@@ -19,6 +19,6 @@ for f in *.mkv; do
   vencode $f libx264 "-preset slower -tune animation" ${OUT}.mp4
   vencode $f libvpx "-crf 15 -b:v 1M -an -f webm -y" /dev/null
   vencode $f libvpx "-crf 15 -b:v 1M -c:a copy" ${OUT}.webm
-  vencode $f libtheora "-qscale:v 6 -c:a copy" ${OUT}.ogg
+  vencode $f libtheora "-qscale:v 6 -c:a copy" ${OUT}.ogv
 done
 

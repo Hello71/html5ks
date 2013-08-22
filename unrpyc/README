@@ -8,7 +8,7 @@ How to use:
 2. Execute "2to3 -w renpy/*.py".
 3. Put the rpyc files from the official KS distribution in here.
 4. Run "make" with appropriate -j options (yay auto-parallelization)
-5. Run "make install". Alternatively, move "script.json" into /www/scripts.
+5. Run "make install".
 
 If you're on Windows, sucks for you. Use a better OS.
 
