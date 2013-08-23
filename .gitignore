@@ -1,8 +1,5 @@
 # unrpyc built code
-/unrpyc/renpy
-/unrpyc/*.json.gz
-/unrpyc/*.json.o
-/unrpyc/*.json
+/unrpyc/*.json*
 /unrpyc/*.rpyc
 # generated nginx conf - see nginx.sh
 /nginx.gen.conf

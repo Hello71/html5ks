@@ -4,11 +4,8 @@ It's made for Katawa Shoujo script files; trying to use it on anything else will
 
 How to use:
 
-1. Copy Ren'Py distribution into "renpy" folder.
-2. Execute "2to3 -w renpy/*.py".
-3. Put the rpyc files from the official KS distribution in here.
-4. Run "make" with appropriate -j options (yay auto-parallelization)
-5. Run "make install".
+1. Put the rpyc files from the official KS distribution in here.
+2. Run "make install".
 
 If you're on Windows, sucks for you. Use a better OS.
 
