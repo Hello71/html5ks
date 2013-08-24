@@ -2,6 +2,7 @@
   "use strict";
   html5ks.menu = {
     mainMenu: function () {
+      this.context(false);
       html5ks.api.stop("music");
       html5ks.api.stop("sound");
       html5ks.api.stop("ambient");
@@ -151,7 +152,6 @@
 
       document.getElementById("goto-main-menu").addEventListener("click", function () {
         html5ks.next = function () {};
-        html5ks.menu.context(false);
         html5ks.menu.mainMenu();
       }, false);
     },
@@ -197,10 +197,12 @@
       }.bind(this));
     },
 
+    _hadWindow: null,
+
     context: function (show) {
       switch (show) {
         case true:
-          this._hadWindow = html5ks.elements.window.style.display !== "none";
+          this._hadWindow = this._hadWindow !== null ? this._hadWindow : html5ks.api.window();
           html5ks.state.status = "context";
           html5ks.elements.gray.style.display = "block";
           html5ks.elements.window.style.display = "none";
@@ -210,6 +212,7 @@
           html5ks.state.status = "scene";
           html5ks.elements.gray.style.display = "none";
           if (html5ks.state.status === "scene" && this._hadWindow) {
+            this._hadWindow = null;
             html5ks.elements.window.style.display = "block";
           }
           this.elements.context.style.display = "none";

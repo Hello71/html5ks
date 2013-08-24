@@ -171,10 +171,15 @@ window.html5ks.api = {
   window: function (action, transition) {
     var windw = html5ks.elements.window,
         deferred = when.defer();
-    if (action === "show") {
-      windw.style.display = "block";
-    } else {
-      windw.style.display = "none";
+    switch (action) {
+      case "show":
+        windw.style.display = "block";
+        break;
+      case "hide":
+        windw.style.display = "none";
+        break;
+      default:
+        return windw.style.display !== "none";
     }
     deferred.resolve(action);
     return deferred.promise;
