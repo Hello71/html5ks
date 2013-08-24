@@ -10,6 +10,7 @@ window.html5ks.api = {
     }
   },
 
+  _fading: {},
 
   set_volume: function (target, delay, channel) {
     var deferred = when.defer(),
