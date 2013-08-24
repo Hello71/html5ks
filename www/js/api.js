@@ -18,13 +18,13 @@ window.html5ks.api = {
     if (!delay) {
       audio.volume = target;
     } else {
-      var f = setInterval(function () {
+      this._fading[channel] = setInterval(function () {
         // clamp new volume 0-1
         audio.volume = Math.min(Math.max(audio.volume + step, 0), 1);
         if (audio.volume === 0 || audio.volume === 1) {
-          clearInterval(f);
+          clearInterval(this._fading);
         }
-      }, 50);
+      }.bind(this), 50);
     }
     deferred.resolve();
     return deferred.promise;
@@ -64,6 +64,9 @@ window.html5ks.api = {
     }
     var deferred = when.defer(),
         audio = html5ks.elements.audio[channel];
+    if (this._fading[channel]) {
+      clearInterval(this._fading[channel]);
+    }
     if (fade) {
       this.set_volume(0, fade, channel);
     } else {
@@ -342,45 +345,45 @@ window.html5ks.api = {
         deferred.resolve();
         html5ks.next = function () {};
       };
-      return deferred.promise;
-    }
-    var who = html5ks.elements.who;
-    if (!extend) {
-      who.innerHTML = char.name;
-      if (char.color) {
-        who.style.color = char.color;
+    } else {
+      var who = html5ks.elements.who;
+      if (!extend) {
+        who.innerHTML = char.name;
+        if (char.color) {
+          who.style.color = char.color;
+        } else {
+          who.style.color = "#ffffff";
+        }
+      }
+
+      if (extend) {
+        html5ks.elements.say.innerHTML += text;
       } else {
-        who.style.color = "#ffffff";
+        html5ks.elements.say.innerHTML = text;
       }
-    }
 
-    if (extend) {
-      html5ks.elements.say.innerHTML += text;
-    } else {
-      html5ks.elements.say.innerHTML = text;
-    }
-
-    if (w) {
-      html5ks.next = function () {
-        html5ks.next = function () {};
-        html5ks.api.extend(w[2]).then(function () {
-          deferred.resolve();
-        });
-      };
-      if (w[1]) {
-        setTimeout(function () {
-          html5ks.next();
-        }, parseFloat(w[1], 10) * 1000);
-        return deferred.promise;
+      if (w) {
+        html5ks.next = function () {
+          html5ks.next = function () {};
+          html5ks.api.extend(w[2]).then(function () {
+            deferred.resolve();
+          });
+        };
+        if (w[1]) {
+          setTimeout(function () {
+            html5ks.next();
+          }, parseFloat(w[1], 10) * 1000);
+          return deferred.promise;
+        }
+      } else {
+        html5ks.next = function () {
+          html5ks.elements.ctc.style.display = "none";
+          deferred.resolve(text);
+          html5ks.next = function () {};
+        };
       }
-    } else {
-      html5ks.next = function () {
-        html5ks.elements.ctc.style.display = "none";
-        deferred.resolve(text);
-        html5ks.next = function () {};
-      };
+      html5ks.elements.ctc.style.display = "block";
     }
-    html5ks.elements.ctc.style.display = "block";
     if (html5ks.state.skip || str.indexOf("{nw}") > -1) {
       html5ks.next();
     } else if (html5ks.state.auto) {

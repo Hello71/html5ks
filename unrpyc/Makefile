@@ -25,12 +25,13 @@ script-%.json: script-%.json.o
 	sed -i -e 's/^{//;s/}$$/,/' $@
 
 clean:
-	rm -f *.json.o *.json *.gz
+	rm -f *.json*
 
 test: all
 	jshint --show-non-errors *.json
 
 install: all
+	[ -d ../www/json ] || mkdir ../www/json
 	install -t ../www/json script.json script.json.gz imachine.json imachine.json.gz imachine_replay.json imachine_replay.json.gz ui-strings.json ui-strings.json.gz
 
 uninstall:
