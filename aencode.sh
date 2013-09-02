@@ -7,16 +7,19 @@ FFMPEG_FLAGS=""
 
 set -e
 
-aencode() {
+ffmpeg() {
   set -x
-  [[ -f $4 ]] || ${FFMPEG} -threads ${THREADS} -i "$1" -c:a "$2" $3 ${FFMPEG_FLAGS} "$4"
+  command ${FFMPEG} -threads ${THREADS} ${FFMPEG_FLAGS} "$@"
+  set +x
 }
 
 for d in bgm sfx; do
-  cd $(dirname $0)/www/dump/${d}
+  pushd $(dirname $0)/www/dump/${d}
   for f in *.ogg; do
     OUT=${f%.ogg}
-    aencode $f libopus "-b:a 48k -vbr on" ${OUT}.opus
-    aencode $f libfdk_aac -vbr 2 ${OUT}.m4a
+    ffmpeg -y -i $f -c:a pcm_s16le ${OUT}.wav
+    opusenc --bitrate 64 ${OUT}.wav ${OUT}.opus
+    ffmpeg -n -i ${OUT}.wav -c:a libfdk_aac -vbr 2 ${OUT}.m4a || true
   done
+  popd
 done

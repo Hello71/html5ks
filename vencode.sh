@@ -9,15 +9,15 @@ set -e
 
 cd $(dirname $0)/www/dump/video
 
-vencode() {
+ffmpeg() {
   set -x
-  ${FFMPEG} -threads ${THREADS} -i "$1" -c:v "$2" $3 ${FFMPEG_FLAGS} "$4"
+  command ${FFMPEG} -n -threads ${THREADS} ${FFMPEG_FLAGS} "$@"
+  set +x
 }
 
 for f in *.mkv; do
   OUT=${f%.mkv}
-  vencode $f libx264 "-preset slower -tune animation" ${OUT}.mp4
-  vencode $f libvpx "-crf 15 -b:v 1M -an -f webm -y" /dev/null
-  vencode $f libvpx "-crf 15 -b:v 1M -c:a copy" ${OUT}.webm
-  vencode $f libtheora "-qscale:v 6 -c:a copy" ${OUT}.ogv
+  ffmpeg -i $f -c:v libx264 -preset slower -tune animation -c:a libfdk_aac ${OUT}.mp4
+  ffmpeg -i $f -c:v libvpx -crf 15 -b:v 1M -c:a copy ${OUT}.webm
+  ffmpeg -i $f -c:v libtheora -qscale:v 6 -c:a copy ${OUT}.ogv
 done

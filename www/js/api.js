@@ -39,7 +39,20 @@ window.html5ks.api = {
       audio.loop = true;
     }
     html5ks.elements.audio[channel] = audio;
-    audio.src = "dump/" + (channel === "music" ? "bgm/" + html5ks.data.music[name] + ".ogg" : html5ks.data.sfx[name]);
+
+    var src = "dump/" + channel === "music" ? html5ks.data.music[name] : html5ks.data.sfx[name];
+    if (Modernizr.audio.opus) {
+      audio.src = src + ".opus";
+    } else if (Modernizr.audio.ogg) {
+      audio.src = src + ".ogg";
+    } else if (Modernizr.audio.aac) {
+      audio.src = src + ".m4a";
+    } else if (Modernizr.audio.wav) {
+      audio.src = src + ".wav";
+    } else {
+      console.error("wtf, no audio formats");
+    }
+
     audio.load();
     var volume = html5ks.persistent[channel + "Volume"];
     audio.volume = fade ? 0 : volume;
@@ -90,9 +103,11 @@ window.html5ks.api = {
     if (Modernizr.video.webm) {
       video.src = src + "webm";
     } else if (Modernizr.video.ogg) {
-      video.src = src + "ogg";
+      video.src = src + "ogv";
     } else if (Modernizr.video.h264) {
       video.src = src + "mp4";
+    } else {
+      console.error("wtf is this, no video formats");
     }
 
     video.load();
