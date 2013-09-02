@@ -11,7 +11,7 @@ cd $(dirname $0)/www/dump/video
 
 vencode() {
   set -x
-  [[ -f $4 ]] || ${FFMPEG} -threads ${THREADS} -i "$1" -c:v "$2" $3 ${FFMPEG_FLAGS} "$4"
+  ${FFMPEG} -threads ${THREADS} -i "$1" -c:v "$2" $3 ${FFMPEG_FLAGS} "$4"
 }
 
 for f in *.mkv; do
@@ -21,4 +21,3 @@ for f in *.mkv; do
   vencode $f libvpx "-crf 15 -b:v 1M -c:a copy" ${OUT}.webm
   vencode $f libtheora "-qscale:v 6 -c:a copy" ${OUT}.ogv
 done
-
