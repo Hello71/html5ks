@@ -11,7 +11,7 @@ cd $(dirname $0)/www/dump/video
 
 ffmpeg() {
   set -x
-  command ${FFMPEG} -n -threads ${THREADS} ${FFMPEG_FLAGS} "$@"
+  command ${FFMPEG} -threads ${THREADS} ${FFMPEG_FLAGS} "$@"
   set +x
 }
 
