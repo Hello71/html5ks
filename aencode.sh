@@ -17,9 +17,9 @@ for d in bgm sfx; do
   pushd $(dirname $0)/www/dump/${d}
   for f in *.ogg; do
     OUT=${f%.ogg}
-    ffmpeg -y -i $f -c:a pcm_s16le ${OUT}.wav
-    opusenc --bitrate 64 ${OUT}.wav ${OUT}.opus
-    ffmpeg -n -i ${OUT}.wav -c:a libfdk_aac -vbr 2 ${OUT}.m4a || true
+    [[ -f ${OUT}.wav ]] || ffmpeg -i $f -c:a pcm_s16le ${OUT}.wav
+    [[ -f ${OUT}.opus ]] || opusenc --bitrate 64 ${OUT}.wav ${OUT}.opus
+    [[ -f ${OUT}.m4a ]] || ffmpeg -i ${OUT}.wav -c:a libfdk_aac -vbr 2 ${OUT}.m4a
   done
   popd
 done
