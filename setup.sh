@@ -13,3 +13,4 @@ trim www/dump/ui/bt-cf-unchecked.png
 trim www/dump/ui/bt-cf-checked.png
 
 ./iencode.sh
+./aencode.sh
