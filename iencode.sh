@@ -25,8 +25,8 @@ iencode jpg 90
 iencode png 99
 
 if hash zopflipng; then
-  find . -name \*.png -print0 | xargs -0 -I '{}' -P ${THREADS} zopflipng -my '{}' '{}'
+  find . -name \*.png -print0 | xargs -0 -I '{}' -P ${THREADS} zopflipng -m -y '{}' '{}'
 else
   echo >&2 "Install zopfli (https://code.google.com/p/zopfli/) to improve PNG compression."
-  echo >&2 "Approximately 2% savings can be seen across the board, with no cost to quality."
+  echo >&2 "Approximately 0.01% savings can be seen across the board, with no cost to quality."
 fi

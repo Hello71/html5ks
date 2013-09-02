@@ -40,7 +40,7 @@ window.html5ks.api = {
     }
     html5ks.elements.audio[channel] = audio;
 
-    var src = "dump/" + channel === "music" ? html5ks.data.music[name] : html5ks.data.sfx[name];
+    var src = "dump/" + (channel === "music" ? html5ks.data.music[name] : html5ks.data.sfx[name]);
     if (Modernizr.audio.opus) {
       audio.src = src + ".opus";
     } else if (Modernizr.audio.ogg) {
