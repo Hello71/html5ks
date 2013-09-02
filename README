@@ -12,13 +12,16 @@ How to use:
 
 4. Run nginx.sh [2] to start nginx with appropriate options for development, then connect to localhost:8080.
 -- or --
-4. lighttpd -f lighttpd.conf should also work, but is not actively tested.
+4. Open www/index.html in a browser. This is untested, and some things may not work. [3]
 
-Check Bugzilla for things that need to be done. [3]
+lighttpd.conf is no longer maintained. Patches to fix it are welcome.
+
+Check Bugzilla for things that need to be done. [4]
 
 If you were looking for real documentation... good luck.
 
 [0] http://www.katawa-shoujo.com/
 [1] https://github.com/cujojs/when/
 [2] If you're on Windoze, sucks for you. Use a better OS.
-[3] https://bugzilla.happinessforme.com/buglist.cgi?cmdtype=runnamed&namedcmd=Open+HTML5KS+bugs
+[3] Do not send patches for this, unless they also fix other issues.
+[4] https://bugzilla.happinessforme.com/buglist.cgi?cmdtype=runnamed&namedcmd=Open+HTML5KS+bugs
