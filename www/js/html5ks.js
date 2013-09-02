@@ -218,10 +218,9 @@ window.html5ks = {
     }
   },
   start: function () {
-    this.fetch("json", "script").then(function () {
-      html5ks.api.movie_cutscene("4ls", true).then(function () {
-        html5ks.menu.mainMenu();
-      });
+    this.fetch("json", "script");
+    html5ks.api.movie_cutscene("4ls", true).then(function () {
+      html5ks.menu.mainMenu();
     });
   },
   fetch: function (type, name) {

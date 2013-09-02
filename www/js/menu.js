@@ -184,16 +184,14 @@
       this.initEvents();
       this.initOptions();
 
-      this.elements.main.start.addEventListener("click", function () {
-        if (this._imachine_loaded) {
+      when.all([html5ks.fetch("json", "imachine"),
+          html5ks.fetch("json", "script")]).then(function () {
+        var start = this.elements.main.start;
+        start.addEventListener("click", function () {
           this.elements.mainMenu.style.display = "none";
           html5ks.imachine.start().then(this.mainMenu.bind(this));
-        }
-      }.bind(this), false);
-      html5ks.fetch("json", "imachine").then(function () {
-        var start = this.elements.main.start;
+        }.bind(this), false);
         start.className = start.className.replace("disabled", "");
-        this._imachine_loaded = true;
       }.bind(this));
     },
 
