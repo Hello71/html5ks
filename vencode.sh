@@ -3,7 +3,7 @@
 # configure ffmpeg location if not in PATH
 FFMPEG=ffmpeg
 # configure flags
-FFMPEG_FLAGS="-y"
+FFMPEG_FLAGS=""
 
 set -e
 
@@ -11,7 +11,7 @@ cd $(dirname $0)/www/dump/video
 
 vencode() {
   set -x
-  ${FFMPEG} -threads ${THREADS} -i "$1" -c:v "$2" $3 ${FFMPEG_FLAGS} "$4"
+  [[ -f $4 ]] || ${FFMPEG} -threads ${THREADS} -i "$1" -c:v "$2" $3 ${FFMPEG_FLAGS} "$4"
 }
 
 for f in *.mkv; do

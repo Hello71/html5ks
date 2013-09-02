@@ -156,6 +156,7 @@ html.no-js #gotit {
 }
 #nvlctc {
   bottom: 25px;
+  transform: rotate(90deg);
 }
 #centered {
   text-align: center;
