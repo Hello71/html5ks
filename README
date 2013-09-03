@@ -1,14 +1,21 @@
-This is an HTML5 implementation of the game Katawa Shoujo. [0]
+This is a WIP HTML5 implementation of the game Katawa Shoujo. [0]
 
 jQuery is not used, but when.js [1] is used as a sensible Promises/A+ implementation.
 
-It's still very much a WIP, but at least the first scene displays half-credibly.
+== Requirements ==
+- Katawa Shoujo (obviously)
+- when.js
+- Bash
+- Firefox/Chrome
+- ffmpeg with AAC, libtheora, libvpx, libx264
+- opus-tools
+- libwebp
 
 How to use:
 0. Get Katawa Shoujo.
-1. Follow steps in unrpyc/README
+1. Copy *.rpyc from Katawa Shoujo/game into unrpyc/ directory.
 2. Extract files from data.rpa with an appropriate tool. Put files in www/dump.
-3. Run setup.sh [2] to re-encode and fix up files. Use environment variable THREADS to control number of threads/processes spawned.
+3. Run setup.sh [2]. Use environment variable THREADS to control number of threads/processes spawned.
 
 4. Run nginx.sh [2] to start nginx with appropriate options for development, then connect to localhost:8080.
 -- or --
@@ -16,9 +23,21 @@ How to use:
 
 lighttpd.conf is no longer maintained. Patches to fix it are welcome.
 
-Check Bugzilla for things that need to be done. [4]
+== Reducing setup time ==
+By editing the *encode.sh files, you can turn on or off the various encodings. To reduce the setup time (many hours), try the following:
 
-If you were looking for real documentation... good luck.
+Turn off zopflipng re-coding in iencode.sh. It saves only a few MB but takes several hours to complete. Useful if you're serving many, MANY copies, but not useful if you're serving one.
+
+== Reducing file size ==
+After all the re-encoding, the final size of KS 1.1 is about 1.9G. The majority of this is taken up by the massive .wav extractions of the music files required by opusenc.
+
+They are not required by pretty much any major browsers to play the music, and are a last resort for the code.
+
+You can remove them with a command such as `find . -name '*.wav' -delete`.
+
+== Contributing ==
+
+Check Bugzilla for things that need to be done. [4]
 
 [0] http://www.katawa-shoujo.com/
 [1] https://github.com/cujojs/when/

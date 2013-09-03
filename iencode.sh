@@ -28,5 +28,5 @@ if hash zopflipng; then
   find . -name \*.png -print0 | xargs -0 -I '{}' -P ${THREADS} zopflipng -m -y '{}' '{}'
 else
   echo >&2 "Install zopfli (https://code.google.com/p/zopfli/) to improve PNG compression."
-  echo >&2 "Approximately 0.01% savings can be seen across the board, with no cost to quality."
+  echo >&2 "KS 1.1 .png files reduce by ~2.6M (~1.6%) with -m, taking several hours."
 fi
