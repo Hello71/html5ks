@@ -192,6 +192,9 @@ window.html5ks = {
       if (/MSIE/.test(navigator.userAgent)) {
         document.getElementById("ie").style.display = "block";
       }
+      if (!Modernizr.audio.opus) {
+        document.getElementById("opus").style.display = "block";
+      }
       for (var i = 0; i < warns.length; i++) {
         if (window.getComputedStyle(warns[i]).getPropertyValue("display") !== "none") {
           warn.style.visibility = "visible";

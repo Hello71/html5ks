@@ -55,7 +55,7 @@ window.html5ks.api = {
       audio.src = src + ".opus";
     } else if (Modernizr.audio.ogg) {
       audio.src = src + ".ogg";
-    } else if (Modernizr.audio.aac) {
+    } else if (Modernizr.audio.m4a) {
       audio.src = src + ".m4a";
     } else if (Modernizr.audio.wav) {
       audio.src = src + ".wav";

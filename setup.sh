@@ -14,6 +14,7 @@ popd
 
 trim() {
   convert -trim "$@" "$@"
+  optipng -o7 "$@"
 }
 
 trim www/dump/ui/bt-cf-unchecked.png
