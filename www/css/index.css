@@ -60,6 +60,7 @@ html.js             #warn noscript { display: none; }
                     #warn li#ie { display: none; }
 html.video          #warn li#video { display: none; }
 html.audio          #warn li#audio { display: none; }
+                    #warn li#opus{ display: none; }
 html.fontface       #warn li#fontface { display: none; }
 html.csstransforms  #warn li#csstransforms { display: none; }
 html.csstransitions #warn li#csstransitions { display: none; }
