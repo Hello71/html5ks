@@ -4,6 +4,7 @@
 # generated nginx conf - see nginx.sh
 /nginx.gen.conf
 # ignore 'copyrighted' contents similar to emulators
+/www/favicon.ico
 /www/json
 /www/dump
 /rpy
