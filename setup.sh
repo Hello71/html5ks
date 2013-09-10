@@ -20,5 +20,7 @@ trim() {
 trim www/dump/ui/bt-cf-unchecked.png
 trim www/dump/ui/bt-cf-checked.png
 
+convert www/dump/ui/icon.png -resize 256x256 -transparent white www/favicon.ico
+
 ./iencode.sh
 ./aencode.sh
