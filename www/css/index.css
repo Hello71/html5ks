@@ -56,7 +56,7 @@ html.no-js #warn-container {
   z-index: 100;
 }
 html.no-js          #warn li { display: none; }
-html.js             #warn noscript { display: none; }
+html.js             #warn li#js { display: none; }
                     #warn li#ie { display: none; }
 html.video          #warn li#video { display: none; }
 html.audio          #warn li#audio { display: none; }
