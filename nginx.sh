@@ -3,10 +3,8 @@
 set -e
 cd "$(dirname $0)"
 
-
 # empty file
 > nginx.gen.conf
-
 
 V=$(nginx -V 2>&1)
 
