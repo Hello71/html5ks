@@ -179,12 +179,12 @@ window.html5ks = {
   },
   warnUnsupported: function () {
     if (!html5ks.persistent.gotit) {
-      var warn = document.getElementById("warn-container");
+      var interstitial = document.getElementById("interstitial");
       document.getElementById("gotit").addEventListener("mouseup", function () {
-        warn.style.mozAnimation = "0.5s dissolveout";
-        warn.style.webkitAnimation = "0.5s dissolveout";
-        warn.style.animation = "0.5s dissolveout";
-        warn.style.opacity = 0;
+        interstitial.style.mozAnimation = "1s dissolveout";
+        interstitial.style.webkitAnimation = "1s dissolveout";
+        interstitial.style.animation = "1s dissolveout";
+        interstitial.style.opacity = 0;
         html5ks.persistent.gotit = true;
         html5ks.start();
       }, false);
