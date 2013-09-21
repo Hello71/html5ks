@@ -28,17 +28,22 @@ body {
   background: gray;
   font: 22px/27px Playtime, sans-serif;
 }
+#all {
+  height: 100%;
+  position: absolute;
+  width: 100%;
+}
 h2 {
   font: 20px/24px Playtime; /* yes, h2 has *smaller* font */
   font-weight: bold;
 }
 
 /* warnings */
-#warn-container {
+#interstitial {
   visibility: hidden;
   cursor: auto;
 }
-html.no-js #warn-container {
+html.no-js #interstitial {
   visibility: visible;
 }
 #warn {
@@ -71,7 +76,7 @@ html.no-js #gotit {
   display: none;
 }
 
-/* wooo, the real content */
+/* pre-content */
 #container, #vid {
   cursor: url("../dump/ui/mousecursor.png"), default;
   position: absolute;
@@ -98,9 +103,26 @@ html.no-js #gotit {
   opacity: 0.5;
   z-index: 10;
 }
+
+/* dialogs */
 #dialogs {
   z-index: 50;
+  width: 504px;
+  height: 395px;
+  background: url(../dump/ui/bg-config.png);
+  margin-left: -252px;
+  margin-top: -197.5px;
 }
+#options {
+  padding: 10px 20px;
+}
+#return {
+  position: absolute;
+  bottom: 15px;
+  right: 20px;
+}
+
+/* content */
 #show {
   height: 100%;
 }
