@@ -57,7 +57,7 @@ window.html5ks = {
       kenji: 0,
       sc: 0,
       hanako: 0
-    },
+    }
   },
   state: {},
   next: function () {},

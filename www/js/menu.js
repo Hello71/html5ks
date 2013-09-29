@@ -28,7 +28,7 @@
         dialogs: document.getElementById("dialogs"),
         dialog: {
           options: document.getElementById("options"),
-          return: document.getElementById("return")
+          retn: document.getElementById("retn")
         },
         mainMenu: document.getElementById("main-menu"),
         main: {
@@ -62,6 +62,7 @@
               scaleVideo.checked = true;
               scaleVideo.parentNode.className = scaleVideo.parentNode.className.replace("disabled", "");
             }
+            // fall-through
           case "scaleVideo":
             html5ks.scale();
             break;
@@ -86,7 +87,7 @@
         optionsButton[i].addEventListener("click", showOptions, false);
       }
 
-      this.elements.dialog.return.addEventListener("click", function (e) {
+      this.elements.dialog.retn.addEventListener("click", function (e) {
         html5ks.menu.activeDialog.style.display = "none";
         html5ks.menu.activeDialog = null;
         html5ks.menu.elements.dialogs.style.display = "none";
