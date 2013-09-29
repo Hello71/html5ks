@@ -3,9 +3,52 @@ window.html5ks.api = {
   init: function () {
     var chars = html5ks.data.characters;
     for (var ch in chars) {
-      var char = chars[ch];
-      if (char.name) {
-        char.name = this.tag(char.name);
+      var chr = chars[ch];
+      if (chr.name) {
+        chr.name = this.tag(chr.name);
+      }
+    }
+  },
+
+
+  iscene: function (target, is_h, is_end) {
+    html5ks.state.status = "scene";
+    var deferred = when.defer(),
+        label = html5ks.data.script[html5ks.persistent.language + "_" + target],
+        i = 0;
+    if (target === "timeskip") {
+      deferred.resolve();
+      return deferred.promise;
+    }
+    (function run(ret) {
+      if (label[i]) {
+        html5ks.api.runInst(label[i]).then(run, console.error);
+        i++;
+      } else {
+        deferred.resolve(ret);
+      }
+    }());
+    return deferred.promise;
+  },
+
+
+  runInst: function (inst) {
+    var cmd = inst[0].replace(/"/g, ''),
+        args = inst.slice(1);
+    if (html5ks.data.characters[cmd]) {
+      return this.character(cmd, args[0]);
+    } else {
+      if (this[cmd]) {
+        return this[cmd].apply(this, args);
+      } else if (inst.length === 1) {
+        return this.character("name_only", cmd);
+      } else if (/^[A-Z]/.test(cmd)) {
+        return this.character(cmd, args[0]);
+      } else {
+        console.error("no such cmd " + cmd);
+        var deferred = when.defer();
+        deferred.resolve();
+        return deferred.promise;
       }
     }
   },
@@ -154,45 +197,6 @@ window.html5ks.api = {
   },
 
 
-  iscene: function (target, is_h, is_end) {
-    html5ks.state.status = "scene";
-    var deferred = when.defer(),
-        label = html5ks.data.script[html5ks.persistent.language + "_" + target],
-        i = 0;
-    (function run(ret) {
-      if (label[i]) {
-        html5ks.api.runInst(label[i]).then(run, console.error);
-        i++;
-      } else {
-        deferred.resolve(ret);
-      }
-    }());
-    return deferred.promise;
-  },
-
-
-  runInst: function (inst) {
-    var cmd = inst[0].replace(/"/g, ''),
-        args = inst.slice(1);
-    if (html5ks.data.characters[cmd]) {
-      return this.character(cmd, args[0]);
-    } else {
-      if (this[cmd]) {
-        return this[cmd].apply(this, args);
-      } else if (inst.length === 1) {
-        return this.character("name_only", cmd);
-      } else if (/^[A-Z]/.test(cmd)) {
-        return this.character(cmd, args[0]);
-      } else {
-        console.error("no such cmd " + cmd);
-        var deferred = when.defer();
-        deferred.resolve();
-        return deferred.promise;
-      }
-    }
-  },
-
-
   window: function (action, transition) {
     var windw = html5ks.elements.window,
         deferred = when.defer();
@@ -311,11 +315,11 @@ window.html5ks.api = {
     var show = html5ks.elements.show.children;
     for (var i = show.length - 1; i >= 0; i--) {
       if (show[i].id === name) {
-        html5ks.elements.show.removeChild(show[i]);
+        show[i].style.display = "none";
+        deferred.resolve();
+        return deferred.promise;
       }
     }
-    deferred.resolve();
-    return deferred.promise;
   },
 
   tag: function (str) {
@@ -346,29 +350,29 @@ window.html5ks.api = {
   character: function (charName, str, extend) {
     var deferred = when.defer(),
         text = this.tag(str),
-        char = typeof charName === "string" ? html5ks.data.characters[charName] : charName,
+        chr = typeof charName === "string" ? html5ks.data.characters[charName] : charName,
         w = /{w=?(\d*\.\d*)?}(.*)/.exec(str);
 
-    if (!char) {
-      char = {
+    if (!chr) {
+      chr = {
         name: charName
       };
     }
-    if (typeof char.what_prefix === "undefined") {
-      char.what_prefix = "“";
-      char.what_suffix = "”";
+    if (typeof chr.what_prefix === "undefined") {
+      chr.what_prefix = "“";
+      chr.what_suffix = "”";
     }
 
-    this._lastchar = char;
+    this._lastchar = chr;
 
-    if (!extend && char.what_prefix) {
-      text = char.what_prefix + text;
+    if (!extend && chr.what_prefix) {
+      text = chr.what_prefix + text;
     }
-    if ((!w || !w[1]) && char.what_suffix) {
-      text = text + char.what_suffix;
+    if ((!w || !w[1]) && chr.what_suffix) {
+      text = text + chr.what_suffix;
     }
 
-    if (char.kind === "nvl") {
+    if (chr.kind === "nvl") {
       html5ks.elements.nvlsay.innerHTML += "<span class='nvl-block'>" + text + "</span>";
       html5ks.elements.nvlctc.style.display = "block";
       html5ks.next = function () {
@@ -379,9 +383,9 @@ window.html5ks.api = {
     } else {
       var who = html5ks.elements.who;
       if (!extend) {
-        who.innerHTML = char.name;
-        if (char.color) {
-          who.style.color = char.color;
+        who.innerHTML = chr.name;
+        if (chr.color) {
+          who.style.color = chr.color;
         } else {
           who.style.color = "#ffffff";
         }
@@ -468,7 +472,8 @@ window.html5ks.api = {
     return deferred.promise;
   },
 
-  menu: function (choices) {
+  menu: function () {
+    var args = Array.prototype.slice.call(arguments, 0);
     var deferred = when.defer();
     var menu = html5ks.elements.choices,
         frag = document.createDocumentFragment(),
