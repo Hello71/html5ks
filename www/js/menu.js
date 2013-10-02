@@ -28,7 +28,7 @@
         dialogs: document.getElementById("dialogs"),
         dialog: {
           options: document.getElementById("options"),
-          retn: document.getElementById("retn")
+          retn: document.getElementById("return")
         },
         mainMenu: document.getElementById("main-menu"),
         main: {
