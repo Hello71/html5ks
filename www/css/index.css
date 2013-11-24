@@ -34,11 +34,12 @@ body {
   width: 100%;
 }
 h2 {
-  font: 20px/24px Playtime; /* yes, h2 has *smaller* font */
+  font-size: 20px
+  line-height: 24px; /* yes, h2 has *smaller* font */
   font-weight: bold;
 }
 
-/* warnings */
+/* interstitial */
 #interstitial {
   visibility: hidden;
   cursor: auto;
@@ -53,7 +54,6 @@ html.no-js #interstitial {
   height: 70%;
   left: 50%;
   margin-left: -300px;
-  overflow: auto;
   padding: 10px;
   position: absolute;
   top: 10%;
@@ -65,7 +65,7 @@ html.js             #warn li#js { display: none; }
                     #warn li#ie { display: none; }
 html.video          #warn li#video { display: none; }
 html.audio          #warn li#audio { display: none; }
-                    #warn li#opus{ display: none; }
+                    #warn li#opus { display: none; }
 html.fontface       #warn li#fontface { display: none; }
 html.csstransforms  #warn li#csstransforms { display: none; }
 html.csstransitions #warn li#csstransitions { display: none; }
@@ -80,9 +80,6 @@ html.no-js #gotit {
 #container, #vid {
   cursor: url("../dump/ui/mousecursor.png"), default;
   position: absolute;
-  -moz-backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
 }
 #container, #vid {
   top: 50%;
@@ -109,7 +106,7 @@ html.no-js #gotit {
   z-index: 50;
   width: 504px;
   height: 395px;
-  background: url(../dump/ui/bg-config.png);
+  background: url("../dump/ui/bg-config.png");
   margin-left: -252px;
   margin-top: -197.5px;
 }
@@ -244,7 +241,8 @@ html.no-js #gotit {
   position: absolute;
   bottom: 10px;
   right: 15px;
-  font: 8px/8px Playtime;
+  font-size: 8px;
+  line-height: 8px;
   opacity: 0.4;
 }
 
