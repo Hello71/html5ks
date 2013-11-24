@@ -10,7 +10,7 @@ window.html5ks = {
       hdisable: false,
       skipUnread: false,
       skipAfterChoices: false,
-      useWebP: false,
+      useWebP: null,
       fullscreen: false,
       scaleAll: true,
       scaleVideo: true,
@@ -22,7 +22,6 @@ window.html5ks = {
       language: "en"
     };
     var loaded = localStorage.persistent ? JSON.parse(localStorage.persistent) : {};
-    html5ks.state._loaded = typeof loaded.version !== undefined;
     var defProp = function (v) {
       Object.defineProperty(html5ks.persistent, k, {
         get: function () {
@@ -43,7 +42,7 @@ window.html5ks = {
       html5ks.onload();
     }, false);
 
-    if (html5ks.state._loaded) {
+    if (html5ks.persistent.useWebP === null) {
       var img = new Image();
       img.onload = function () {
         html5ks.persistent.useWebP = img.width === 4;
@@ -196,6 +195,7 @@ window.html5ks = {
         document.getElementById("opus").style.display = "block";
       }
       for (var i = 0; i < warns.length; i++) {
+        var warn = warns[i];
         if (window.getComputedStyle(warns[i]).getPropertyValue("display") !== "none") {
           warn.style.visibility = "visible";
           return true;

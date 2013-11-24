@@ -1,6 +1,8 @@
 "use strict";
 window.html5ks.api = {
   init: function () {
+
+    // tag character names
     var chars = html5ks.data.characters;
     for (var ch in chars) {
       var chr = chars[ch];
@@ -8,26 +10,34 @@ window.html5ks.api = {
         chr.name = this.tag(chr.name);
       }
     }
+
   },
 
 
   iscene: function (target, is_h, is_end) {
-    html5ks.state.status = "scene";
-    var deferred = when.defer(),
-        label = html5ks.data.script[html5ks.persistent.language + "_" + target],
-        i = 0;
+
+    // TODO: implement timeskip
     if (target === "timeskip") {
       deferred.resolve();
       return deferred.promise;
     }
-    (function run(ret) {
+
+    html5ks.state.status = "scene";
+
+    var deferred = when.defer(),
+        label = html5ks.data.script[html5ks.persistent.language + "_" + target],
+        i = 0;
+
+    var run = function (ret) {
       if (label[i]) {
-        html5ks.api.runInst(label[i]).then(run, console.error);
-        i++;
+        this.runInst(label[i++]).then(run, console.error);
       } else {
         deferred.resolve(ret);
       }
-    }());
+    }.bind(this);
+
+    run();
+
     return deferred.promise;
   },
 
@@ -46,32 +56,30 @@ window.html5ks.api = {
         return this.character(cmd, args[0]);
       } else {
         console.error("no such cmd " + cmd);
-        var deferred = when.defer();
-        deferred.resolve();
-        return deferred.promise;
+        return when.defer().resolve();
       }
     }
   },
 
-  _fading: {},
+  _fades: {},
 
   set_volume: function (target, delay, channel) {
     var deferred = when.defer(),
-        audio = html5ks.elements.audio[channel],
-        step = (target - audio.volume) / (delay * 20);
+        audioElement = html5ks.elements.audio[channel],
+        step = (target - audioElement.volume) / (delay * 20);
     if (!delay) {
-      audio.volume = target;
+      audioElement.volume = target;
     } else {
-      this._fading[channel] = setInterval(function () {
+      if (this._fades[channel]) clearInterval(this._fades[channel]);
+      this._fades[channel] = setInterval(function () {
         // clamp new volume 0-1
-        audio.volume = Math.min(Math.max(audio.volume + step, 0), 1);
-        if (audio.volume === 0 || audio.volume === 1) {
-          clearInterval(this._fading);
+        audioElement.volume = Math.min(Math.max(audioElement.volume + step, 0), 1);
+        if (audioElement.volume === 0 || audioElement.volume === 1) {
+          clearInterval(this._fades[channel]);
         }
       }.bind(this), 50);
     }
-    deferred.resolve();
-    return deferred.promise;
+    return deferred.resolve();
   },
 
   play: function (channel, name, ignore, fade) {
@@ -94,17 +102,12 @@ window.html5ks.api = {
         src += "sfx/" + html5ks.data.sfx[name];
     }
 
-    if (Modernizr.audio.opus) {
-      audio.src = src + ".opus";
-    } else if (Modernizr.audio.ogg) {
-      audio.src = src + ".ogg";
-    } else if (Modernizr.audio.m4a) {
-      audio.src = src + ".m4a";
-    } else if (Modernizr.audio.wav) {
-      audio.src = src + ".wav";
-    } else {
-      console.error("wtf, no audio formats");
-    }
+    ["opus", "ogg", "m4a", "wav"].some(function (type) {
+      if (Modernizr.audio[type]) {
+        audio.src = src + "." + type;
+        return true;
+      }
+    });
 
     audio.load();
     var volume = html5ks.persistent[channel + "Volume"];
@@ -125,15 +128,19 @@ window.html5ks.api = {
 
   stop: function (channel, ignore, fade) {
     if (channel === "all") {
-      this.stop("music", ignore, fade);
-      this.stop("sound", ignore, fade);
-      return this.stop("ambient", ignore, fade);
+      return ["music", "sound", "ambient"].forEach(function (channel) {
+        this.stop(channel, ignore, fade);
+      }.bind(this));
     }
+
     var deferred = when.defer(),
         audio = html5ks.elements.audio[channel];
-    if (this._fading[channel]) {
-      clearInterval(this._fading[channel]);
+
+    // clear fade
+    if (this._fades[channel]) {
+      clearInterval(this._fades[channel]);
     }
+
     if (fade) {
       this.set_volume(0, fade, channel);
     } else {
@@ -146,27 +153,31 @@ window.html5ks.api = {
 
   movie_cutscene: function (vid_src, skippable) {
     var deferred = when.defer(),
-        video = html5ks.elements.video,
-        src = "dump/video/" + vid_src + ".";
+        video = html5ks.elements.video;
 
     this.stop("all");
     this.speed("auto", false);
     this.speed("skip", false);
 
-    if (Modernizr.video.webm) {
-      video.src = src + "webm";
-    } else if (Modernizr.video.ogg) {
-      video.src = src + "ogv";
-    } else if (Modernizr.video.h264) {
-      video.src = src + "mp4";
-    } else {
-      console.error("wtf is this, no video formats");
+    var types = {
+      webm: "webm",
+      ogg: "ogv",
+      h264: "mp4"
+    };
+    for (var type in types) {
+      if (Modernizr.video[type]) {
+        video.src = "dump/video/" + vid_src + "." + types[type];
+        break;
+      }
     }
 
-    video.load();
-    video.style.display = "block";
-    video.volume = html5ks.persistent.musicVolume;
-    video.play();
+    video.oncanplaythrough = function () {
+      video.volume = html5ks.persistent.musicVolume;
+      video.style.display = "block";
+      video.play();
+      video.onended = done;
+    };
+
     var done = function () {
       video.style.display = "none";
       video.pause();
@@ -184,10 +195,13 @@ window.html5ks.api = {
         done();
       }
     };
-    video.onended = done;
+
     video.onerror = function () {
       deferred.reject(this.error);
     };
+
+    video.load();
+
     return deferred.promise;
   },
 
@@ -198,20 +212,18 @@ window.html5ks.api = {
 
 
   window: function (action, transition) {
-    var windw = html5ks.elements.window,
-        deferred = when.defer();
+    var windowEl = html5ks.elements.window;
     switch (action) {
       case "show":
-        windw.style.display = "block";
+        windowEl.style.display = "block";
         break;
       case "hide":
-        windw.style.display = "none";
+        windowEl.style.display = "none";
         break;
       default:
-        return windw.style.display !== "none";
+        return windowEl.style.display !== "none";
     }
-    deferred.resolve(action);
-    return deferred.promise;
+    return when.defer().resolve(action);
   },
 
 
@@ -310,6 +322,7 @@ window.html5ks.api = {
     }
     return deferred.promise;
   },
+
   hide: function (name) {
     var deferred = when.defer();
     var show = html5ks.elements.show.children;
@@ -321,6 +334,7 @@ window.html5ks.api = {
       }
     }
   },
+
 
   tag: function (str) {
     var tags = [
@@ -472,7 +486,7 @@ window.html5ks.api = {
     return deferred.promise;
   },
 
-  menu: function () {
+  menu: function (choices) {
     var args = Array.prototype.slice.call(arguments, 0);
     var deferred = when.defer();
     var menu = html5ks.elements.choices,
