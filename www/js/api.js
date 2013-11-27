@@ -1,85 +1,34 @@
 "use strict";
 window.html5ks.api = {
   init: function () {
-
-    // tag character names
     var chars = html5ks.data.characters;
     for (var ch in chars) {
-      var chr = chars[ch];
-      if (chr.name) {
-        chr.name = this.tag(chr.name);
-      }
-    }
-
-  },
-
-
-  iscene: function (target, is_h, is_end) {
-
-    // TODO: implement timeskip
-    if (target === "timeskip") {
-      deferred.resolve();
-      return deferred.promise;
-    }
-
-    html5ks.state.status = "scene";
-
-    var deferred = when.defer(),
-        label = html5ks.data.script[html5ks.persistent.language + "_" + target],
-        i = 0;
-
-    var run = function (ret) {
-      if (label[i]) {
-        this.runInst(label[i++]).then(run, console.error);
-      } else {
-        deferred.resolve(ret);
-      }
-    }.bind(this);
-
-    run();
-
-    return deferred.promise;
-  },
-
-
-  runInst: function (inst) {
-    var cmd = inst[0].replace(/"/g, ''),
-        args = inst.slice(1);
-    if (html5ks.data.characters[cmd]) {
-      return this.character(cmd, args[0]);
-    } else {
-      if (this[cmd]) {
-        return this[cmd].apply(this, args);
-      } else if (inst.length === 1) {
-        return this.character("name_only", cmd);
-      } else if (/^[A-Z]/.test(cmd)) {
-        return this.character(cmd, args[0]);
-      } else {
-        console.error("no such cmd " + cmd);
-        return when.defer().resolve();
+      var char = chars[ch];
+      if (char.name) {
+        char.name = this.tag(char.name);
       }
     }
   },
 
-  _fades: {},
+  _fading: {},
 
   set_volume: function (target, delay, channel) {
     var deferred = when.defer(),
-        audioElement = html5ks.elements.audio[channel],
-        step = (target - audioElement.volume) / (delay * 20);
+        audio = html5ks.elements.audio[channel],
+        step = (target - audio.volume) / (delay * 20);
     if (!delay) {
-      audioElement.volume = target;
+      audio.volume = target;
     } else {
-      if (this._fades[channel]) clearInterval(this._fades[channel]);
-      this._fades[channel] = setInterval(function () {
+      this._fading[channel] = setInterval(function () {
         // clamp new volume 0-1
-        audioElement.volume = Math.min(Math.max(audioElement.volume + step, 0), 1);
-        if (audioElement.volume === 0 || audioElement.volume === 1) {
-          clearInterval(this._fades[channel]);
+        audio.volume = Math.min(Math.max(audio.volume + step, 0), 1);
+        if (audio.volume === 0 || audio.volume === 1) {
+          clearInterval(this._fading);
         }
       }.bind(this), 50);
     }
-    return deferred.resolve();
+    deferred.resolve();
+    return deferred.promise;
   },
 
   play: function (channel, name, ignore, fade) {
@@ -102,12 +51,17 @@ window.html5ks.api = {
         src += "sfx/" + html5ks.data.sfx[name];
     }
 
-    ["opus", "ogg", "m4a", "wav"].some(function (type) {
-      if (Modernizr.audio[type]) {
-        audio.src = src + "." + type;
-        return true;
-      }
-    });
+    if (Modernizr.audio.opus) {
+      audio.src = src + ".opus";
+    } else if (Modernizr.audio.ogg) {
+      audio.src = src + ".ogg";
+    } else if (Modernizr.audio.m4a) {
+      audio.src = src + ".m4a";
+    } else if (Modernizr.audio.wav) {
+      audio.src = src + ".wav";
+    } else {
+      console.error("wtf, no audio formats");
+    }
 
     audio.load();
     var volume = html5ks.persistent[channel + "Volume"];
@@ -128,19 +82,15 @@ window.html5ks.api = {
 
   stop: function (channel, ignore, fade) {
     if (channel === "all") {
-      return ["music", "sound", "ambient"].forEach(function (channel) {
-        this.stop(channel, ignore, fade);
-      }.bind(this));
+      this.stop("music", ignore, fade);
+      this.stop("sound", ignore, fade);
+      return this.stop("ambient", ignore, fade);
     }
-
     var deferred = when.defer(),
         audio = html5ks.elements.audio[channel];
-
-    // clear fade
-    if (this._fades[channel]) {
-      clearInterval(this._fades[channel]);
+    if (this._fading[channel]) {
+      clearInterval(this._fading[channel]);
     }
-
     if (fade) {
       this.set_volume(0, fade, channel);
     } else {
@@ -153,31 +103,27 @@ window.html5ks.api = {
 
   movie_cutscene: function (vid_src, skippable) {
     var deferred = when.defer(),
-        video = html5ks.elements.video;
+        video = html5ks.elements.video,
+        src = "dump/video/" + vid_src + ".";
 
     this.stop("all");
     this.speed("auto", false);
     this.speed("skip", false);
 
-    var types = {
-      webm: "webm",
-      ogg: "ogv",
-      h264: "mp4"
-    };
-    for (var type in types) {
-      if (Modernizr.video[type]) {
-        video.src = "dump/video/" + vid_src + "." + types[type];
-        break;
-      }
+    if (Modernizr.video.webm) {
+      video.src = src + "webm";
+    } else if (Modernizr.video.ogg) {
+      video.src = src + "ogv";
+    } else if (Modernizr.video.h264) {
+      video.src = src + "mp4";
+    } else {
+      console.error("wtf is this, no video formats");
     }
 
-    video.oncanplaythrough = function () {
-      video.volume = html5ks.persistent.musicVolume;
-      video.style.display = "block";
-      video.play();
-      video.onended = done;
-    };
-
+    video.load();
+    video.style.display = "block";
+    video.volume = html5ks.persistent.musicVolume;
+    video.play();
     var done = function () {
       video.style.display = "none";
       video.pause();
@@ -195,13 +141,10 @@ window.html5ks.api = {
         done();
       }
     };
-
+    video.onended = done;
     video.onerror = function () {
       deferred.reject(this.error);
     };
-
-    video.load();
-
     return deferred.promise;
   },
 
@@ -211,19 +154,60 @@ window.html5ks.api = {
   },
 
 
+  iscene: function (target, is_h, is_end) {
+    html5ks.state.status = "scene";
+    var deferred = when.defer(),
+        label = html5ks.data.script[html5ks.persistent.language + "_" + target],
+        i = 0;
+    (function run(ret) {
+      if (label[i]) {
+        html5ks.api.runInst(label[i]).then(run, console.error);
+        i++;
+      } else {
+        deferred.resolve(ret);
+      }
+    }());
+    return deferred.promise;
+  },
+
+
+  runInst: function (inst) {
+    var cmd = inst[0].replace(/"/g, ''),
+        args = inst.slice(1);
+    if (html5ks.data.characters[cmd]) {
+      return this.character(cmd, args[0]);
+    } else {
+      if (this[cmd]) {
+        return this[cmd].apply(this, args);
+      } else if (inst.length === 1) {
+        return this.character("name_only", cmd);
+      } else if (/^[A-Z]/.test(cmd)) {
+        return this.character(cmd, args[0]);
+      } else {
+        console.error("no such cmd " + cmd);
+        var deferred = when.defer();
+        deferred.resolve();
+        return deferred.promise;
+      }
+    }
+  },
+
+
   window: function (action, transition) {
-    var windowEl = html5ks.elements.window;
+    var windw = html5ks.elements.window,
+        deferred = when.defer();
     switch (action) {
       case "show":
-        windowEl.style.display = "block";
+        windw.style.display = "block";
         break;
       case "hide":
-        windowEl.style.display = "none";
+        windw.style.display = "none";
         break;
       default:
-        return windowEl.style.display !== "none";
+        return windw.style.display !== "none";
     }
-    return when.defer().resolve(action);
+    deferred.resolve(action);
+    return deferred.promise;
   },
 
 
@@ -322,19 +306,17 @@ window.html5ks.api = {
     }
     return deferred.promise;
   },
-
   hide: function (name) {
     var deferred = when.defer();
     var show = html5ks.elements.show.children;
     for (var i = show.length - 1; i >= 0; i--) {
       if (show[i].id === name) {
-        show[i].style.display = "none";
-        deferred.resolve();
-        return deferred.promise;
+        html5ks.elements.show.removeChild(show[i]);
       }
     }
+    deferred.resolve();
+    return deferred.promise;
   },
-
 
   tag: function (str) {
     var tags = [
@@ -364,29 +346,29 @@ window.html5ks.api = {
   character: function (charName, str, extend) {
     var deferred = when.defer(),
         text = this.tag(str),
-        chr = typeof charName === "string" ? html5ks.data.characters[charName] : charName,
+        char = typeof charName === "string" ? html5ks.data.characters[charName] : charName,
         w = /{w=?(\d*\.\d*)?}(.*)/.exec(str);
 
-    if (!chr) {
-      chr = {
+    if (!char) {
+      char = {
         name: charName
       };
     }
-    if (typeof chr.what_prefix === "undefined") {
-      chr.what_prefix = "“";
-      chr.what_suffix = "”";
+    if (typeof char.what_prefix === "undefined") {
+      char.what_prefix = "“";
+      char.what_suffix = "”";
     }
 
-    this._lastchar = chr;
+    this._lastchar = char;
 
-    if (!extend && chr.what_prefix) {
-      text = chr.what_prefix + text;
+    if (!extend && char.what_prefix) {
+      text = char.what_prefix + text;
     }
-    if ((!w || !w[1]) && chr.what_suffix) {
-      text = text + chr.what_suffix;
+    if ((!w || !w[1]) && char.what_suffix) {
+      text = text + char.what_suffix;
     }
 
-    if (chr.kind === "nvl") {
+    if (char.kind === "nvl") {
       html5ks.elements.nvlsay.innerHTML += "<span class='nvl-block'>" + text + "</span>";
       html5ks.elements.nvlctc.style.display = "block";
       html5ks.next = function () {
@@ -397,9 +379,9 @@ window.html5ks.api = {
     } else {
       var who = html5ks.elements.who;
       if (!extend) {
-        who.innerHTML = chr.name;
-        if (chr.color) {
-          who.style.color = chr.color;
+        who.innerHTML = char.name;
+        if (char.color) {
+          who.style.color = char.color;
         } else {
           who.style.color = "#ffffff";
         }
@@ -487,7 +469,6 @@ window.html5ks.api = {
   },
 
   menu: function (choices) {
-    var args = Array.prototype.slice.call(arguments, 0);
     var deferred = when.defer();
     var menu = html5ks.elements.choices,
         frag = document.createDocumentFragment(),
