@@ -1,9 +1,9 @@
-gzip := $(shell ./find-gzip.sh)
+GZIP := $(shell ./find-gzip.sh)
 
 all: script.json script.json.gz imachine.json imachine.json.gz imachine_replay.json imachine_replay.json.gz ui-strings.json ui-strings.json.gz
 
 %.json.gz: %.json
-	$(gzip) -c $< > $@
+	$(GZIP) -c $< > $@
 	touch $< $@
 
 script.json: $(patsubst %.rpyc,%.json,$(wildcard script-*.rpyc))
