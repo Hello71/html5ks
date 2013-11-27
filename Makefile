@@ -4,6 +4,7 @@ OPUSENC ?= opusenc
 ZOPFLIPNG ?= zopflipng
 JPEGOPTIM ?= jpegoptim
 CWEBP ?= cwebp
+CONVERT ?= convert
 
 DUMP ?= www/dump
 
@@ -53,7 +54,7 @@ JPG := $(shell find $(DUMP) -name '*.jpg')
 WEBP := $(patsubst %.png,%.webp,$(PNG)) \
         $(patsubst %.jpg,%.webp,$(JPG))
 
-images: $(WEBP)
+images: $(WEBP) favicon.ico
 
 %.webp: %.png
 	$(ZOPFLIPNG) -m -y $< $<
@@ -63,7 +64,10 @@ images: $(WEBP)
 	$(JPEGOPTIM) --strip-all $<
 	$(CWEBP) -q 90 -m 6 $< -o $@
 
+www/favicon.ico: www/dump/ui/icon.png
+	$(CONVERT) $< -resize 256x256 -transparent white $@
+
 clean:
-	rm $(CVIDEO) $(CAUDIO) $(WEBP)
+	$(RM) $(CVIDEO) $(CAUDIO) $(WEBP)
 
 .PHONY: video audio images clean
