@@ -9,13 +9,13 @@ make install
 popd
 
 trim() {
-  convert -trim "$@" "$@"
+  for f in "$@"; do
+    convert -trim "$f" "$f"
+  done
   optipng -o7 "$@"
 }
 
-trim www/dump/ui/bt-cf-unchecked.png
-trim www/dump/ui/bt-cf-checked.png
+trim www/dump/ui/bt-cf-unchecked.png www/dump/ui/bt-cf-checked.png
 
-make
+make ${MAKEOPTS}
 
-convert www/dump/ui/icon.png -resize 256x256 -transparent white www/favicon.ico
