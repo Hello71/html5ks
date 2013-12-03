@@ -18,4 +18,3 @@ trim() {
 trim www/dump/ui/bt-cf-unchecked.png www/dump/ui/bt-cf-checked.png
 
 make ${MAKEOPTS}
-

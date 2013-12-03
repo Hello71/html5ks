@@ -5,11 +5,12 @@ jQuery is not used, but when.js [1] is used as a sensible Promises/A+ implementa
 == Requirements ==
 - Katawa Shoujo (obviously)
 - when.js
-- Firefox/Chrome
+- Bash
+- Firefox/Chrome/a sensible browser
 - ffmpeg with AAC, libtheora, libvpx, libx264
-- opus-tools
-- libwebp
-- make (non-GNU untested)
+- opusenc from opus-tools
+- cwebp from libwebp
+- zopfli
 
 How to use:
 0. Get Katawa Shoujo.
@@ -24,16 +25,12 @@ How to use:
 lighttpd.conf is no longer maintained. Patches to fix it are welcome.
 
 == Reducing setup time ==
-By editing the *encode.sh files, you can turn on or off the various encodings. To reduce the setup time (many hours), try the following:
+By editing the Makefile, you can turn on or off the various encodings. To reduce the setup time (many hours), try the following:
 
-Turn off zopflipng re-coding in iencode.sh. It saves only a few MB but takes several hours to complete. Useful if you're serving many, MANY copies, but not useful if you're serving one.
+Turn off zopflipng recompression by commenting it out. It saves only a few MB but takes several hours to complete. Useful if you're serving many, MANY copies, but not useful if you're serving one locally.
 
 == Reducing file size ==
-After all the re-encoding, the final size of KS 1.1 is about 1.9G. The majority of this is taken up by the massive .wav extractions of the music files required by opusenc.
-
-They are not required by pretty much any major browsers to play the music, and are a last resort for the code.
-
-You can remove them with a command such as `find . -name '*.wav' -delete`.
+[TODO]
 
 == Contributing ==
 
