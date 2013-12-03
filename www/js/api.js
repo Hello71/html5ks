@@ -1,11 +1,11 @@
 "use strict";
 window.html5ks.api = {
   init: function () {
-    var chars = html5ks.data.characters;
-    for (var ch in chars) {
-      var char = chars[ch];
-      if (char.name) {
-        char.name = this.tag(char.name);
+    var chrs = html5ks.data.characters;
+    for (var ch in chrs) {
+      var chr = chrs[ch];
+      if (chr.name) {
+        chr.name = this.tag(chr.name);
       }
     }
   },
@@ -51,17 +51,12 @@ window.html5ks.api = {
         src += "sfx/" + html5ks.data.sfx[name];
     }
 
-    if (Modernizr.audio.opus) {
-      audio.src = src + ".opus";
-    } else if (Modernizr.audio.ogg) {
-      audio.src = src + ".ogg";
-    } else if (Modernizr.audio.m4a) {
-      audio.src = src + ".m4a";
-    } else if (Modernizr.audio.wav) {
-      audio.src = src + ".wav";
-    } else {
-      console.error("wtf, no audio formats");
-    }
+    ["opus", "ogg", "m4a", "wav"].some(function (type) {
+      if (Modernizr.audio[type]) {
+        audio.src = src + "." + type;
+        return true;
+      }
+    });
 
     audio.load();
     var volume = html5ks.persistent[channel + "Volume"];
@@ -110,14 +105,16 @@ window.html5ks.api = {
     this.speed("auto", false);
     this.speed("skip", false);
 
-    if (Modernizr.video.webm) {
-      video.src = src + "webm";
-    } else if (Modernizr.video.ogg) {
-      video.src = src + "ogv";
-    } else if (Modernizr.video.h264) {
-      video.src = src + "mp4";
-    } else {
-      console.error("wtf is this, no video formats");
+    var types = {
+      "webm": "webm",
+      "ogg": "ogv",
+      "h264": "mp4",
+    };
+    for (var type in types) {
+      if (Modernizr.video[type]) {
+        video.src = src + types[type];
+        break;
+      }
     }
 
     video.load();
@@ -175,14 +172,14 @@ window.html5ks.api = {
     var cmd = inst[0].replace(/"/g, ''),
         args = inst.slice(1);
     if (html5ks.data.characters[cmd]) {
-      return this.character(cmd, args[0]);
+      return this.say(cmd, args[0]);
     } else {
       if (this[cmd]) {
         return this[cmd].apply(this, args);
       } else if (inst.length === 1) {
-        return this.character("name_only", cmd);
+        return this.say("name_only", cmd);
       } else if (/^[A-Z]/.test(cmd)) {
-        return this.character(cmd, args[0]);
+        return this.say(cmd, args[0]);
       } else {
         console.error("no such cmd " + cmd);
         var deferred = when.defer();
@@ -343,32 +340,32 @@ window.html5ks.api = {
   },
 
 
-  character: function (charName, str, extend) {
+  say: function (chrName, str, extend) {
     var deferred = when.defer(),
         text = this.tag(str),
-        char = typeof charName === "string" ? html5ks.data.characters[charName] : charName,
+        chr = typeof chrName === "string" ? html5ks.data.characters[chrName] : chrName,
         w = /{w=?(\d*\.\d*)?}(.*)/.exec(str);
 
-    if (!char) {
-      char = {
-        name: charName
+    if (!chr) {
+      chr = {
+        name: chrName
       };
     }
-    if (typeof char.what_prefix === "undefined") {
-      char.what_prefix = "“";
-      char.what_suffix = "”";
+    if (typeof chr.what_prefix === "undefined") {
+      chr.what_prefix = "“";
+      chr.what_suffix = "”";
     }
 
-    this._lastchar = char;
+    this._lastchr = chr;
 
-    if (!extend && char.what_prefix) {
-      text = char.what_prefix + text;
+    if (!extend && chr.what_prefix) {
+      text = chr.what_prefix + text;
     }
-    if ((!w || !w[1]) && char.what_suffix) {
-      text = text + char.what_suffix;
+    if ((!w || !w[1]) && chr.what_suffix) {
+      text = text + chr.what_suffix;
     }
 
-    if (char.kind === "nvl") {
+    if (chr.kind === "nvl") {
       html5ks.elements.nvlsay.innerHTML += "<span class='nvl-block'>" + text + "</span>";
       html5ks.elements.nvlctc.style.display = "block";
       html5ks.next = function () {
@@ -379,9 +376,9 @@ window.html5ks.api = {
     } else {
       var who = html5ks.elements.who;
       if (!extend) {
-        who.innerHTML = char.name;
-        if (char.color) {
-          who.style.color = char.color;
+        who.innerHTML = chr.name;
+        if (chr.color) {
+          who.style.color = chr.color;
         } else {
           who.style.color = "#ffffff";
         }
