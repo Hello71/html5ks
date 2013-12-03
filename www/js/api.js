@@ -368,10 +368,9 @@ window.html5ks.api = {
     if (chr.kind === "nvl") {
       html5ks.elements.nvlsay.innerHTML += "<span class='nvl-block'>" + text + "</span>";
       html5ks.elements.nvlctc.style.display = "block";
-      html5ks.next = function () {
+      html5ks._next = function () {
         html5ks.elements.nvlctc.style.display = "none";
         deferred.resolve();
-        html5ks.next = function () {};
       };
     } else {
       var who = html5ks.elements.who;
@@ -384,15 +383,14 @@ window.html5ks.api = {
         }
       }
 
-      if (extend) {
-        html5ks.elements.say.innerHTML += text;
-      } else {
-        html5ks.elements.say.innerHTML = text;
-      }
+      var newText = extend ?
+                    html5ks.elements.say.innerHTML + text :
+                    text;
+
+      html5ks.elements.say.innerHTML = newText;
 
       if (w) {
-        html5ks.next = function () {
-          html5ks.next = function () {};
+        html5ks._next = function () {
           html5ks.api.extend(w[2]).then(function () {
             deferred.resolve();
           });
@@ -404,10 +402,9 @@ window.html5ks.api = {
           return deferred.promise;
         }
       } else {
-        html5ks.next = function () {
+        html5ks._next = function () {
           html5ks.elements.ctc.style.display = "none";
           deferred.resolve(text);
-          html5ks.next = function () {};
         };
       }
       html5ks.elements.ctc.style.display = "block";
@@ -458,7 +455,7 @@ window.html5ks.api = {
     var deferred = when.defer(),
         centered = document.getElementById("centered");
     centered.innerHTML = this.tag(text);
-    html5ks.next = function () {
+    html5ks._next = function () {
       centered.innerHTML = "";
       deferred.resolve();
     };

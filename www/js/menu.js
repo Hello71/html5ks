@@ -2,10 +2,9 @@
   "use strict";
   html5ks.menu = {
     mainMenu: function () {
+      html5ks._next = function () {};
       this.context(false);
-      html5ks.api.stop("music");
-      html5ks.api.stop("sound");
-      html5ks.api.stop("ambient");
+      html5ks.api.stop("all");
       html5ks.api.window("hide");
       html5ks.api.play("music", "music_menus");
       html5ks.api.show("url", "ui/main/bg-main.png");
@@ -152,7 +151,6 @@
       }, false);
 
       document.getElementById("goto-main-menu").addEventListener("click", function () {
-        html5ks.next = function () {};
         html5ks.menu.mainMenu();
       }, false);
     },

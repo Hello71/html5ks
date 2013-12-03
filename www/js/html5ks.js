@@ -59,7 +59,10 @@ window.html5ks = {
     }
   },
   state: {},
-  next: function () {},
+  next: function () {
+    html5ks._next();
+    html5ks._next = function () {};
+  },
   initElements: function () {
     this.elements = {
       all: document.getElementById("all"),
