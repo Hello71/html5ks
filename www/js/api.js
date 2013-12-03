@@ -13,8 +13,7 @@ window.html5ks.api = {
   _fading: {},
 
   set_volume: function (target, delay, channel) {
-    var deferred = when.defer(),
-        audio = html5ks.elements.audio[channel],
+    var audio = html5ks.elements.audio[channel],
         step = (target - audio.volume) / (delay * 20);
     if (!delay) {
       audio.volume = target;
@@ -27,8 +26,7 @@ window.html5ks.api = {
         }
       }.bind(this), 50);
     }
-    deferred.resolve();
-    return deferred.promise;
+    return when.defer().resolve();
   },
 
   play: function (channel, name, ignore, fade) {
@@ -81,8 +79,7 @@ window.html5ks.api = {
       this.stop("sound", ignore, fade);
       return this.stop("ambient", ignore, fade);
     }
-    var deferred = when.defer(),
-        audio = html5ks.elements.audio[channel];
+    var audio = html5ks.elements.audio[channel];
     if (this._fading[channel]) {
       clearInterval(this._fading[channel]);
     }
@@ -91,8 +88,7 @@ window.html5ks.api = {
     } else {
       audio.pause();
     }
-    deferred.resolve();
-    return deferred.promise;
+    return when.defer().resolve();
   },
 
 
@@ -182,17 +178,14 @@ window.html5ks.api = {
         return this.say(cmd, args[0]);
       } else {
         console.error("no such cmd " + cmd);
-        var deferred = when.defer();
-        deferred.resolve();
-        return deferred.promise;
+        return when.defer().resolve();
       }
     }
   },
 
 
   window: function (action, transition) {
-    var windw = html5ks.elements.window,
-        deferred = when.defer();
+    var windw = html5ks.elements.window;
     switch (action) {
       case "show":
         windw.style.display = "block";
@@ -203,8 +196,7 @@ window.html5ks.api = {
       default:
         return windw.style.display !== "none";
     }
-    deferred.resolve(action);
-    return deferred.promise;
+    return when.defer().resolve();
   },
 
 
@@ -304,15 +296,13 @@ window.html5ks.api = {
     return deferred.promise;
   },
   hide: function (name) {
-    var deferred = when.defer();
     var show = html5ks.elements.show.children;
     for (var i = show.length - 1; i >= 0; i--) {
       if (show[i].id === name) {
         html5ks.elements.show.removeChild(show[i]);
       }
     }
-    deferred.resolve();
-    return deferred.promise;
+    return when.defer().resolve();
   },
 
   tag: function (str) {
@@ -430,25 +420,21 @@ window.html5ks.api = {
   },
 
   nvl: function (action, transition) {
-    var deferred = when.defer(),
-        nvl = html5ks.elements.nvl;
+    var nvl = html5ks.elements.nvl;
     switch (action) {
       case "show":
         nvl.style.display = "block";
-        deferred.resolve();
         break;
       case "hide":
         nvl.style.display = "none";
-        deferred.resolve();
         break;
       case "clear":
         html5ks.elements.nvlsay.innerHTML = "";
-        deferred.resolve();
         break;
       default:
         console.error("no such nvl action " + action);
     }
-    return deferred.promise;
+    return when.defer().resolve();
   },
 
   centered: function (text) {
