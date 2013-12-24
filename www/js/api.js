@@ -75,9 +75,9 @@ window.html5ks.api = {
 
   stop: function (channel, ignore, fade) {
     if (channel === "all") {
-      this.stop("music", ignore, fade);
-      this.stop("sound", ignore, fade);
-      return this.stop("ambient", ignore, fade);
+      return ["music", "sound", "ambient"].forEach(function (channel) {
+        html5ks.api.stop(channel, ignore, fade);
+      });
     }
     var audio = html5ks.elements.audio[channel];
     if (this._fading[channel]) {
@@ -206,6 +206,25 @@ window.html5ks.api = {
   },
 
 
+  _positions: {
+    left: { xpos: 0.0, xanchor: 0.0, ypos: 1.0, yanchor: 1.0 },
+    right: { xpos: 1.0, xanchor: 1.0, ypos: 1.0, yanchor: 1.0 },
+    center: { xpos: 0.5, xanchor: 0.5, ypos: 1.0, yanchor: 1.0 },
+    truecenter: { xpos: 0.5, xanchor: 0.5, ypos: 0.5, yanchor: 0.5 },
+    topleft: { xpos: 0.0, xanchor: 0.0, ypos: 0.0, yanchor: 0.0 },
+    topright: { xpos: 1.0, xanchor: 1.0, ypos: 0.0, yanchor: 0.0 },
+    top: { xpos: 0.5, xanchor: 0.5, ypos: 0.0, yanchor: 0.0 },
+    twoleft: { xpos: 0.3, xanchor: 0.5, ypos: 1.0, yanchor: 1.0 },
+    tworight: { xpos: 0.7, xanchor: 0.5, ypos: 1.0, yanchor: 1.0 },
+    closeleft: { xpos: 0.25, xanchor: 0.5, ypos: 1.0, yanchor: 1.0 },
+    closeright: { xpos: 0.75, xanchor: 0.5, ypos: 1.0, yanchor: 1.0 },
+    twoleftoff: { xpos: 0.32, xanchor: 0.5, ypos: 1.0, yanchor: 1.0 },
+    tworightoff: { xpos: 0.68, xanchor: 0.5, ypos: 1.0, yanchor: 1.0 },
+    centeroff: { xpos: 0.52, xanchor: 0.5, ypos: 1.0, yanchor: 1.0 },
+    bgleft: { xpos: 0.4, xanchor: 0.5, ypos: 1.0, yanchor: 1.0 },
+    bgright: { xpos: 0.6, xanchor: 0.5, ypos: 1.0, yanchor: 1.0 }
+  },
+
   show: function (name, type, location) {
     var deferred = when.defer();
     var lookup = document.getElementById(name),
@@ -215,25 +234,7 @@ window.html5ks.api = {
       if (location) {
         // calculate position
         // we don't actually know how big the image is till we fetch it
-        var positions = {
-          left: { xpos: 0.0, xanchor: 0.0, ypos: 1.0, yanchor: 1.0 },
-          right: { xpos: 1.0, xanchor: 1.0, ypos: 1.0, yanchor: 1.0 },
-          center: { xpos: 0.5, xanchor: 0.5, ypos: 1.0, yanchor: 1.0 },
-          truecenter: { xpos: 0.5, xanchor: 0.5, ypos: 0.5, yanchor: 0.5 },
-          topleft: { xpos: 0.0, xanchor: 0.0, ypos: 0.0, yanchor: 0.0 },
-          topright: { xpos: 1.0, xanchor: 1.0, ypos: 0.0, yanchor: 0.0 },
-          top: { xpos: 0.5, xanchor: 0.5, ypos: 0.0, yanchor: 0.0 },
-          twoleft: { xpos: 0.3, xanchor: 0.5, ypos: 1.0, yanchor: 1.0 },
-          tworight: { xpos: 0.7, xanchor: 0.5, ypos: 1.0, yanchor: 1.0 },
-          closeleft: { xpos: 0.25, xanchor: 0.5, ypos: 1.0, yanchor: 1.0 },
-          closeright: { xpos: 0.75, xanchor: 0.5, ypos: 1.0, yanchor: 1.0 },
-          twoleftoff: { xpos: 0.32, xanchor: 0.5, ypos: 1.0, yanchor: 1.0 },
-          tworightoff: { xpos: 0.68, xanchor: 0.5, ypos: 1.0, yanchor: 1.0 },
-          centeroff: { xpos: 0.52, xanchor: 0.5, ypos: 1.0, yanchor: 1.0 },
-          bgleft: { xpos: 0.4, xanchor: 0.5, ypos: 1.0, yanchor: 1.0 },
-          bgright: { xpos: 0.6, xanchor: 0.5, ypos: 1.0, yanchor: 1.0 }
-        };
-        var pos = positions[location];
+        var pos = html5ks.api._positions[location];
         // TODO: implement transitions
         if (pos) {
           el.style.left = pos.xpos * 800 + "px";
@@ -346,7 +347,7 @@ window.html5ks.api = {
       chr.what_suffix = "”";
     }
 
-    this._lastchr = chr;
+    this._lastchar = chr;
 
     if (!extend && chr.what_prefix) {
       text = chr.what_prefix + text;
@@ -408,7 +409,7 @@ window.html5ks.api = {
   },
 
   extend: function (str) {
-    return this.character(this._lastchar, str, true);
+    return this.say(this._lastchar, str, true);
   },
 
   Pause: function (duration) {

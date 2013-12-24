@@ -30,5 +30,6 @@ if ! echo ${V} | grep -q -- --without-http_uwsgi_module; then
   echo "uwsgi_temp_path /dev/null;" >> nginx.gen.conf
 fi
 
+echo >&2 "Ignore the following message from nginx about the error log, if any."
 
 exec nginx -p "$PWD" -c nginx.conf
