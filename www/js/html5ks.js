@@ -60,8 +60,9 @@ window.html5ks = {
   },
   state: {},
   next: function () {
-    html5ks._next();
+    var _next = html5ks._next;
     html5ks._next = function () {};
+    _next();
   },
   initElements: function () {
     this.elements = {
