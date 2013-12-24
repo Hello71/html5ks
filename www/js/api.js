@@ -1,5 +1,5 @@
 "use strict";
-window.html5ks.api = {
+window.html5ks.api = new (function () { return {
   init: function () {
     var chrs = html5ks.data.characters;
     for (var ch in chrs) {
@@ -477,4 +477,4 @@ window.html5ks.api = {
     html5ks.state[type] = status;
     document.getElementById(type).style.display = status ? "block" : "none";
   }
-};
+};});
