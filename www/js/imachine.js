@@ -103,4 +103,4 @@ html5ks.imachine = new (function () {
       return deferred.promise;
     }
   };
-});
+})();
