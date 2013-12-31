@@ -13,7 +13,7 @@ window.html5ks = {
       fullscreen: false,
       scaleAll: true,
       scaleVideo: true,
-      textSpeed: 0.5,
+      textSpeed: 100,
       autoModeDelay: 0.2,
       musicVolume: 1,
       ambientVolume: 1,
