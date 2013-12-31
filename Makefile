@@ -86,7 +86,7 @@ $(DUMP)/ui/ctc_anim.png: $(CTC_ANIM_TMP)
 	$(APNGASM) $@ $^ 3 100
 
 $(DUMP)/ui/ctc_anim.webp: $(CTC_ANIM_TMP_WEBP)
-	$(WEBPMUX) -frame $(subst $(SPACE), +30 -frame ,$^) +0 -loop 0 -o $@
+	$(WEBPMUX) -frame $(subst $(SPACE), +30 -frame ,$^) +30 -loop 0 -o $@
 
 clean:
 	$(RM) $(CVIDEO) $(CAUDIO) $(WEBP) www/favicon.ico
