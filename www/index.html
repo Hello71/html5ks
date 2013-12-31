@@ -18,6 +18,7 @@
     <link rel="stylesheet" type="text/css" href="css/index.css">
     <script src="js/lib/when/when.js"></script>
     <script src="js/lib/modernizr-build.js"></script>
+    <script src="js/lib/apng-canvas.min.js"></script>
     <script src="js/html5ks.js"></script>
     <script src="js/menu.js"></script>
     <script src="js/api.js"></script>
@@ -39,7 +40,6 @@
           <li id="opus">It doesn't seem to support the <a href="https://en.wikipedia.org/wiki/Opus_%28audio_codec%29">Opus audio codec</a>, which is much smaller in size. Unless stated above, you should be able to listen to music using an inferior codec.</li>
           <li id="fontface">It doesn't seem to support <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face">the @font-face at-rule</a>, which lets us display the Playtime and Gentium fonts used in Katawa Shoujo. <a href="http://caniuse.com/#feat=fontface">Any browser released in the last 2 years or so should support it.</a></li>
           <li id="csstransforms">It doesn't seem to support <a href="https://developer.mozilla.org/en-US/docs/Web/Guide/CSS/Using_CSS_transforms">CSS transforms</a>, which means that we won't be able to scale the window or show most transitions. <a href="http://caniuse.com/#feat=transforms2d">Any browser released in the last 2 years ago should work.</a></li>
-          <li id="csstransitions">It doesn't seem to support <a href="https://developer.mozilla.org/en-US/docs/Web/Guide/CSS/Using_CSS_transitions">CSS transitions</a>, which means that almost all animations won't work. Videos should still work though, unless stated above. <a href="http://caniuse.com/#feat=css-transitions">You should definitely consider upgrading.</a></li>
         </ul>
         <div id="gotit" class="button">I know it's broken, let me play!</div>
       </div>
@@ -50,11 +50,11 @@
       <div id="window" style="display: none;">
         <div id="who"></div>
         <div id="say" class="say"></div>
-        <img id="ctc" src="dump/ui/ctc.png" style="display: none" alt="Click to continue...">
+        <span class="ctc" id="ctc" style="display: none" alt="Click to continue...">
       </div>
       <div id="nvl" style="display: none;">
         <div id="nvlsay" class="say"></div>
-        <img id="nvlctc" src="dump/ui/ctc.png" alt="Click to continue...">
+        <img class="ctc" id="nvlctc" src="dump/ui/ctc_anim.png" alt="Click to continue...">
       </div>
       <div id="choices" class="centered"></div>
       <div id="centered" class="centered say"></div>
@@ -82,7 +82,7 @@
           <label class="button"><input type="checkbox" class="option" id="skipUnread"> <span class="config_skip_unseen_label"></span></label>
           <label class="button"><input type="checkbox" class="option" id="skipAfterChoices"> <span class="config_skip_after_choice_label"></span></label>
 
-          <label><input type="range" min="0.0" max="1.0" step="0.001" class="option" id="textSpeed"> <span class="tr config_textspeed_label"></span></label>
+          <label><input type="range" min="1.0" max="200.0" step="0.001" class="option" id="textSpeed"> <span class="tr config_textspeed_label"></span></label>
           <label><input type="range" min="0.0" max="1.0" step="0.001" class="option" id="autoModeDelay"> <span class="tr config_afmspeed_label"></span></label>
 
           <label><input type="range" min="0.0" max="1.0" step="0.001" class="option" id="musicVolume"> <span class="tr config_musicvol_label"></span></label>

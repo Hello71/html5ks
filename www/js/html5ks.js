@@ -10,7 +10,6 @@ window.html5ks = {
       hdisable: false,
       skipUnread: false,
       skipAfterChoices: false,
-      useWebP: null,
       fullscreen: false,
       scaleAll: true,
       scaleVideo: true,
@@ -41,14 +40,6 @@ window.html5ks = {
     document.addEventListener("DOMContentLoaded", function () {
       html5ks.onload();
     }, false);
-
-    if (html5ks.persistent.useWebP === null) {
-      var img = new Image();
-      img.onload = function () {
-        html5ks.persistent.useWebP = img.width === 4;
-      };
-      img.src = 'data:image/webp;base64,UklGRjgAAABXRUJQVlA4ICwAAAAQAgCdASoEAAQAAAcIhYWIhYSIgIIADA1gAAUAAAEAAAEAAP7%2F2fIAAAAA';
-    }
   },
   store: {
     seen_scenes: {},
@@ -239,11 +230,9 @@ window.html5ks = {
           deferred.resolve();
         } else {
           xhr.open("GET", "json/" + name + ".json");
-          xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4) {
-              html5ks.data[name] = JSON.parse(xhr.responseText);
-              deferred.resolve();
-            }
+          xhr.onload = function () {
+            html5ks.data[name] = JSON.parse(xhr.responseText);
+            deferred.resolve();
           };
           xhr.send();
         }
