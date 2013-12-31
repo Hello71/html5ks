@@ -104,7 +104,7 @@ window.html5ks.api = new (function () {
     var types = {
       "webm": "webm",
       "ogg": "ogv",
-      "h264": "mp4",
+      "h264": "mp4"
     };
     for (var type in types) {
       if (Modernizr.video[type]) {
@@ -521,4 +521,4 @@ window.html5ks.api = new (function () {
     html5ks.state[type] = status;
     document.getElementById(type).style.display = status ? "block" : "none";
   }
-};});
+};})();
