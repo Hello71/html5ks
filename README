@@ -7,15 +7,16 @@ jQuery is not used, but when.js [1] is used as a sensible Promises/A+ implementa
 - when.js
 - Bash
 - Firefox/Chrome/a sensible browser
-- ffmpeg with AAC, libtheora, libvpx, libx264
+- ffmpeg with fdk-aac, libtheora, libvpx, libx264
 - opusenc from opus-tools
 - cwebp from libwebp
 - zopfli
+- nginx
 
 How to use:
 0. Get Katawa Shoujo.
 1. Copy *.rpyc from Katawa Shoujo/game into unrpyc/ directory.
-2. Extract files from data.rpa with an appropriate tool. Put files in www/dump.
+2. Extract files from data.rpa with an rpa extractor, e.g. unrpa. Put files in www/dump.
 3. Run setup.sh.
 
 4. Run nginx.sh [2] to start nginx with appropriate options for development, then connect to localhost:8080.

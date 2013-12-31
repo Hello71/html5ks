@@ -68,7 +68,6 @@ html.audio          #warn li#audio { display: none; }
                     #warn li#opus { display: none; }
 html.fontface       #warn li#fontface { display: none; }
 html.csstransforms  #warn li#csstransforms { display: none; }
-html.csstransitions #warn li#csstransitions { display: none; }
 #gotit {
   text-align: center;
 }
@@ -166,13 +165,31 @@ html.no-js #gotit {
   display: block;
   margin: 10px 8px;
 }
-#ctc, #nvlctc {
+.ctc {
   position: absolute;
   bottom: 20px;
   right: 10px;
-  -webkit-animation: blink 2s infinite;
-  -moz-animation: blink 2s infinite;
-  animation: blink 2s infinite;
+  width: 16px;
+  height: 16px;
+  background-image: url("../dump/ui/ctc.png");
+  -o-animation: blink 2s infinite linear;
+  -moz-animation: blink 2s infinite linear;
+  -webkit-animation: blink 2s infinite linear;
+  animation: blink 2s infinite linear;
+}
+.apng .ctc {
+  background-image: url("../dump/ui/ctc_anim.png");
+  -o-animation: none;
+  -moz-animation: none;
+  -webkit-animation: none;
+  animation: none;
+}
+.webpanimation .ctc {
+  background-image: url("../dump/ui/ctc_anim.webp");
+  -o-animation: none;
+  -moz-animation: none;
+  -webkit-animation: none;
+  animation: none;
 }
 #nvlctc {
   bottom: 25px;

@@ -1,4 +1,4 @@
-html5ks.imachine = (function () {
+html5ks.imachine = new (function () {
   "use strict";
   return {
     seen_scene: function (scene) {
@@ -103,4 +103,4 @@ html5ks.imachine = (function () {
       return deferred.promise;
     }
   };
-}());
+});
