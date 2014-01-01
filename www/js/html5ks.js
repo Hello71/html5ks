@@ -1,4 +1,8 @@
 "use strict";
+console = console || {
+  log: function () {},
+  error: alert
+};
 window.html5ks = {
   data: {},
   persistent: {},
@@ -27,7 +31,7 @@ window.html5ks = {
           return v;
         },
         set: function (value) {
-          v = value;
+          v = '' + value;
           localStorage.persistent = JSON.stringify(html5ks.persistent);
         },
         enumerable: true
@@ -140,10 +144,10 @@ window.html5ks = {
     window.onresize = html5ks.scale;
     this.elements.container.addEventListener("mouseup", function (e) {
       if (html5ks.state.status === "scene") {
-        html5ks.api.speed("skip", false);
-        html5ks.api.speed("auto", false);
         switch (e.button) {
           case 0:
+            html5ks.api.speed("skip", false);
+            html5ks.api.speed("auto", false);
             html5ks.next();
             break;
           case 1:
