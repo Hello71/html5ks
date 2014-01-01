@@ -14,7 +14,6 @@ window.html5ks = {
       hdisable: false,
       skipUnread: false,
       skipAfterChoices: false,
-      fullscreen: false,
       scaleAll: true,
       scaleVideo: true,
       textSpeed: 100,
@@ -115,39 +114,13 @@ window.html5ks = {
       applyScale(html5ks.elements.video, newScale);
     }
   },
-  fullscreen: function (onoff) {
-    if (onoff !== false) {
-      var all = html5ks.elements.all;
-      if (all.requestFullscreen) {
-        all.requestFullscreen();
-      } else if (all.mozRequestFullScreen) {
-        all.mozRequestFullScreen();
-      } else if (all.webkitRequestFullscreen) {
-        all.webkitRequestFullscreen();
-      } else {
-        return false;
-      }
-    } else {
-      if (document.requestFullscreen) {
-        document.requestFullscreen();
-      } else if (document.mozCancelFullScreen) {
-        document.mozCancelFullScreen();
-      } else if (document.webkitCancelFullscreen) {
-        document.webkitCancelFullscreen();
-      } else {
-        return false;
-      }
-    }
-    return true;
-  },
   initEvents: function () {
     window.onresize = html5ks.scale;
     this.elements.container.addEventListener("mouseup", function (e) {
       if (html5ks.state.status === "scene") {
         switch (e.button) {
           case 0:
-            html5ks.api.speed("skip", false);
-            html5ks.api.speed("auto", false);
+            html5ks.api.speed("all", false);
             html5ks.next();
             break;
           case 1:
@@ -159,21 +132,6 @@ window.html5ks = {
     window.addEventListener("dragstart", function (e) {
       e.preventDefault();
     }, false);
-    if (html5ks.persistent.fullscreen) {
-      window.addEventListener("click", function click() {
-        window.removeEventListener("click", click, false);
-        html5ks.fullscreen();
-      }, false);
-    }
-    var fullscreenchange = function () {
-      if (!(document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement)) {
-        html5ks.persistent.fullscreen = false;
-        document.getElementById("fullscreen").checked = false;
-      }
-    };
-    document.addEventListener("mozfullscreenchange", fullscreenchange, false);
-    document.addEventListener("webkitfullscreenchange", fullscreenchange, false);
-    document.addEventListener("fullscreenchange", fullscreenchange, false);
   },
   warnUnsupported: function () {
     if (!html5ks.persistent.gotit) {
@@ -212,12 +170,6 @@ window.html5ks = {
     this.api.init();
     this.menu.init();
     this.i18n.init();
-    if (this.persistent.fullscreen) {
-      document.body.addEventListener("click", function onclick() {
-        this.removeEventListener("click", onclick, false);
-        html5ks.fullscreen();
-      }, false);
-    }
   },
   start: function () {
     this.fetch("json", "script");

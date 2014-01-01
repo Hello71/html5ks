@@ -26,7 +26,7 @@ window.html5ks.api = new (function () {
         }
       }.bind(this), 50);
     }
-    return when.defer().resolve();
+    return when.resolve();
   },
 
   play: function (channel, name, ignore, fade) {
@@ -88,7 +88,7 @@ window.html5ks.api = new (function () {
     } else {
       audio.pause();
     }
-    return when.defer().resolve();
+    return when.resolve();
   },
 
 
@@ -181,7 +181,7 @@ window.html5ks.api = new (function () {
         return this.say(cmd, args[0]);
       } else {
         console.error("no such cmd " + cmd);
-        return when.defer().resolve();
+        return when.resolve();
       }
     }
   },
@@ -201,7 +201,7 @@ window.html5ks.api = new (function () {
       default:
         return windw.style.display !== "none";
     }
-    return when.defer().resolve();
+    return when.resolve();
   },
 
 
@@ -308,7 +308,7 @@ window.html5ks.api = new (function () {
         html5ks.elements.show.removeChild(show[i]);
       }
     }
-    return when.defer().resolve();
+    return when.resolve();
   },
 
   tag: function (str) {
@@ -499,7 +499,7 @@ window.html5ks.api = new (function () {
     default:
       console.error("no such nvl action " + action);
     }
-    return when.defer().resolve();
+    return when.resolve();
   },
 
   centered: function (text) {
