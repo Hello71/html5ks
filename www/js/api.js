@@ -98,8 +98,11 @@ window.html5ks.api = new (function () {
         src = "dump/video/" + vid_src + ".";
 
     this.stop("all");
-    this.speed("auto", false);
-    this.speed("skip", false);
+    clearInterval(html5ks._nextTimeout);
+
+    if (html5ks.state.skip) {
+      return deferred.resolve();
+    }
 
     var types = {
       "webm": "webm",
@@ -187,9 +190,11 @@ window.html5ks.api = new (function () {
   window: function (action, transition) {
     var windw = html5ks.elements.window;
     switch (action) {
+      case true:
       case "show":
         windw.style.display = "block";
         break;
+      case false:
       case "hide":
         windw.style.display = "none";
         break;
@@ -437,19 +442,30 @@ window.html5ks.api = new (function () {
         ptxt(true);
       } else {
         ctc.style.display = "none";
-        if (html5ks.state.auto) {
-          setTimeout(html5ks.next, 3.5 * html5ks.persistent.autoModeDelay);
-        }
         deferred.resolve();
       }
       html5ks._next = _next;
+      html5ks.api._setNextTimeout(str, true);
     };
 
-    if (html5ks.state.skip || str.indexOf("{nw}") > -1) {
-      html5ks._next();
-      setTimeout(html5ks._next, 50);
+    if (html5ks.persistent.textSpeed === "200") {
+      ptxt(true);
     }
+
+    this._setNextTimeout(str, false);
+
     return deferred.promise;
+  },
+
+  _setNextTimeout: function (str, done) {
+    if (done) {
+      if (html5ks.state.auto) {
+        setTimeout(html5ks.next, 3.5 * html5ks.persistent.autoModeDelay);
+      }
+    } else if (html5ks.state.skip || str.indexOf("{nw}") > -1) {
+      html5ks._next();
+      html5ks._nextTimeout = setTimeout(html5ks._next, 50);
+    }
   },
 
   extend: function (str) {
@@ -467,17 +483,21 @@ window.html5ks.api = new (function () {
   nvl: function (action, transition) {
     var nvl = html5ks.elements.nvl;
     switch (action) {
-      case "show":
-        nvl.style.display = "block";
-        break;
-      case "hide":
-        nvl.style.display = "none";
-        break;
-      case "clear":
-        html5ks.elements.nvlsay.innerHTML = "";
-        break;
-      default:
-        console.error("no such nvl action " + action);
+    case "status":
+      return nvl.style.display === "block";
+    case true:
+    case "show":
+      nvl.style.display = "block";
+      break;
+    case false:
+    case "hide":
+      nvl.style.display = "none";
+      break;
+    case "clear":
+      html5ks.elements.nvlsay.innerHTML = "";
+      break;
+    default:
+      console.error("no such nvl action " + action);
     }
     return when.defer().resolve();
   },
@@ -490,6 +510,8 @@ window.html5ks.api = new (function () {
       centered.innerHTML = "";
       deferred.resolve();
     };
+    this._setNextTimeout(text, false);
+    this._setNextTimeout(text, true);
     return deferred.promise;
   },
 
@@ -518,7 +540,14 @@ window.html5ks.api = new (function () {
   },
 
   speed: function (type, status) {
-    html5ks.state[type] = status;
-    document.getElementById(type).style.display = status ? "block" : "none";
+    switch (type) {
+    case "all":
+      this.speed("skip", status);
+      this.speed("auto", status);
+      break;
+    default:
+      html5ks.state[type] = status;
+      document.getElementById(type).style.display = status ? "block" : "none";
+    }
   }
 };})();

@@ -45,26 +45,6 @@
         var target = e.target;
         html5ks.persistent[target.id] = target.type === "checkbox" ? target.checked : target.value;
         switch (target.id) {
-          case "fullscreen":
-            if (target.checked) {
-              html5ks.fullscreen();
-            } else {
-              html5ks.fullscreen(false);
-            }
-            break;
-          case "scaleAll":
-            var scaleVideo = document.getElementById("scaleVideo");
-            if (!target.checked) {
-              scaleVideo.checked = false;
-              scaleVideo.parentNode.className += " disabled";
-            } else {
-              scaleVideo.checked = true;
-              scaleVideo.parentNode.className = scaleVideo.parentNode.className.replace("disabled", "");
-            }
-            // fall-through
-          case "scaleVideo":
-            html5ks.scale();
-            break;
           case "musicVolume":
           case "soundVolume":
             html5ks.api.set_volume(target.value, 0, target.id.replace("Volume", ""));
@@ -121,21 +101,25 @@
           case "scene":
           case "context":
             this.context();
+            e.stopPropagation();
         }
         e.preventDefault();
-      }.bind(this), false);
+      }.bind(this), true);
 
       document.getElementById("context-return").addEventListener("click", function () {
         html5ks.menu.context(false);
       }, false);
 
       document.getElementById("show-image").addEventListener("click", function () {
+        var state = html5ks.menu._state;
+        html5ks.menu._state = {};
         html5ks.menu.context(false);
-        html5ks.elements.window.style.display = "none";
-        html5ks.elements.container.addEventListener("click", function click() {
-          this.removeEventListener("click", click, true);
+        var done = function () {
+          this.removeEventListener("click", done, true);
+          html5ks.menu._state = state;
           html5ks.menu.context(true);
-        }, true);
+        };
+        html5ks.elements.container.addEventListener("click", done, true);
       }, false);
 
       document.getElementById("skip-mode").addEventListener("click", function () {
@@ -194,28 +178,38 @@
       }.bind(this));
     },
 
-    _hadWindow: null,
+    _state: null,
 
     context: function (show) {
       switch (show) {
         case true:
-          this._hadWindow = this._hadWindow !== null ? this._hadWindow : html5ks.api.window();
+          // return early if context already on
+          if (this.context("status")) return;
+          this._state = this._state || {
+            window: html5ks.api.window(),
+            nvl: html5ks.api.nvl("status"),
+            status: html5ks.state.status
+          };
+          html5ks.api.window("hide");
+          html5ks.api.nvl("hide");
           html5ks.state.status = "context";
           html5ks.elements.gray.style.display = "block";
-          html5ks.elements.window.style.display = "none";
           this.elements.context.style.display = "block";
           break;
         case false:
-          html5ks.state.status = "scene";
-          html5ks.elements.gray.style.display = "none";
-          if (html5ks.state.status === "scene" && this._hadWindow) {
-            this._hadWindow = null;
-            html5ks.elements.window.style.display = "block";
-          }
           this.elements.context.style.display = "none";
+          html5ks.elements.gray.style.display = "none";
+          if (this._state) {
+            html5ks.api.window(this._state.window);
+            html5ks.api.nvl(this._state.nvl);
+            html5ks.state.status = this._state.status;
+            this._state = null;
+          }
           break;
+        case "status":
+          return this.elements.context.style.display === "block";
         default:
-          this.context(this.elements.context.style.display !== "block");
+          this.context(!this.context("status"));
       }
     }
   };

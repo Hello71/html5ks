@@ -60,7 +60,5 @@ window.html5ks.data.characters = {
   rinbabble: {name: null,
     kind: "nvl",
     what_prefix: "{color: #FF8D7C}{b}Rin{/b}{/color}\n“",
-    what_suffix: "”"},
-
-  Iwanako: {name: "Iwanako"}
+    what_suffix: "”"}
 };
