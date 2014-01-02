@@ -38,15 +38,17 @@ window.html5ks.api = new (function () {
     }
     html5ks.elements.audio[channel] = audio;
 
-    var src = "dump/";
+    var src = "dump/", volume;
 
     switch (channel) {
       case "music":
         src += "bgm/" + html5ks.data.music[name];
+        volume = html5ks.persistent.musicVolume;
         break;
       case "ambient":
       case "sound":
         src += "sfx/" + html5ks.data.sfx[name];
+        volume = html5ks.persistent.sfxVolume;
     }
 
     ["opus", "ogg", "m4a", "wav"].some(function (type) {
@@ -67,7 +69,6 @@ window.html5ks.api = new (function () {
       throw new Error(e);
     };
     audio.load();
-    var volume = html5ks.persistent[channel + "Volume"];
     audio.volume = fade ? 0 : volume;
     audio.play();
     return deferred.promise;
