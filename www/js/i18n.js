@@ -6,8 +6,7 @@ html5ks.i18n = {
       for (var k in uiStrings) {
         var e = document.getElementsByClassName(k);
         for (var i = e.length - 1; i >= 0; i--) {
-          var t = document.createTextNode(uiStrings[k]);
-          e[i].appendChild(t);
+          e[i].textContent = uiStrings[k];
         }
       }
     });

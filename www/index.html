@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="description" content="HTML5 implementation of Katawa Shoujo, a bishōjo-style visual novel by Four Leaf Studios that tells a story of a young man and five young women living with varying disabilities.">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
-    <title>Katawa Shoujo</title>
+    <title class="window_name">Katawa Shoujo</title>
     <script>
         window.define = function(factory) {
             try{ delete window.define; } catch(e){ window.define = void 0; } // IE
@@ -49,11 +49,11 @@
       <div id="window" style="display: none;">
         <div id="who"></div>
         <div id="say" class="say"></div>
-        <span class="ctc" id="ctc" style="display: none" alt="Click to continue..."></span>
+        <span class="ctc" id="ctc" style="display: none"></span>
       </div>
       <div id="nvl" style="display: none;">
         <div id="nvlsay" class="say"></div>
-        <span class="ctc" id="nvlctc" style="display: none" alt="Click to continue..."></span>
+        <span class="ctc" id="nvlctc" style="display: none"></span>
       </div>
       <div id="choices" class="centered"></div>
       <div id="centered" class="centered say"></div>
@@ -69,25 +69,27 @@
           <div class="quit button main_menu_quit disabled"></div>
         </div>
         <div id="version">
-          Katawa Shoujo v1.1
+          <span class="window_name"></span> v1.1
           <br>
           HTML5KS 0.1.0
         </div>
       </div>
       <div id="dialogs" class="centered" style="display: none;">
         <div id="options" style="padding: 10px 20px;">
-          <h2>Options</h2>
+          <h2 class="config_page_caption"></h2>
           <label class="button"><input type="checkbox" class="option" id="hdisable"> <span class="hdisabled_label"></span></label>
           <label class="button"><input type="checkbox" class="option" id="skipUnread"> <span class="config_skip_unseen_label"></span></label>
           <label class="button"><input type="checkbox" class="option" id="skipAfterChoices"> <span class="config_skip_after_choice_label"></span></label>
 
-          <label><input type="range" min="1.0" max="200.0" step="0.001" class="option" id="textSpeed"> <span class="tr config_textspeed_label"></span></label>
-          <label><input type="range" min="0.0" max="1.0" step="0.001" class="option" id="autoModeDelay"> <span class="tr config_afmspeed_label"></span></label>
+          <label><input type="range" min="1.0" max="200.0" step="0.001" class="option" id="textSpeed"> <span class="config_textspeed_label"></span></label>
+          <label><input type="range" min="0.0" max="1.0" step="0.001" class="option" id="autoModeDelay"> <span class="config_afmspeed_label"></span></label>
 
-          <label><input type="range" min="0.0" max="1.0" step="0.001" class="option" id="musicVolume"> <span class="tr config_musicvol_label"></span></label>
-          <label><input type="range" min="0.0" max="1.0" step="0.001" class="option" id="sfxVolume"> <span class="tr config_sfxvol_label"></span> <span id="test-sound" class="button config_sfxtest_label"><img src="dump/ui/bt-musicplay.png" alt="Play"></span></label>
+          <label><input type="range" min="0.0" max="1.0" step="0.001" class="option" id="musicVolume"> <span class="config_musicvol_label"></span></label>
+          <label><input type="range" min="0.0" max="1.0" step="0.001" class="option" id="sfxVolume"> <span class="config_sfxvol_label"></span> <span id="test-sound" class="button config_sfxtest_label"><img src="dump/ui/bt-musicplay.png" alt="Play"></span></label>
+
+          <label class="button" id="language"><img src="dump/ui/bt-language.png"> <span class="config_language_sel"></span></label>
         </div>
-        <div id="return" class="button" style="position: absolute; bottom: 15px; right: 20px;">
+        <label id="return" class="button" style="position: absolute; bottom: 15px; right: 20px;">
           <img src="dump/ui/bt-return.png">
           <span class="return_button_text"></span>
         </div>
