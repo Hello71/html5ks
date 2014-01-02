@@ -20,7 +20,7 @@ window.html5ks = {
       autoModeDelay: 0.2,
       musicVolume: 1,
       ambientVolume: 1,
-      soundVolume: 1,
+      sfxVolume: 1,
       language: "en"
     };
     var loaded = localStorage.persistent ? JSON.parse(localStorage.persistent) : {};
