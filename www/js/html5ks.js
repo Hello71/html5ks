@@ -188,7 +188,7 @@ window.html5ks = {
           xhr.open("GET", "json/" + name + ".json");
           xhr.onload = function () {
             html5ks.data[name] = JSON.parse(xhr.responseText);
-            deferred.resolve();
+            deferred.resolve(html5ks.data[name]);
           };
           xhr.send();
         }
