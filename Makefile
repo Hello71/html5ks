@@ -10,10 +10,11 @@ CWEBP ?= cwebp
 WEBPMUX ?= webpmux
 CONVERT ?= convert
 APNGASM ?= apngasm
+UGLIFYJS ?= uglifyjs
 
 DUMP ?= www/dump
 
-all: video audio images
+all: video audio images js
 
 # === VIDEO ===
 
@@ -88,7 +89,14 @@ $(DUMP)/ui/ctc_anim.png: $(CTC_ANIM_TMP)
 $(DUMP)/ui/ctc_anim.webp: $(CTC_ANIM_TMP_WEBP)
 	$(WEBPMUX) -frame $(subst $(SPACE), +30 -frame ,$^) +30 -loop 0 -o $@
 
+# === JS ===
+
+js: www/js/all.min.js
+
+www/js/all.min.js: $(shell find www/js -name '*.js' ! -name all.min.js)
+	$(UGLIFYJS) $^ -o $@ --source-map $@.map --source-map-root / -p 2 -c -m
+
 clean:
 	$(RM) $(CVIDEO) $(CAUDIO) $(WEBP) www/favicon.ico
 
-.PHONY: video audio images clean
+.PHONY: video audio images js clean
