@@ -51,12 +51,18 @@ window.html5ks.api = new (function () {
         volume = html5ks.persistent.sfxVolume;
     }
 
-    ["opus", "ogg", "m4a", "wav"].some(function (type) {
-      if (Modernizr.audio[type]) {
-        audio.src = src + "." + type;
-        return true;
+    var types = ["opus", "ogg", "m4a", "wav"];
+
+    var setNextType = function (i) {
+      for (; i < types.length; i++) {
+        if (Modernizr.audio[types[i]]) {
+          audio.src = src + "." + types[i];
+          return i;
+        }
       }
-    });
+    };
+
+    var i = setNextType(0);
 
     audio.addEventListener("playing", function playing() {
       audio.removeEventListener("playing", playing, false);
@@ -66,8 +72,14 @@ window.html5ks.api = new (function () {
       deferred.resolve();
     }, false);
     audio.onerror = function (e) {
-      console.error(audio.error);
-      deferred.resolve();
+      if (e.code === e.MEDIA_ERR_SRC_NOT_SUPPORTED) {
+        i = setNextType(i);
+        if (i) {
+          deferred.resolve();
+        } else {
+          throw new Error(e);
+        }
+      }
     };
     audio.load();
     audio.volume = fade ? 0 : volume;

@@ -39,17 +39,17 @@ html5ks.imachine = new (function () {
                   case "act_op":
                     switch (inst[1]) {
                       case "op_vid1":
-                        html5ks.api.movie_cutscene("op_1").then(runInst);
+                        html5ks.api.movie_cutscene("op_1").then(runInst, deferred.reject);
                         break;
                       default:
-                        html5ks.api[cmd].apply(html5ks.api, args).then(function () { runInst(); });
+                        html5ks.api[cmd].apply(html5ks.api, args).then(function () { runInst(); }, deferred.reject);
                     }
                     break;
                   case "imenu":
                     html5ks.api.iscene(args[0]).then(function (choice) {
                       this._return = choice;
                       runInst();
-                    }.bind(this));
+                    }.bind(this), console.error);
                     break;
                   case "if":
                     var cpy = inst.slice(0),
@@ -88,7 +88,7 @@ html5ks.imachine = new (function () {
                           break el;
                       }
                     }
-                    return html5ks.imachine.run(next).then(runInst);
+                    return html5ks.imachine.run(next).then(runInst, console.error);
                   case "path_end":
                     // TODO: disp vid + add to persistent
                     deferred.resolve();

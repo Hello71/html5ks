@@ -9,6 +9,6 @@ html5ks.i18n = {
           e[i].textContent = uiStrings[k];
         }
       }
-    });
+    }, console.error);
   }
 };
