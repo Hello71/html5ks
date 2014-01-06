@@ -94,7 +94,7 @@ $(DUMP)/ui/ctc_anim.webp: $(CTC_ANIM_TMP_WEBP)
 js: www/js/all.min.js
 
 www/js/all.min.js: www/js/html5ks.js www/js/menu.js www/js/api.js www/js/play.js www/js/images.js www/js/characters.js www/js/imachine.js www/js/i18n.js
-	$(UGLIFYJS) $^ -o $@ --source-map $@.map --source-map-root / -p 2 -m -c
+	$(UGLIFYJS) $^ -o $@ --source-map $@.map -p 2 -m -c
 
 clean:
 	$(RM) $(CVIDEO) $(CAUDIO) $(WEBP) www/favicon.ico
