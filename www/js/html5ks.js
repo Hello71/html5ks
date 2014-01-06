@@ -187,8 +187,14 @@ window.html5ks = {
         } else {
           xhr.open("GET", "json/" + name + ".json");
           xhr.onload = function () {
-            html5ks.data[name] = JSON.parse(xhr.responseText);
-            deferred.resolve(html5ks.data[name]);
+            d = JSON.parse(xhr.responseText);
+            for (var k in d) {
+              if (k.slice(0, 3) === (html5ks.persistent.language === "en" ? "fr_" : "en_")) {
+                delete d[k];
+              }
+            }
+            html5ks.data[name] = d;
+            deferred.resolve(d);
           };
           xhr.send();
         }
