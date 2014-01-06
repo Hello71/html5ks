@@ -172,10 +172,10 @@
         var start = this.elements.main.start;
         start.addEventListener("click", function () {
           this.elements.mainMenu.style.display = "none";
-          html5ks.imachine.start().then(this.mainMenu.bind(this));
+          html5ks.imachine.start().then(this.mainMenu.bind(this), console.error);
         }.bind(this), false);
         start.className = start.className.replace("disabled", "");
-      }.bind(this));
+      }.bind(this), console.error);
     },
 
     _state: null,

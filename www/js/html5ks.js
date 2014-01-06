@@ -178,10 +178,10 @@ window.html5ks = {
           delete d[k];
         }
       }
-    });
+    }, console.error);
     html5ks.api.movie_cutscene("4ls", true).then(function () {
       html5ks.menu.mainMenu();
-    });
+    }, console.error);
   },
   fetch: function (type, name) {
     var deferred = when.defer();
@@ -196,6 +196,9 @@ window.html5ks = {
             var d = JSON.parse(xhr.responseText);
             html5ks.data[name] = d;
             deferred.resolve(d);
+          };
+          xhr.onerror = function () {
+            deferred.reject();
           };
           xhr.send();
         }
