@@ -193,7 +193,7 @@ window.html5ks = {
         } else {
           xhr.open("GET", "json/" + name + ".json");
           xhr.onload = function () {
-            d = JSON.parse(xhr.responseText);
+            var d = JSON.parse(xhr.responseText);
             html5ks.data[name] = d;
             deferred.resolve(d);
           };
