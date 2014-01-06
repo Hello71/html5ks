@@ -66,7 +66,8 @@ window.html5ks.api = new (function () {
       deferred.resolve();
     }, false);
     audio.onerror = function (e) {
-      throw new Error(e);
+      console.error(audio.error);
+      deferred.resolve();
     };
     audio.load();
     audio.volume = fade ? 0 : volume;
