@@ -172,7 +172,13 @@ window.html5ks = {
     this.i18n.init();
   },
   start: function () {
-    this.fetch("json", "script");
+    this.fetch("json", "script").then(function (d) {
+      for (var k in d) {
+        if (k.slice(0, 3) === (html5ks.persistent.language === "en" ? "fr_" : "en_")) {
+          delete d[k];
+        }
+      }
+    });
     html5ks.api.movie_cutscene("4ls", true).then(function () {
       html5ks.menu.mainMenu();
     });
@@ -188,11 +194,6 @@ window.html5ks = {
           xhr.open("GET", "json/" + name + ".json");
           xhr.onload = function () {
             d = JSON.parse(xhr.responseText);
-            for (var k in d) {
-              if (k.slice(0, 3) === (html5ks.persistent.language === "en" ? "fr_" : "en_")) {
-                delete d[k];
-              }
-            }
             html5ks.data[name] = d;
             deferred.resolve(d);
           };
