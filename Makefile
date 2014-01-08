@@ -5,8 +5,10 @@ FFMPEG ?= ffmpeg
 FFMPEG += -v warning $(FFMPEGFLAGS)
 OPUSENC ?= opusenc
 ZOPFLIPNG ?= zopflipng
+OPTIPNG ?= optipng
 JPEGOPTIM ?= jpegoptim
 CWEBP ?= cwebp
+CWEBP += -short -alpha_cleanup
 WEBPMUX ?= webpmux
 CONVERT ?= convert
 APNGASM ?= apngasm
@@ -76,6 +78,12 @@ images: $(WEBP) $(CTC_ANIM) www/favicon.ico
 
 www/favicon.ico: $(DUMP)/ui/icon.png
 	$(CONVERT) $< -resize 256x256 -transparent white $@
+
+$(DUMP)/ui/bt-cf-unchecked.webp $(DUMP)/ui/bt-cf-checked.webp: %.webp: %.png
+	$(CONVERT) -trim $< $<
+	$(OPTIPNG) -o7 $<
+	$(ZOPFLIPNG) -m -y $< $<
+	$(CWEBP) -q 99 -m 6 $< -o $@
 
 $(DUMP)/ui/ctc_strip-0.png: $(CTC_ANIM_SRC)
 	$(CONVERT) $< -crop 16x16 $(patsubst %.png,%*.png,$<)
