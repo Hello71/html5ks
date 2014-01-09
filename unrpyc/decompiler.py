@@ -21,20 +21,24 @@
 import ast as python_ast
 import renpy.ast as ast
 import renpy.atl as atl
-import code
+import pdb
 import json
 
 DECOMPILE_SCREENS = False
-global firstLabel
 firstLabel = True
-global warnedATL
 warnedATL = False
+ignorePython = False
 
-def pretty_print_ast(out_file, ast):
+def pretty_print_ast(out_file, ast, ignore_python):
+    global ignorePython
+    ignorePython = ignore_python
     out_file.write('{')
     for stmt in ast:
         print_statement(out_file, stmt, 0)
-    out_file.write(']}')
+    if ignore_python:
+        out_file.write('}')
+    else:
+        out_file.write(']}')
 
 def indent(f, level):
     # Print indentation
@@ -57,115 +61,109 @@ def escape_string(s):
 #      multiple of the same block are immediately after
 #      each other.
 def print_atl(f, atl_block, indent_level):
-    if not warnedATL:
-        global warnedATL
-        warnedATL = True
-        print("ATL not yet implemented")
-    return
     if not atl_block.statements:
         indent(f, indent_level)
     for stmt in atl_block.statements:
         indent(f, indent_level)
 
         if type(stmt) is atl.RawMultipurpose:
-            # warper
-            if stmt.warp_function:
-                f.write("warp %s" % (stmt.warp_function.strip(), ))
-                f.write(" %s " % (stmt.duration.strip(), ))
-            elif stmt.warper:
-                f.write(stmt.warper)
-                f.write(" %s " % (stmt.duration.strip(), ))
-            elif stmt.duration.strip() != '0':
-                f.write('pause')
-                f.write(" %s" % (stmt.duration.strip(), ))
+            ## warper
+            #if stmt.warp_function:
+            #    f.write("warp %s" % (stmt.warp_function.strip(), ))
+            #    f.write(" %s " % (stmt.duration.strip(), ))
+            #elif stmt.warper:
+            #    f.write(stmt.warper)
+            #    f.write(" %s " % (stmt.duration.strip(), ))
+            #elif stmt.duration.strip() != '0':
+            #    f.write('pause')
+            #    f.write(" %s" % (stmt.duration.strip(), ))
 
-            # revolution
-            if stmt.revolution:
-                f.write("%s " % (stmt.revolution, ))
+            ## revolution
+            #if stmt.revolution:
+            #    f.write("%s " % (stmt.revolution, ))
 
-            # circles
-            if stmt.circles != "0":
-                f.write("circles %s " % (stmt.circles.strip(), ))
+            ## circles
+            #if stmt.circles != "0":
+            #    f.write("circles %s " % (stmt.circles.strip(), ))
 
-            # splines
-            for (name, exprs) in stmt.splines:
-                f.write("%s " % (name, ))
-                for expr in exprs:
-                    f.write("knot %s " % (expr.strip(), ))
+            ## splines
+            #for (name, exprs) in stmt.splines:
+            #    f.write("%s " % (name, ))
+            #    for expr in exprs:
+            #        f.write("knot %s " % (expr.strip(), ))
 
-            # properties
-            for (k, v) in stmt.properties:
-                f.write("%s %s " % (k, v.strip()))
+            ## properties
+            #for (k, v) in stmt.properties:
+            #    f.write("%s %s " % (k, v.strip()))
 
             # with
             for (expr, with_expr) in stmt.expressions:
-                f.write("%s " % (expr.strip(), ))
-                if with_expr:
-                    f.write("with %s " % (with_expr, ))
+                if expr.strip()[0] == '"':
+                    f.write("%s " % (expr.strip(), ))
+                #if with_expr:
+                #    f.write("with %s " % (with_expr, ))
 
-            f.write("\n")
+        #elif type(stmt) is atl.RawBlock:
+        #    # what does stmt.animation do?
+        #    f.write("block:\n")
+        #    print_atl(f, stmt, indent_level + 1)
 
-        elif type(stmt) is atl.RawBlock:
-            # what does stmt.animation do?
-            f.write("block:\n")
-            print_atl(f, stmt, indent_level + 1)
+        #elif type(stmt) is atl.RawChoice:
+        #    first = True
+        #    for (chance, block) in stmt.choices:
+        #        if first:
+        #            first = False
+        #        else:
+        #            indent(f, indent_level)
 
-        elif type(stmt) is atl.RawChoice:
-            first = True
-            for (chance, block) in stmt.choices:
-                if first:
-                    first = False
-                else:
-                    indent(f, indent_level)
+        #        f.write("choice")
+        #        if chance != "1.0":
+        #            f.write(" %s" % (chance, ))
+        #        f.write(":\n")
+        #        print_atl(f, block, indent_level + 1)
 
-                f.write("choice")
-                if chance != "1.0":
-                    f.write(" %s" % (chance, ))
-                f.write(":\n")
-                print_atl(f, block, indent_level + 1)
+        #elif type(stmt) is atl.RawContainsExpr:
+        #    f.write("contains %s\n" % (stmt.expression, ))
 
-        elif type(stmt) is atl.RawContainsExpr:
-            f.write("contains %s\n" % (stmt.expression, ))
+        #elif type(stmt) is atl.RawEvent:
+        #    f.write("event %s\n" % (stmt.name, ))
 
-        elif type(stmt) is atl.RawEvent:
-            f.write("event %s\n" % (stmt.name, ))
+        #elif type(stmt) is atl.RawFunction:
+        #    f.write("function %s\n" % (stmt.expr, ))
 
-        elif type(stmt) is atl.RawFunction:
-            f.write("function %s\n" % (stmt.expr, ))
+        #elif type(stmt) is atl.RawOn:
+        #    first = True
+        #    for name, block in list(stmt.handlers.items()):
+        #        if first:
+        #            first = False
+        #        else:
+        #            indent(f, indent_level)
 
-        elif type(stmt) is atl.RawOn:
-            first = True
-            for name, block in list(stmt.handlers.items()):
-                if first:
-                    first = False
-                else:
-                    indent(f, indent_level)
+        #        f.write("on %s:\n" % (name, ))
+        #        print_atl(f, block, indent_level + 1)
 
-                f.write("on %s:\n" % (name, ))
-                print_atl(f, block, indent_level + 1)
+        #elif type(stmt) is atl.RawParallel:
+        #    first = True
+        #    for block in stmt.blocks:
+        #        if first:
+        #            first = False
+        #        else:
+        #            indent(f, indent_level)
 
-        elif type(stmt) is atl.RawParallel:
-            first = True
-            for block in stmt.blocks:
-                if first:
-                    first = False
-                else:
-                    indent(f, indent_level)
+        #        f.write("parallel:\n")
+        #        print_atl(f, block, indent_level + 1)
 
-                f.write("parallel:\n")
-                print_atl(f, block, indent_level + 1)
+        #elif type(stmt) is atl.RawRepeat:
+        #    f.write("repeat")
+        #    if stmt.repeats:
+        #        f.write(" %s" % (stmt.repeats, )) # not sure if this is even a string
+        #    f.write("\n")
 
-        elif type(stmt) is atl.RawRepeat:
-            f.write("repeat")
-            if stmt.repeats:
-                f.write(" %s" % (stmt.repeats, )) # not sure if this is even a string
-            f.write("\n")
+        #elif type(stmt) is atl.RawTime:
+        #    f.write("time %s\n" % (stmt.time, ))
 
-        elif type(stmt) is atl.RawTime:
-            f.write("time %s\n" % (stmt.time, ))
-
-        else:
-            f.write("TODO atl.%s\n" % type(stmt).__name__)
+        #else:
+        #    f.write("TODO atl.%s\n" % type(stmt).__name__)
 
 def print_imspec(f, imspec):
     if imspec[1] is not None: # Expression
@@ -280,26 +278,16 @@ class PrintRenPython(python_ast.NodeVisitor):
             id = node.targets[0].id
             if id == 'suppress_window_before_timeskip' or id == 'suppress_window_after_timeskip' or id == '_window':
                 return
-        self.f.write(self.visit(node.targets[0]))
-        self.f.write(': ')
-        self.f.write(self.visit(node.value))
-        self.f.write(',\n')
+        return "%s: %s,\n" % (self.visit(node.targets[0]), self.visit(node.value))
 
     def visit_Call(self, node):
-        self.f.write('[')
-        self.f.write(self.visit(node.func))
-        self.f.write(', ')
-        self.f.write(', '.join(map(self.visit, node.args)))
-        self.f.write(', ')
-        self.f.write(', '.join(map(self.visit, node.keywords)))
-        self.f.write('],\n')
+        return '[%s, %s, %s],' % (self.visit(node.func), ', '.join(map(self.visit, node.args)), ', '.join(map(self.visit, node.keywords)))
 
     def visit_Compare(self, node):
-        self.f.write('[')
-        self.f.write(self.visit(node.left))
-        self.f.write(', ')
-        self.f.write(self.visit(node.comparators[0]))
-        self.f.write('], ')
+        return '[%s, %s], ' % (self.visit(node.left), self.visit(node.comparators[0]))
+
+    def visit_Expression(self, node):
+        return self.visit(node.body)
 
     def quote(self, string):
         return '"%s"' % string
@@ -333,6 +321,9 @@ class PrintRenPython(python_ast.NodeVisitor):
         return self.visit(node.value)
 
 def print_Python(f, stmt, indent_level, early=False):
+    if ignorePython:
+        return
+
     code_src = stmt.code.source
 
     stripped_code = code_src.strip()
@@ -354,14 +345,16 @@ def print_Init(f, stmt, indent_level):
         print_statement(f, s, indent_level + 1)
 
 def print_Image(f, stmt, indent_level):
-    f.write("image %s" % (' '.join(stmt. imgname), ))
+    f.write('"%s": ' % ('_'.join(stmt.imgname), ))
     if stmt.code is not None:
-        f.write(" = %s\n" % (stmt.code.source, ))
+        ret = PrintRenPython(f).visit(compile(stmt.code.source, '<unknown>', 'eval', python_ast.PyCF_ONLY_AST))
+        f.write(ret)
     else:
-        f.write("\n")
         print_atl(f, stmt.atl, indent_level + 1)
+    f.write(',\n')
 
 def print_Transform(f, stmt, indent_level):
+    return
     f.write("transform %s" % (stmt.varname, ))
     if stmt.parameters is not None:
         print_params(f, stmt.parameters)

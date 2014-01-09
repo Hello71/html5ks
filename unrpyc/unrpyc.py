@@ -94,7 +94,7 @@ def read_ast_from_file(in_file):
     data, stmts = pickle.loads(raw_contents)
     return stmts
 
-def decompile_rpyc(input_filename, out_filename, overwrite=False):
+def decompile_rpyc(input_filename, out_filename, overwrite=False, ignore_python=False):
     # Output filename is input filename but with .rpy extension
     path, ext = os.path.splitext(input_filename)
 
@@ -108,7 +108,7 @@ def decompile_rpyc(input_filename, out_filename, overwrite=False):
         ast = read_ast_from_file(in_file)
 
     with codecs.open(out_filename, 'w', encoding='utf-8') as out_file:
-        decompiler.pretty_print_ast(out_file, ast)
+        decompiler.pretty_print_ast(out_file, ast, ignore_python)
     return True
 
 if __name__ == "__main__":
@@ -122,6 +122,9 @@ if __name__ == "__main__":
     parser.add_option('-b', '--basedir', action='store', dest='basedir', 
             help="specify the game base directory in which the 'renpy' directory is located") 
 
+    parser.add_option('-p', '--ignore-python', action='store_true', dest='ignore_python',
+            default=False, help="ignore python blocks")
+
     options, args = parser.parse_args()
     
 
@@ -134,7 +137,7 @@ if __name__ == "__main__":
         parser.print_help();
         parser.error("Incorrect number of arguments: expected 2, got %d." % (len(args)))
 
-    decompile_rpyc(args[0], args[1], options.clobber)
+    decompile_rpyc(args[0], args[1], options.clobber, options.ignore_python)
 else:
     import_renpy()
 

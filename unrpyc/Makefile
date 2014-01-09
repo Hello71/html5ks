@@ -19,6 +19,10 @@ ui-strings.json.o ui-strings_FR.json.o: ui-strings%.json.o: ui-strings%.rpyc *.p
 	python unrpyc.py --clobber $< $@
 	sed -i -e 's/    \["init_language", "[a-z]*", \],//;s/^\]}$$/}/' $@
 
+ui_settings.json.o: ui_settings.rpyc *.py
+	python unrpyc.py --clobber $< --ignore-python $@
+	sed -i -e 's/,,/,/g;/: *,$$/d' $@
+
 %.json.o: %.rpyc *.py
 	python unrpyc.py --clobber $< $@
 
