@@ -24,7 +24,7 @@ window.html5ks.api = new (function () {
         switch (audio.volume) {
           case 0:
             audio.pause();
-            // break;
+            /* falls through */
           case 1:
             clearInterval(this._fading);
         }
@@ -389,7 +389,6 @@ window.html5ks.api = new (function () {
   },
 
   say: function (chrName, str, extend) {
-    if (extend) debugger;
     var deferred = when.defer(),
         chr = typeof chrName === "string" ? html5ks.data.characters[chrName] : chrName,
         w = /{w=?(\d*\.\d*)?}(.*)/.exec(str);

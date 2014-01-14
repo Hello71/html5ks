@@ -1,44 +1,43 @@
 This is a WIP HTML5 implementation of the game Katawa Shoujo. [0]
 
-jQuery is not used, but when.js [1] is used as a sensible Promises/A+ implementation.
-
 == Requirements ==
 - Katawa Shoujo (obviously)
-- when.js
+- Firefox/Chrome/a sensible browser (i.e. not IE)
 - Bash
-- Firefox/Chrome/a sensible browser
 - ffmpeg with fdk-aac, libtheora, libvpx, libx264
 - opusenc from opus-tools
-- cwebp from libwebp
-- zopfli
-- nginx
+- cwebp and webpmux from libwebp
 
-How to use:
+=== Recommended ===
+- nginx
+- zopfli
+
+== How to use ==
+1. Navigate to http://html5ks.happinessforme.com/
+
+== How to build ==
 0. Get Katawa Shoujo.
 1. Copy *.rpyc from Katawa Shoujo/game into unrpyc/ directory.
-2. Extract files from data.rpa with an rpa extractor, e.g. unrpa. Put files in www/dump.
-3. Run setup.sh.
+2. Extract files from Katawa Shoujo/game/data.rpa with an rpa extractor, e.g. unrpa. Put files in www/dump.
+3. Run setup.sh. [2]
 
-4. Run nginx.sh [2] to start nginx with appropriate options for development, then connect to localhost:8080.
+4. Run nginx.sh to start nginx, then navigate to localhost:8080 in your browser.
 -- or --
-4. Open www/index.html in a browser. This is untested, and some things may not work. [3]
-
-lighttpd.conf is no longer maintained. Patches to fix it are welcome.
+4. Open www/index.html in a browser.
 
 == Reducing setup time ==
-By editing the Makefile, you can turn on or off the various encodings. To reduce the setup time (many hours), try the following:
+To reduce the setup time (many hours), try the following:
 
-Turn off zopflipng recompression by commenting it out. It saves only a few MB but takes several hours to complete. Useful if you're serving many, MANY copies, but not useful if you're serving one locally.
+Turn off zopflipng recompression by passing ZOPFLIPNG=: as an environment variable to setup.sh. It saves only a few MB but takes several hours to complete, depending on CPU. Useful if you're serving many, MANY copies, but not useful if you're serving one locally.
 
 == Reducing file size ==
 [TODO]
 
 == Contributing ==
 
-Check Bugzilla for things that need to be done. [4]
+Check Bugzilla for things that need to be done. [3]
 
 [0] http://www.katawa-shoujo.com/
 [1] https://github.com/cujojs/when/
 [2] If you're on Windoze, sucks for you. Use a better OS.
-[3] Do not send patches for this, unless they also fix other issues.
-[4] https://bugzilla.happinessforme.com/buglist.cgi?cmdtype=runnamed&namedcmd=Open+HTML5KS+bugs
+[3] https://bugzilla.happinessforme.com/buglist.cgi?cmdtype=runnamed&namedcmd=Open+HTML5KS+bugs

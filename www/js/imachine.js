@@ -36,6 +36,7 @@ html5ks.imachine = new (function () {
                     break;
                   case "iscene":
                     this.scene_register(inst[1]);
+                    /* falls through */
                   case "act_op":
                     switch (inst[1]) {
                       case "op_vid1":
