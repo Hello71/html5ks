@@ -110,7 +110,7 @@ clean:
 	$(RM) $(CVIDEO) $(CAUDIO) $(WEBP) www/favicon.ico
 
 watch:
-	while inotifywait -r -e modify,delete,move --exclude="^./.git" --exclude="\.swp$$" .; do \
+	while inotifywait -r -e modify,delete,move --exclude="^\./\.git" --exclude="\.swp$$" .; do \
 		${MAKE}; \
 	done
 

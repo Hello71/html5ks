@@ -21,8 +21,12 @@ window.html5ks.api = new (function () {
       this._fading[channel] = setInterval(function () {
         // clamp new volume 0-1
         audio.volume = Math.min(Math.max(audio.volume + step, 0), 1);
-        if (audio.volume === 0 || audio.volume === 1) {
-          clearInterval(this._fading);
+        switch (audio.volume) {
+          case 0:
+            audio.pause();
+            // break;
+          case 1:
+            clearInterval(this._fading);
         }
       }.bind(this), 50);
     }
@@ -79,6 +83,8 @@ window.html5ks.api = new (function () {
         } else {
           throw new Error(e);
         }
+      } else {
+        throw new Error(e);
       }
     };
     audio.load();
@@ -383,6 +389,7 @@ window.html5ks.api = new (function () {
   },
 
   say: function (chrName, str, extend) {
+    if (extend) debugger;
     var deferred = when.defer(),
         chr = typeof chrName === "string" ? html5ks.data.characters[chrName] : chrName,
         w = /{w=?(\d*\.\d*)?}(.*)/.exec(str);
@@ -426,7 +433,7 @@ window.html5ks.api = new (function () {
       }
 
       say = html5ks.elements.say;
-      say.innerHTML = "";
+      if (!extend) say.innerHTML = "";
       ctc = html5ks.elements.ctc;
     }
 
