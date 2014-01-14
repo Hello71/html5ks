@@ -3,6 +3,7 @@
   "browser": true,
   "devel": true,
   "globals": {
+    "FastClick": false,
     "Modernizr": false,
     "html5ks": false,
     "when": false

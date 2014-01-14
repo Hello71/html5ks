@@ -99,9 +99,11 @@ $(DUMP)/ui/ctc_anim.webp: $(CTC_ANIM_TMP_WEBP)
 
 # === JS ===
 
+JS := www/js/html5ks.js www/js/menu.js www/js/api.js www/js/play.js www/js/images.js www/js/characters.js www/js/imachine.js www/js/i18n.js
+
 js: www/js/all.min.js
 
-www/js/all.min.js: www/js/html5ks.js www/js/menu.js www/js/api.js www/js/play.js www/js/images.js www/js/characters.js www/js/imachine.js www/js/i18n.js
+www/js/all.min.js: $(JS)
 	$(UGLIFYJS) $^ -o $@ -p 2 -m -c
 
 # === MISC ===
@@ -109,10 +111,13 @@ www/js/all.min.js: www/js/html5ks.js www/js/menu.js www/js/api.js www/js/play.js
 clean:
 	$(RM) $(CVIDEO) $(CAUDIO) $(WEBP) www/favicon.ico
 
+jshint: $(JS)
+	jshint $^
+
 watch:
 	while inotifywait -r -e modify,delete,move --exclude="^\./\.git" --exclude="\.swp$$" .; do \
 		${MAKE}; \
 	done
 
-.PHONY: video audio images js clean watch
+.PHONY: video audio images js jshint clean watch
 .SUFFIXES:

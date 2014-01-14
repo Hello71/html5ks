@@ -1,8 +1,4 @@
 "use strict";
-console = console || {
-  log: function () {},
-  error: alert
-};
 window.html5ks = {
   data: {},
   persistent: {},
