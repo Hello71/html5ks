@@ -161,6 +161,7 @@ window.html5ks = {
     }
   },
   onload: function () {
+    FastClick.attach(document.body);
     this.initElements();
     this.scale();
     this.initEvents();
