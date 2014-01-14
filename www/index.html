@@ -6,17 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
     <title class="window_name">Katawa Shoujo</title>
     <script>
-        window.define = function(factory) {
-            try{ delete window.define; } catch(e){ window.define = void 0; } // IE
-            window.when = factory();
-        };
-        window.define.amd = {};
+      window.define = function(factory) {
+          try{ delete window.define; } catch(e){ window.define = void 0; } // IE
+          window.when = factory();
+      };
+      window.define.amd = {};
     </script>
     <link rel="shortcut icon" type="image/png" href="dump/ui/icon.png">
     <link rel="apple-touch-icon" href="dump/ui/icon.png">
     <link rel="stylesheet" type="text/css" href="css/anim.css">
     <link rel="stylesheet" type="text/css" href="css/index.css">
     <script src="js/lib/when/when.js"></script>
+    <script src="js/lib/fastclick/lib/fastclick.js"></script>
     <script src="js/lib/modernizr-build.js"></script>
     <script src="js/all.min.js"></script>
   </head>

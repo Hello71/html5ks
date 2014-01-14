@@ -1,3 +1,6 @@
 [submodule "when"]
 	path = when
 	url = https://github.com/cujojs/when
+[submodule "fastclick"]
+	path = fastclick
+	url = https://github.com/ftlabs/fastclick.git
