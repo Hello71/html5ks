@@ -31,7 +31,7 @@ To reduce the setup time (many hours), try the following:
 Turn off zopflipng recompression by passing ZOPFLIPNG=: as an environment variable to setup.sh. It saves only a few MB but takes several hours to complete, depending on CPU. Useful if you're serving many, MANY copies, but not useful if you're serving one locally.
 
 == Reducing file size ==
-[TODO]
+Run `make space`. Warning: This will remove source files from dump.
 
 == Contributing ==
 

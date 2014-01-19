@@ -38,7 +38,7 @@ test: all
 
 install: all
 	[ -d ../www/json ] || mkdir ../www/json
-	install $(TARGETS) ../www/json
+	cp -f $(TARGETS) ../www/json
 
 uninstall:
 	$(RM) ../www/json/*

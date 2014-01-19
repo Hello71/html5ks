@@ -61,13 +61,20 @@ window.html5ks.api = new (function () {
       for (; i < types.length; i++) {
         if (Modernizr.audio[types[i]]) {
           audio.src = src + "." + types[i];
+          audio.load();
+          audio.volume = fade ? 0 : volume;
           return i;
         }
       }
+      return null;
     };
 
-    var i = setNextType(0);
+    var i;
 
+    audio.addEventListener("canplaythrough", function canplaythrough() {
+      audio.removeEventListener("canplaythrough", canplaythrough, false);
+      audio.play();
+    });
     audio.addEventListener("playing", function playing() {
       audio.removeEventListener("playing", playing, false);
       if (fade) {
@@ -77,19 +84,20 @@ window.html5ks.api = new (function () {
     }, false);
     audio.onerror = function (e) {
       if (e.code === e.MEDIA_ERR_SRC_NOT_SUPPORTED) {
-        i = setNextType(i);
-        if (i) {
+        i = setNextType(++i);
+        if (!i) {
+          console.error("No media formats appear to be supported.");
+          console.error(e);
           deferred.resolve();
-        } else {
-          throw new Error(e);
         }
       } else {
-        throw new Error(e);
+        console.error(e);
+        deferred.resolve();
       }
     };
-    audio.load();
-    audio.volume = fade ? 0 : volume;
-    audio.play();
+
+    i = setNextType(0);
+
     return deferred.promise;
   },
 
