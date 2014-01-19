@@ -42,6 +42,7 @@ video: $(CVIDEO)
 AUDIO := $(shell find $(DUMP)/bgm $(DUMP)/sfx -name '*.ogg')
 OPUS := $(patsubst %.ogg,%.opus,$(AUDIO))
 M4A := $(patsubst %.ogg,%.m4a,$(AUDIO))
+WAV := $(patsubst %.ogg,%.wav,$(AUDIO))
 CAUDIO := $(OPUS) $(M4A)
 
 audio: $(CAUDIO)
@@ -104,7 +105,7 @@ JS := www/js/html5ks.js www/js/menu.js www/js/api.js www/js/play.js www/js/image
 js: www/js/all.min.js
 
 www/js/all.min.js: $(JS)
-	$(UGLIFYJS) $^ -o $@ -p 2 -m -c
+	$(UGLIFYJS) $^ -o $@ -p 2 -m -c drop_debugger=false
 
 # === MISC ===
 
@@ -114,10 +115,13 @@ clean:
 jshint: $(JS)
 	jshint $^
 
+space:
+	find $(DUMP) \( -name '*.wav' -o -name '*.mkv' -o -path "$(DUMP)/font*" \) -delete
+
 watch:
 	while inotifywait -r -e modify,delete,move --exclude="^\./\.git" --exclude="\.swp$$" .; do \
 		${MAKE}; \
 	done
 
-.PHONY: video audio images js jshint clean watch
+.PHONY: video audio images js jshint clean space watch
 .SUFFIXES:

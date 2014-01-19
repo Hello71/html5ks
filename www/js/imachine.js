@@ -56,7 +56,7 @@ html5ks.imachine = new (function () {
                     var cpy = inst.slice(0),
                         type = '',
                         next = null;
-                    el: while (type = cpy.shift()) {
+                    el: while ((type = cpy.shift())) {
                       switch (type) {
                         case "if":
                         case "elif":
