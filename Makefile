@@ -1,12 +1,14 @@
-null      :=
-SPACE     := $(null) $(null)
+null :=
+SPACE := $(null) $(null)
 
 FFMPEG ?= ffmpeg
-FFMPEG += -v warning $(FFMPEGFLAGS)
+FFMPEG += -v warning -y
 OPUSENC ?= opusenc
 ZOPFLIPNG ?= zopflipng
-OPTIPNG ?= optipng
-JPEGOPTIM ?= jpegoptim
+TRUEPNG ?= wine TruePNG
+DEFLOPT ?= wine DeflOpt
+DEFLUFF ?= defluff
+PNGQUANT ?= pngquant
 CWEBP ?= cwebp
 CWEBP += -short -alpha_cleanup
 WEBPMUX ?= webpmux
@@ -35,7 +37,7 @@ video: $(CVIDEO)
 	$(FFMPEG) -i $< -c:v libvpx -crf 15 -b:v 1M -c:a copy $@
 
 %.ogv: %.mkv
-	$(FFMPEG) -i $< -c:v libtheora -qscale:v 6 -c:a copy $@
+	$(FFMPEG) -i $< -c:v libtheora -qscale:v 10 -c:a copy $@
 
 # === AUDIO ===
 
@@ -69,11 +71,15 @@ CTC_ANIM := $(DUMP)/ui/ctc_anim.png $(DUMP)/ui/ctc_anim.webp
 images: $(WEBP) $(CTC_ANIM) www/favicon.ico
 
 %.webp: %.png
+	$(PNGQUANT) --force --speed 1 --ext .png $<
 	$(ZOPFLIPNG) -m -y $< $<
+	$(DEFLOPT) $<
+	$(DEFLUFF) < $< > TMP$<
+	mv TMP$< $<
 	$(CWEBP) -q 99 -m 6 $< -o $@
 
 %.webp: %.jpg
-	$(JPEGOPTIM) --strip-all $<
+	$(JPEGMINI) $<
 	$(CWEBP) -q 90 -m 6 $< -o $@
 
 www/favicon.ico: $(DUMP)/ui/icon.png
@@ -81,7 +87,8 @@ www/favicon.ico: $(DUMP)/ui/icon.png
 
 $(DUMP)/ui/bt-cf-unchecked.webp $(DUMP)/ui/bt-cf-checked.webp: %.webp: %.png
 	$(CONVERT) -trim $< $<
-	$(OPTIPNG) -o7 $<
+	$(PNGQUANT) --force --speed 1 --ext .png $<
+	$(TRUEPNG) $< /o max
 	$(ZOPFLIPNG) -m -y $< $<
 	$(CWEBP) -q 99 -m 6 $< -o $@
 
