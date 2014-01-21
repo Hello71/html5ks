@@ -51,7 +51,7 @@ audio: $(CAUDIO)
 	$(FFMPEG) -i $< -c:a pcm_s16le $@
 
 %.opus: %.wav
-	$(FFMPEG) -i $< -c:a libopus -b:a 64 $@
+	$(FFMPEG) -i $< -c:a libopus -b:a 64k $@
 
 %.m4a: %.wav
 	$(FFMPEG) -i $< -c:a libfdk_aac -vbr 1 $@
@@ -73,8 +73,8 @@ images: $(WEBP) $(CTC_ANIM) www/favicon.ico
 	$(PNGQUANT) --force --speed 1 --ext .png $<
 	$(ZOPFLIPNG) -m -y $< $<
 	$(DEFLOPT) $<
-	$(DEFLUFF) < $< > TMP$<
-	mv TMP$< $<
+	$(DEFLUFF) < $< > $<.tmp
+	mv -f $<.tmp $<
 	$(CWEBP) -q 99 -m 6 $< -o $@
 
 %.webp: %.jpg
