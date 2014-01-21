@@ -19,7 +19,11 @@ window.html5ks = {
       sfxVolume: 1,
       language: "en"
     };
-    var loaded = localStorage.persistent ? JSON.parse(localStorage.persistent) : {};
+    try {
+      var loaded = localStorage.persistent ? JSON.parse(localStorage.persistent) : {};
+    } catch (e) {
+      var loaded = {};
+    }
     var defProp = function (v) {
       Object.defineProperty(html5ks.persistent, k, {
         get: function () {

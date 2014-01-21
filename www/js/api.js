@@ -78,13 +78,13 @@ window.html5ks.api = new (function () {
     audio.onerror = function (e) {
       if (e.code === e.MEDIA_ERR_SRC_NOT_SUPPORTED) {
         i = setNextType(i);
-        if (i) {
+        if (!i) {
+          console.log("no audio formats supported");
           deferred.resolve();
-        } else {
-          throw new Error(e);
         }
       } else {
-        throw new Error(e);
+        console.error("unknown audio error");
+        deferred.resolve();
       }
     };
     audio.load();
