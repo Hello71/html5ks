@@ -75,6 +75,9 @@ CTC_ANIM := $(DUMP)/ui/ctc_anim.png $(DUMP)/ui/ctc_anim.webp
 
 images: $(WEBP) $(CTC_ANIM) www/favicon.ico
 
+$(DUMP)/ui/ctc_strip.webp: $(DUMP)/ui/ctc_strip.png
+	:
+
 %.webp: %.png
 	$(PNGQUANT) --force --speed 1 --ext .png $<
 	$(ZOPFLIPNG) -m -y $< $<
