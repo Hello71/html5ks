@@ -37,7 +37,7 @@ video: $(CVIDEO)
 	$(FFMPEG) -i $< -c:v libx264 -preset slower -tune animation -c:a libfdk_aac $@
 
 %.webm: %.mkv
-	$(FFMPEG) -i $< -strict -2 -c:v libvpx -crf 10 -b:v 1M -c:a copy $@
+	$(FFMPEG) -i $< -crf 10 -b:v 1M -c:a copy $@
 
 %.vp9.webm: %.mkv
 	$(FFMPEG) -i $< -strict -2 -c:v libvpx-vp9 -crf 8 -b:v 1M -c:a copy $@
@@ -98,7 +98,8 @@ $(DUMP)/ui/bt-cf-unchecked.webp $(DUMP)/ui/bt-cf-checked.webp: %.webp: %.png
 	$(PNGQUANT) --force --speed 1 --ext .png $<
 	$(ZOPFLIPNG) -m -y $< $<
 	$(DEFLOPT) $<
-	$(DEFLUFF) < $< > TMP$<
+	$(DEFLUFF) < $< > $<.tmp
+	mv -f $<.tmp $<
 	$(CWEBP) -q 99 -m 6 $< -o $@
 
 $(DUMP)/ui/ctc_strip-0.png: $(CTC_ANIM_SRC)
