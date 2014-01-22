@@ -29,10 +29,16 @@ CVIDEO := $(MP4) $(WEBM) $(OGV)
 
 video: $(CVIDEO)
 
+%.y4m: %.mkv
+	$(FFMPEG) -i $< -c:a copy $@
+
 %.mp4: %.mkv
 	$(FFMPEG) -i $< -c:v libx264 -preset slower -tune animation -c:a libfdk_aac $@
 
 %.webm: %.mkv
+	$(FFMPEG) -i $< -strict -2 -c:v libvpx -crf 10 -b:v 1M -c:a copy $@
+
+%.vp9.webm: %.mkv
 	$(FFMPEG) -i $< -strict -2 -c:v libvpx-vp9 -crf 8 -b:v 1M -c:a copy $@
 
 %.ogv: %.mkv
