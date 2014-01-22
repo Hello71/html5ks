@@ -125,6 +125,7 @@ window.html5ks.api = new (function () {
     }
 
     var types = {
+      "vp9": "vp9.webm",
       "webm": "webm",
       "ogg": "ogv",
       "h264": "mp4"
