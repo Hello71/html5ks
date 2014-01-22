@@ -24,8 +24,9 @@ all: video audio images js
 VIDEO := $(wildcard $(DUMP)/video/*.mkv)
 MP4 := $(patsubst %.mkv,%.mp4,$(VIDEO))
 WEBM := $(patsubst %.mkv,%.webm,$(VIDEO))
+VP9 := $(patsubst %.mkv,%.vp9.webm,$(VIDEO))
 OGV := $(patsubst %.mkv,%.ogv,$(VIDEO))
-CVIDEO := $(MP4) $(WEBM) $(OGV)
+CVIDEO := $(MP4) $(WEBM) $(VP9) $(OGV)
 
 video: $(CVIDEO)
 
