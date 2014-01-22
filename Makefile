@@ -64,7 +64,7 @@ audio: $(CAUDIO)
 
 # === IMAGES ===
 
-PNG := $(shell find $(DUMP) -name '*.png')
+PNG := $(shell find $(DUMP) -name '*.png' ! -name 'ctc_strip.png')
 JPG := $(shell find $(DUMP) -name '*.jpg')
 WEBP := $(patsubst %.png,%.webp,$(PNG)) \
         $(patsubst %.jpg,%.webp,$(JPG))
