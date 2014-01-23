@@ -31,19 +31,19 @@ CVIDEO := $(MP4) $(WEBM) $(VP9) $(OGV)
 video: $(CVIDEO)
 
 %.y4m: %.mkv
-	$(FFMPEG) -i $< -c:a copy $@
+	$(FFMPEG) -i "$<" -c:a copy "$@"
 
 %.mp4: %.mkv
-	$(FFMPEG) -i $< -c:v libx264 -preset slower -tune animation -c:a libfdk_aac $@
+	$(FFMPEG) -i "$<" -c:v libx264 -preset slower -tune animation -c:a libfdk_aac "$@"
 
 %.webm: %.mkv
-	$(FFMPEG) -i $< -crf 10 -b:v 1M -c:a copy $@
+	$(FFMPEG) -i "$<" -crf 10 -b:v 1M -c:a copy "$@"
 
 %.vp9.webm: %.mkv
-	$(FFMPEG) -i $< -strict -2 -c:v libvpx-vp9 -crf 8 -b:v 1M -c:a copy $@
+	$(FFMPEG) -i "$<" -strict -2 -c:v libvpx-vp9 -crf 8 -b:v 1M -c:a libopus -vbr 1 -b:a 64k "$@"
 
 %.ogv: %.mkv
-	$(FFMPEG) -i $< -c:v libtheora -qscale:v 10 -c:a copy $@
+	$(FFMPEG) -i "$<" -c:v libtheora -qscale:v 10 -c:a copy "$@"
 
 # === AUDIO ===
 
@@ -55,13 +55,13 @@ CAUDIO := $(OPUS) $(M4A)
 audio: $(CAUDIO)
 
 %.wav: %.ogg
-	$(FFMPEG) -i $< -c:a pcm_s16le $@
+	$(FFMPEG) -i "$<" -c:a pcm_s16le "$@"
 
 %.opus: %.wav
-	$(FFMPEG) -i $< -c:a libopus -b:a 64k $@
+	$(FFMPEG) -i "$<" -c:a libopus -vbr 1 -b:a 64k "$@"
 
 %.m4a: %.wav
-	$(FFMPEG) -i $< -c:a libfdk_aac -vbr 1 $@
+	$(FFMPEG) -i "$<" -c:a libfdk_aac -vbr 1 "$@"
 
 # === IMAGES ===
 
@@ -80,40 +80,40 @@ $(DUMP)/ui/ctc_strip.webp: $(DUMP)/ui/ctc_strip.png
 	:
 
 %.webp: %.png
-	$(PNGQUANT) --force --speed 1 --ext .png $<
-	$(ZOPFLIPNG) -m -y $< $<
-	$(DEFLOPT) $<
-	$(DEFLUFF) < $< > $<.tmp
-	mv -f $<.tmp $<
-	$(CWEBP) -q 99 -m 6 $< -o $@
+	$(PNGQUANT) --force --speed 1 --ext .png "$<"
+	$(ZOPFLIPNG) -m -y "$<" "$<"
+	$(DEFLOPT) "$<"
+	$(DEFLUFF) < "$<" > "$<".tmp
+	mv -f "$<".tmp "$<"
+	$(CWEBP) -q 99 -m 6 "$<" -o "$@"
 
 %.webp: %.jpg
-	$(CWEBP) -q 90 -m 6 $< -o $@
+	$(CWEBP) -q 90 -m 6 "$<" -o "$@"
 
 www/favicon.ico: $(DUMP)/ui/icon.png
-	$(CONVERT) $< -resize 256x256 -transparent white $@
+	$(CONVERT) "$<" -resize 256x256 -transparent white "$@"
 
 $(DUMP)/ui/bt-cf-unchecked.webp $(DUMP)/ui/bt-cf-checked.webp: %.webp: %.png
-	$(CONVERT) -trim $< $<
-	$(PNGQUANT) --force --speed 1 --ext .png $<
-	$(ZOPFLIPNG) -m -y $< $<
-	$(DEFLOPT) $<
-	$(DEFLUFF) < $< > $<.tmp
-	mv -f $<.tmp $<
-	$(CWEBP) -q 99 -m 6 $< -o $@
+	$(CONVERT) -trim "$<" "$<"
+	$(PNGQUANT) --force --speed 1 --ext .png "$<"
+	$(ZOPFLIPNG) -m -y "$<" "$<"
+	$(DEFLOPT) "$<"
+	$(DEFLUFF) < "$<" > "$<".tmp
+	mv -f "$<".tmp "$<"
+	$(CWEBP) -q 99 -m 6 "$<" -o "$@"
 
 $(DUMP)/ui/ctc_strip-0.png: $(CTC_ANIM_SRC)
-	$(CONVERT) $< -crop 16x16 $(patsubst %.png,%*.png,$<)
-	$(PNGQUANT) --force --speed 1 --ext .png $<
+	$(CONVERT) "$<" -crop 16x16 $(patsubst %.png,%*.png,$<)
+	$(PNGQUANT) --force --speed 1 --ext .png "$<"
 
 $(DUMP)/ui/ctc_strip-%.png: $(CTC_ANIM_SRC) $(DUMP)/ui/ctc_strip-0.png
-	@touch $@
+	@touch "$@"
 
 $(DUMP)/ui/ctc_anim.png: $(CTC_ANIM_TMP)
-	$(APNGASM) $@ $^ 3 100
+	$(APNGASM) "$@" $^ 3 100
 
 $(DUMP)/ui/ctc_anim.webp: $(CTC_ANIM_TMP_WEBP)
-	$(WEBPMUX) -frame $(subst $(SPACE), +30 -frame ,$^) +30 -loop 0 -o $@
+	$(WEBPMUX) -frame $(subst $(SPACE), +30 -frame ,$^) +30 -loop 0 -o "$@"
 
 # === JS ===
 
@@ -122,7 +122,7 @@ JS := www/js/html5ks.js www/js/menu.js www/js/api.js www/js/play.js www/js/image
 js: www/js/all.min.js
 
 www/js/all.min.js: $(JS)
-	$(UGLIFYJS) $^ -o $@ -p 2 -m -c
+	$(UGLIFYJS) $^ -o "$@" --source-map "$@".map --source-map-url ./all.min.js.map -p 2 -m -c
 
 # === MISC ===
 
