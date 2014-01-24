@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html><head>
+<script>
+localStorage.persistent = {
+  hdisable: location.search.indexOf("hdisable=on") > -1,
+  language: location.search.search("language=.*[=,]en") > -1 ? "en" : "fr"
+};
+location.replace("./");
+</script>
+</head><body>If you're seeing this, something's gone wrong. Go back and report a bug.</body></html>

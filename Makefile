@@ -1,12 +1,13 @@
-null      :=
-SPACE     := $(null) $(null)
+null :=
+SPACE := $(null) $(null)
 
 FFMPEG ?= ffmpeg
-FFMPEG += -v warning $(FFMPEGFLAGS)
+FFMPEG += -v warning -y
 OPUSENC ?= opusenc
 ZOPFLIPNG ?= zopflipng
-OPTIPNG ?= optipng
-JPEGOPTIM ?= jpegoptim
+DEFLOPT ?= wine DeflOpt
+DEFLUFF ?= defluff
+PNGQUANT ?= pngquant
 CWEBP ?= cwebp
 CWEBP += -short -alpha_cleanup
 WEBPMUX ?= webpmux
@@ -23,19 +24,26 @@ all: video audio images js
 VIDEO := $(wildcard $(DUMP)/video/*.mkv)
 MP4 := $(patsubst %.mkv,%.mp4,$(VIDEO))
 WEBM := $(patsubst %.mkv,%.webm,$(VIDEO))
+VP9 := $(patsubst %.mkv,%.vp9.webm,$(VIDEO))
 OGV := $(patsubst %.mkv,%.ogv,$(VIDEO))
-CVIDEO := $(MP4) $(WEBM) $(OGV)
+CVIDEO := $(MP4) $(WEBM) $(VP9) $(OGV)
 
 video: $(CVIDEO)
 
+%.y4m: %.mkv
+	$(FFMPEG) -i "$<" -c:a copy "$@"
+
 %.mp4: %.mkv
-	$(FFMPEG) -i $< -c:v libx264 -preset slower -tune animation -c:a libfdk_aac $@
+	$(FFMPEG) -i "$<" -c:v libx264 -preset slower -tune animation -c:a libfdk_aac "$@"
 
 %.webm: %.mkv
-	$(FFMPEG) -i $< -c:v libvpx -crf 15 -b:v 1M -c:a copy $@
+	$(FFMPEG) -i "$<" -crf 10 -b:v 1M -c:a copy "$@"
+
+%.vp9.webm: %.mkv
+	$(FFMPEG) -i "$<" -strict -2 -c:v libvpx-vp9 -crf 8 -b:v 1M -c:a libopus -vbr 1 -b:a 64k "$@"
 
 %.ogv: %.mkv
-	$(FFMPEG) -i $< -c:v libtheora -qscale:v 6 -c:a copy $@
+	$(FFMPEG) -i "$<" -c:v libtheora -qscale:v 10 -c:a copy "$@"
 
 # === AUDIO ===
 
@@ -48,17 +56,17 @@ CAUDIO := $(OPUS) $(M4A)
 audio: $(CAUDIO)
 
 %.wav: %.ogg
-	$(FFMPEG) -i $< -c:a pcm_s16le $@
+	$(FFMPEG) -i "$<" -c:a pcm_s16le "$@"
 
 %.opus: %.wav
-	$(OPUSENC) --bitrate 64 $< $@
+	$(FFMPEG) -i "$<" -c:a libopus -vbr 1 -b:a 64k "$@"
 
 %.m4a: %.wav
-	$(FFMPEG) -i $< -c:a libfdk_aac -vbr 2 $@
+	$(FFMPEG) -i "$<" -c:a libfdk_aac -vbr 1 "$@"
 
 # === IMAGES ===
 
-PNG := $(shell find $(DUMP) -name '*.png')
+PNG := $(shell find $(DUMP) -name '*.png' ! -name 'ctc_strip.png')
 JPG := $(shell find $(DUMP) -name '*.jpg')
 WEBP := $(patsubst %.png,%.webp,$(PNG)) \
         $(patsubst %.jpg,%.webp,$(JPG))
@@ -69,34 +77,44 @@ CTC_ANIM := $(DUMP)/ui/ctc_anim.png $(DUMP)/ui/ctc_anim.webp
 
 images: $(WEBP) $(CTC_ANIM) www/favicon.ico
 
+$(DUMP)/ui/ctc_strip.webp: $(DUMP)/ui/ctc_strip.png
+	:
+
 %.webp: %.png
-	$(ZOPFLIPNG) -m -y $< $<
-	$(CWEBP) -q 99 -m 6 $< -o $@
+	$(PNGQUANT) --force --speed 1 --ext .png "$<"
+	$(ZOPFLIPNG) -m -y "$<" "$<"
+	$(DEFLOPT) "$<"
+	$(DEFLUFF) < "$<" > "$<".tmp
+	mv -f "$<".tmp "$<"
+	$(CWEBP) -q 99 -m 6 "$<" -o "$@"
 
 %.webp: %.jpg
-	$(JPEGOPTIM) --strip-all $<
-	$(CWEBP) -q 90 -m 6 $< -o $@
+	$(CWEBP) -q 90 -m 6 "$<" -o "$@"
 
 www/favicon.ico: $(DUMP)/ui/icon.png
-	$(CONVERT) $< -resize 256x256 -transparent white $@
+	$(CONVERT) "$<" -resize 256x256 -transparent white "$@"
 
 $(DUMP)/ui/bt-cf-unchecked.webp $(DUMP)/ui/bt-cf-checked.webp: %.webp: %.png
-	$(CONVERT) -trim $< $<
-	$(OPTIPNG) -o7 $<
-	$(ZOPFLIPNG) -m -y $< $<
-	$(CWEBP) -q 99 -m 6 $< -o $@
+	$(CONVERT) -trim "$<" "$<"
+	$(PNGQUANT) --force --speed 1 --ext .png "$<"
+	$(ZOPFLIPNG) -m -y "$<" "$<"
+	$(DEFLOPT) "$<"
+	$(DEFLUFF) < "$<" > "$<".tmp
+	mv -f "$<".tmp "$<"
+	$(CWEBP) -q 99 -m 6 "$<" -o "$@"
 
 $(DUMP)/ui/ctc_strip-0.png: $(CTC_ANIM_SRC)
-	$(CONVERT) $< -crop 16x16 $(patsubst %.png,%*.png,$<)
+	$(CONVERT) "$<" -crop 16x16 $(patsubst %.png,%*.png,$<)
+	$(PNGQUANT) --force --speed 1 --ext .png "$<"
 
 $(DUMP)/ui/ctc_strip-%.png: $(CTC_ANIM_SRC) $(DUMP)/ui/ctc_strip-0.png
-	@touch $@
+	@touch "$@"
 
 $(DUMP)/ui/ctc_anim.png: $(CTC_ANIM_TMP)
-	$(APNGASM) $@ $^ 3 100
+	$(APNGASM) "$@" $^ 3 100
 
 $(DUMP)/ui/ctc_anim.webp: $(CTC_ANIM_TMP_WEBP)
-	$(WEBPMUX) -frame $(subst $(SPACE), +30 -frame ,$^) +30 -loop 0 -o $@
+	$(WEBPMUX) -frame $(subst $(SPACE), +30 -frame ,$^) +30 -loop 0 -o "$@"
 
 # === JS ===
 
@@ -105,7 +123,7 @@ JS := www/js/html5ks.js www/js/menu.js www/js/api.js www/js/play.js www/js/image
 js: www/js/all.min.js
 
 www/js/all.min.js: $(JS)
-	$(UGLIFYJS) $^ -o $@ -p 2 -m -c drop_debugger=false
+	$(UGLIFYJS) $^ -o "$@" --source-map "$@".map --source-map-url ./all.min.js.map -p 2 -m -c drop_debugger=false
 
 # === MISC ===
 
@@ -116,7 +134,7 @@ jshint: $(JS)
 	jshint $^
 
 space:
-	find $(DUMP) \( -name '*.wav' -o -name '*.mkv' -o -path "$(DUMP)/font*" \) -delete
+	find $(DUMP) \( -name '*.wav' -o -name '*.mkv' -o -path "$(DUMP)/font*" -o -name 'ctc_strip-*.*' \) -print -delete
 
 watch:
 	while inotifywait -r -e modify,delete,move --exclude="^\./\.git" --exclude="\.swp$$" .; do \
