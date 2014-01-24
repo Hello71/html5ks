@@ -6,13 +6,16 @@
   <body>
     <p>Okay, before we start, we need to go through a few things first.</p>
     <p>If you don't know what Katawa Shoujo is, see <a href="http://www.katawa-shoujo.com/">http://www.katawa-shoujo.com/</a>, then come back.</p>
-    <p>The full version of Katawa Shoujo contains adult material.<br>
-    Promise that you are over <b>18 years</b> old and that you will not make the material available to persons below that age.
-    </p>
+    <p>There's like, a little bit of... inappropriate content, so we have to make you promise you're over 18.</p>
+    <p>If you don't want to see any, er, explicit content, hit the appropriate checkbox at the bottom of the page.</p>
     <p>Also, please don't bother the original developers on the forums or IRC about bugs in this. This is entirely unofficial and not controlled by them whatsoever.<br>
-    This includes typos, graphical misplacement, downtime, and any other glitches of any sort. Bug me instead: <a href="https://bugzilla.happinessforme.com/">https://bugzilla.happinessforme.com/</a>, or use the official distribution until HTML5KS is feature-complete.
+    This includes missing features, typos, downtime, and any other glitches of any sort. Bug me instead: <a href="https://bugzilla.happinessforme.com/">https://bugzilla.happinessforme.com/</a>, or use the official distribution until HTML5KS is feature-complete.
     </p>
-    <p>FYI, this site sets a single anonymous cookie (warned=1) so that you won't have to keep seeing this page. It also sets localStorage to keep your settings and saves (when that's implemented). This stays on your computer and never goes anywhere. If you live in the EU, please don't sue me.</p>
-    <p><a href="setcookie.html">OK? Great.</a></p>
+    <p>FYI, this site sets a single anonymous cookie (warned=1) so that you won't have to keep seeing this page. It also sets localStorage to keep your settings and saves. The latter always stays on your computer and never goes anywhere. If you live in the EU, please don't sue me.</p>
+    <form method="GET" action="warned.ngx">
+      <p><input type="checkbox" name="hdisable"><label for="hdisable">Disable adult content</label>
+      <br>
+      <input type="submit" value="Let's go!">
+    </form>
   </body>
 </html>

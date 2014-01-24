@@ -33,6 +33,41 @@ window.html5ks.api = new (function () {
     return when.resolve();
   },
 
+  _loadMedia: function (el, src, types) {
+    var deferred = when.defer();
+    var i = 0;
+    var _nextType = function () {
+      for (; i < types.length; i++) {
+        var type = types[i];
+        if (el.canPlayType(type[0])) {
+          el.src = src + "." + type[1];
+          el.load();
+          return true;
+        }
+      }
+      return false;
+    };
+
+    _nextType();
+
+    el.oncanplaythrough = function () {
+      el.play();
+    };
+
+    el.onerror = function (e) {
+      if (e.code === e.MEDIA_ERR_SRC_NOT_SUPPORTED) {
+        if (!_nextType()) {
+          console.log("no audio formats supported");
+          deferred.resolve();
+        }
+      } else {
+        console.error("unknown audio error");
+        deferred.resolve();
+      }
+    };
+    return deferred.promise;
+  },
+
   play: function (channel, name, ignore, fade) {
     this.stop(channel);
     var deferred = when.defer(),
@@ -55,26 +90,6 @@ window.html5ks.api = new (function () {
         volume = html5ks.persistent.sfxVolume;
     }
 
-    var types = ["opus", "ogg", "m4a", "wav"];
-
-    var setNextType = function (i) {
-      for (; i < types.length; i++) {
-        if (Modernizr.audio[types[i]]) {
-          audio.src = src + "." + types[i];
-          audio.load();
-          audio.volume = fade ? 0 : volume;
-          return i;
-        }
-      }
-      return null;
-    };
-
-    var i;
-
-    audio.addEventListener("canplaythrough", function canplaythrough() {
-      audio.removeEventListener("canplaythrough", canplaythrough, false);
-      audio.play();
-    });
     audio.addEventListener("playing", function playing() {
       audio.removeEventListener("playing", playing, false);
       if (fade) {
@@ -82,21 +97,15 @@ window.html5ks.api = new (function () {
       }
       deferred.resolve();
     }, false);
-    audio.onerror = function (e) {
-      if (e.code === e.MEDIA_ERR_SRC_NOT_SUPPORTED) {
-        i = setNextType(++i);
-        if (!i) {
-          console.error("No media formats appear to be supported.");
-          console.error(e);
-          deferred.resolve();
-        }
-      } else {
-        console.error(e);
-        deferred.resolve();
-      }
-    };
 
-    i = setNextType(0);
+    audio.volume = fade ? 0 : volume;
+    this._loadMedia(audio, src, [
+      ['audio/ogg; codecs="opus"', "opus"],
+      ['audio/ogg; codecs="vorbis"', "ogg"],
+      ['audio/x-m4a', "m4a"],
+      ['audio/aac', "aac"],
+      ['audio/wav; codecs="1"', "wav"]]).then(function () { deferred.resolve(); });
+    // TODO: fix this garbage -------------------------------^
 
     return deferred.promise;
   },
@@ -123,7 +132,7 @@ window.html5ks.api = new (function () {
   movie_cutscene: function (vid_src, skippable) {
     var deferred = when.defer(),
         video = html5ks.elements.video,
-        src = "dump/video/" + vid_src + ".";
+        src = "dump/video/" + vid_src;
 
     this.stop("all");
     clearInterval(html5ks._nextTimeout);
@@ -132,22 +141,15 @@ window.html5ks.api = new (function () {
       return deferred.resolve();
     }
 
-    var types = {
-      "webm": "webm",
-      "ogg": "ogv",
-      "h264": "mp4"
-    };
-    for (var type in types) {
-      if (Modernizr.video[type]) {
-        video.src = src + types[type];
-        break;
-      }
-    }
-
-    video.load();
+    this._loadMedia(video, src, [
+      ['video/webm; codecs="vp9,opus"', "vp9.webm"],
+      ['video/webm; codecs="vp8,vorbis"', "webm"],
+      ['video/ogg; codecs="theora,vorbis"', "ogv"],
+      // TODO: check that this is the right codec
+      ['video/mp4; codecs="avc1.42E01E,mp4a.40.2"']]).then(function () { deferred.resolve(); });
+      // TODO: fix this garbage
     video.style.display = "block";
     video.volume = html5ks.persistent.musicVolume;
-    video.play();
     var done = function () {
       video.style.display = "none";
       video.pause();
@@ -166,9 +168,6 @@ window.html5ks.api = new (function () {
       }
     };
     video.onended = done;
-    video.onerror = function () {
-      deferred.reject(this.error);
-    };
     return deferred.promise;
   },
 
