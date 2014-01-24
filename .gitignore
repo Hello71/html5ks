@@ -10,5 +10,4 @@
 /rpy
 
 # generated files
-/www/*.appcache
 /www/js/all.min.js*
