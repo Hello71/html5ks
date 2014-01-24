@@ -47,6 +47,8 @@ Run `make space`. Warning: This will remove source files from dump.
 
 Check Bugzilla for things that need to be done. [3]
 
+See docs/ for the obvious.
+
 [0] http://www.katawa-shoujo.com/
 [1] https://github.com/cujojs/when/
 [2] If you're on Windoze, sucks for you. Use a better OS.
