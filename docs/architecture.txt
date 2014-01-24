@@ -1,0 +1,16 @@
+This is an overview of the layout of the code.
+
+unrpyc/ decompiles rpyc from the distribution to JSON so that it can be parsed
+with JSON.parse.
+
+js/html5ks.js is the main entry point; this initializes the code then calls
+the init function in the submodules. It also manages transforms to fit the
+container to the window.
+
+js/imachine.js interprets instructions from imachine.json to jump to scenes,
+play videos, select branches as appropriate based on choices.
+
+js/api.js effectively runs script.json, dispatching commands to functions
+which operate on the DOM.
+
+js/menu.js manages the main menu, context menu, and options menu.
