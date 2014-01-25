@@ -118,7 +118,9 @@ $(DUMP)/ui/ctc_anim.webp: $(CTC_ANIM_TMP_WEBP)
 
 # === JS ===
 
-JS := www/js/html5ks.js www/js/menu.js www/js/api.js www/js/play.js www/js/images.js www/js/characters.js www/js/imachine.js www/js/i18n.js
+JSCODE := www/js/html5ks.js www/js/menu.js www/js/api.js www/js/characters.js www/js/imachine.js www/js/i18n.js
+JSDATA := www/js/play.js www/js/images.js
+JS := $(JSCODE) $(JSDATA)
 
 js: www/js/all.min.js
 
@@ -130,11 +132,13 @@ www/js/all.min.js: $(JS)
 clean:
 	$(RM) $(CVIDEO) $(CAUDIO) $(WEBP) www/favicon.ico
 
-jshint: $(JS)
+jshint: $(JSCODE)
 	jshint $^
 
 space:
-	find $(DUMP) \( -name '*.wav' -o -name '*.mkv' -o -path "$(DUMP)/font*" -o -name 'ctc_strip-*.*' \) -print -delete
+	find $(DUMP)/bgm $(DUMP)/sfx $(DUMP)/video \( -name '*.wav' -o -name '*.mkv' \) -delete
+	$(RM) -r $(DUMP)/font
+	$(RM) $(DUMP)/ui/ctc_strip-*.*
 
 watch:
 	while inotifywait -r -e modify,delete,move --exclude="^\./\.git" --exclude="\.swp$$" .; do \
@@ -142,4 +146,6 @@ watch:
 	done
 
 .PHONY: video audio images js jshint clean space watch
+
+# disable default rules, increases `make` speed by 3 seconds
 .SUFFIXES:
