@@ -7,7 +7,7 @@ cd $(dirname $0)
 git submodule update --init
 
 pushd unrpyc
-make ${MAKEOPTS} install
+make $MAKEOPTS install
 popd
 
-make ${MAKEOPTS}
+make $MAKEOPTS
