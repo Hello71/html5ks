@@ -3,21 +3,20 @@ This is a WIP HTML5 implementation of the game Katawa Shoujo. [0]
 == Requirements ==
 - Katawa Shoujo (obviously)
 - Firefox/Chrome/a sensible browser (i.e. not IE)
-- Bash
-- ffmpeg with fdk-aac, libtheora, libvpx, libx264
-- opusenc from opus-tools
-- TruePNG
-- DeflOpt
+- a shell (Bash, dash, zsh, etc)
+- ffmpeg with fdk-aac, libopus, libtheora, libvpx, libx264
 - defluff
 - pngquant
-- recommended: jpegmini
-- jpegrescan
 - cwebp and webpmux from libwebp
-- ImageMagick
+- convert from ImageMagick
 - apngasm
 - uglifyjs
 
 === Recommended ===
+- jpegmini
+- jpegtran
+- jpegrescan
+- defluff
 - nginx
 - zopfli
 
