@@ -1,8 +1,7 @@
 null :=
 SPACE := $(null) $(null)
 
-FFMPEG ?= ffmpeg
-FFMPEG += -v warning -y
+FFMPEG ?= ffmpeg -v warning -y
 OPUSENC ?= opusenc
 ZOPFLIPNG ?= zopflipng
 DEFLOPT ?= wine DeflOpt
@@ -78,15 +77,14 @@ CTC_ANIM := $(DUMP)/ui/ctc_anim.png $(DUMP)/ui/ctc_anim.webp
 images: $(WEBP) $(CTC_ANIM) www/favicon.ico
 
 $(DUMP)/ui/ctc_strip.webp: $(DUMP)/ui/ctc_strip.png
-	:
 
 %.webp: %.png
+	$(CWEBP) -q 99 -m 6 "$<" -o "$@"
 	$(PNGQUANT) --force --speed 1 --ext .png "$<"
 	$(ZOPFLIPNG) -m -y "$<" "$<"
 	$(DEFLOPT) "$<"
 	$(DEFLUFF) < "$<" > "$<".tmp
 	mv -f "$<".tmp "$<"
-	$(CWEBP) -q 99 -m 6 "$<" -o "$@"
 
 %.webp: %.jpg
 	$(CWEBP) -q 90 -m 6 "$<" -o "$@"
@@ -96,16 +94,15 @@ www/favicon.ico: $(DUMP)/ui/icon.png
 
 $(DUMP)/ui/bt-cf-unchecked.webp $(DUMP)/ui/bt-cf-checked.webp: %.webp: %.png
 	$(CONVERT) -trim "$<" "$<"
+	$(CWEBP) -q 99 -m 6 "$<" -o "$@"
 	$(PNGQUANT) --force --speed 1 --ext .png "$<"
 	$(ZOPFLIPNG) -m -y "$<" "$<"
 	$(DEFLOPT) "$<"
 	$(DEFLUFF) < "$<" > "$<".tmp
 	mv -f "$<".tmp "$<"
-	$(CWEBP) -q 99 -m 6 "$<" -o "$@"
 
 $(DUMP)/ui/ctc_strip-0.png: $(CTC_ANIM_SRC)
 	$(CONVERT) "$<" -crop 16x16 $(patsubst %.png,%*.png,$<)
-	$(PNGQUANT) --force --speed 1 --ext .png "$<"
 
 $(DUMP)/ui/ctc_strip-%.png: $(CTC_ANIM_SRC) $(DUMP)/ui/ctc_strip-0.png
 	@touch "$@"
@@ -145,7 +142,6 @@ watch:
 		${MAKE}; \
 	done
 
-.PHONY: video audio images js jshint clean space watch
-
 # disable default rules, increases `make` speed by 3 seconds
 .SUFFIXES:
+.PHONY: video audio images js jshint clean space watch
