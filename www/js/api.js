@@ -37,6 +37,7 @@ window.html5ks.api = new (function () {
     var deferred = when.defer();
     var i = 0;
     var _nextType = function () {
+      i++;
       for (; i < types.length; i++) {
         var type = types[i];
         if (el.canPlayType(type[0])) {
