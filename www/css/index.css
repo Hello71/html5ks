@@ -41,11 +41,11 @@ h2 {
 
 /* interstitial */
 #interstitial {
-  visibility: hidden;
+  display: none;
   cursor: auto;
 }
 html.no-js #interstitial {
-  visibility: visible;
+  display: block;
 }
 #warn {
   background-color: rgb(128, 128, 128);

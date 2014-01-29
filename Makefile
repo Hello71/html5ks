@@ -105,7 +105,7 @@ $(DUMP)/ui/ctc_strip-0.png: $(CTC_ANIM_SRC)
 	$(CONVERT) "$<" -crop 16x16 $(patsubst %.png,%*.png,$<)
 
 $(DUMP)/ui/ctc_strip-%.png: $(CTC_ANIM_SRC) $(DUMP)/ui/ctc_strip-0.png
-	@touch "$@"
+	@touch -r "$(DUMP)/ui/ctc_strip-0.png" "$@"
 
 $(DUMP)/ui/ctc_anim.png: $(CTC_ANIM_TMP)
 	$(APNGASM) "$@" $^ 3 100
@@ -144,4 +144,6 @@ watch:
 
 # disable default rules, increases `make` speed by 3 seconds
 .SUFFIXES:
+
+.INTERMEDIATE: $(CTC_ANIM_TMP) $(CTC_ANIM_TMP_WEBP)
 .PHONY: video audio images js jshint clean space watch

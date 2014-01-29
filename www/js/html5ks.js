@@ -29,7 +29,7 @@ window.html5ks = {
           return v;
         },
         set: function (value) {
-          v = '' + value;
+          v = value;
           localStorage.persistent = JSON.stringify(html5ks.persistent);
         },
         enumerable: true
@@ -153,7 +153,7 @@ window.html5ks = {
       for (var i = 0; i < warns.length; i++) {
         var warn = warns[i];
         if (window.getComputedStyle(warns[i]).getPropertyValue("display") !== "none") {
-          warn.style.visibility = "visible";
+          warn.style.display = "block";
           return true;
         }
       }
@@ -167,9 +167,9 @@ window.html5ks = {
     if (!this.warnUnsupported()) {
       this.start();
     }
+    this.i18n.init();
     this.api.init();
     this.menu.init();
-    this.i18n.init();
   },
   start: function () {
     this.fetch("json", "script").then(function (d) {
