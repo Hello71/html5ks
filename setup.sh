@@ -1,13 +1,11 @@
-#!/bin/bash
+#!/bin/sh
 
 set -e
 
 cd $(dirname $0)
 
-git submodule update --init
-
-pushd unrpyc
+cd unrpyc
 make $MAKEOPTS install
-popd
+cd ..
 
 make $MAKEOPTS
