@@ -16,7 +16,12 @@ UGLIFYJS ?= uglifyjs
 
 DUMP ?= www/dump
 
-all: video audio images js
+all: .modules video audio images js
+
+# === GIT SUBMODULES ===
+.modules: .gitmodules
+	git submodule update --init
+	touch .modules
 
 # === VIDEO ===
 
@@ -74,7 +79,9 @@ CTC_ANIM_TMP := $(DUMP)/ui/ctc_strip-0.png $(DUMP)/ui/ctc_strip-1.png $(DUMP)/ui
 CTC_ANIM_TMP_WEBP := $(patsubst %.png,%.webp,$(CTC_ANIM_TMP))
 CTC_ANIM := $(DUMP)/ui/ctc_anim.png $(DUMP)/ui/ctc_anim.webp
 
-images: $(WEBP) $(CTC_ANIM) www/favicon.ico
+CIMAGE := $(WEBP) $(CTC_ANIM) www/favicon.ico
+
+images: $(CIMAGE)
 
 $(DUMP)/ui/ctc_strip.webp: $(DUMP)/ui/ctc_strip.png
 
@@ -127,7 +134,7 @@ www/js/all.min.js: $(JS)
 # === MISC ===
 
 clean:
-	$(RM) $(CVIDEO) $(CAUDIO) $(WEBP) www/favicon.ico
+	$(RM) $(CVIDEO) $(CAUDIO) $(CIMAGE)
 
 jshint: $(JSCODE)
 	jshint $^
@@ -135,7 +142,8 @@ jshint: $(JSCODE)
 space:
 	find $(DUMP)/bgm $(DUMP)/sfx $(DUMP)/video \( -name '*.wav' -o -name '*.mkv' \) -delete
 	$(RM) -r $(DUMP)/font
-	$(RM) $(DUMP)/ui/ctc_strip-*.*
+	$(RM) $(CTC_ANIM_TMP) $(CTC_ANIM_TMP_WEBP)
+	$(RM) www/js/all.min.js www/js/all.min.js.map
 
 watch:
 	while inotifywait -r -e modify,delete,move --exclude="^\./\.git" --exclude="\.swp$$" .; do \
