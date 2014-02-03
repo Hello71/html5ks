@@ -95,18 +95,12 @@ window.html5ks = {
     container.style.webkitTransform = "scale(" + newScale + ")";
     container.style.mozTransform = "scale(" + newScale + ")";
     container.style.transform = "scale(" + newScale + ")";
-    if (container.className.indexOf("scale") === -1) {
-      container.className += " scale";
-    }
 
     var applyScale = function (el, scale) {
       el.style.height = scale * 600 + "px";
       el.style.marginTop = "-" + scale * 300 + "px";
       el.style.width = scale * 800 + "px";
       el.style.marginLeft = "-" + scale * 400 + "px";
-      if (el.className.indexOf("scale") === -1) {
-        el.className += " scale";
-      }
     };
 
     if (html5ks.persistent.scaleVideo) {

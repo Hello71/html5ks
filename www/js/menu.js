@@ -88,7 +88,7 @@
         if (navigator.userAgent.indexOf(ua) > -1) {
           var quit = document.getElementsByClassName("quit");
           for (var i = quit.length - 1; i >= 0; i--) {
-            quit[i].className = quit[i].className.replace("disabled", "");
+            quit[i].classList.remove("disabled");
             quit[i].addEventListener("click", close, false);
           }
           return false;
@@ -143,10 +143,6 @@
       var options = document.getElementsByClassName("option"),
           values = html5ks.persistent;
 
-      if (!html5ks.persistent.scaleAll) {
-        document.getElementById("scaleVideo").parentNode.className += " disabled";
-      }
-
       for (var i = options.length - 1; i >= 0; i--) {
         var option = options[i];
         switch (option.type) {
@@ -174,7 +170,7 @@
           this.elements.mainMenu.style.display = "none";
           html5ks.imachine.start().then(this.mainMenu.bind(this), console.error);
         }.bind(this), false);
-        start.className = start.className.replace("disabled", "");
+        start.classList.remove("disabled");
       }.bind(this), console.error);
     },
 
