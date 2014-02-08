@@ -147,7 +147,7 @@ space:
 
 watch:
 	while inotifywait -r -e modify,delete,move --exclude="^\./\.git" --exclude="\.swp$$" .; do \
-		${MAKE}; \
+		$(MAKE); \
 	done
 
 # disable default rules, increases `make` speed by 3 seconds
