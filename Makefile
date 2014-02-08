@@ -38,7 +38,7 @@ video: $(CVIDEO)
 	$(FFMPEG) -i "$<" -c:a copy "$@"
 
 %.mp4: %.mkv
-	$(FFMPEG) -i "$<" -c:v libx264 -preset slower -tune animation -c:a libfdk_aac "$@"
+	$(FFMPEG) -i "$<" -c:v libx264 -preset slower -tune animation -movflags empty_moov -profile:v baseline -c:a libfdk_aac -vbr 1 "$@"
 
 %.webm: %.mkv
 	$(FFMPEG) -i "$<" -crf 10 -b:v 1M -c:a copy "$@"
@@ -147,7 +147,7 @@ space:
 	$(RM) www/js/all.min.js www/js/all.min.js.map
 
 watch:
-	while inotifywait -r -e modify,delete,move --exclude="^\./\.git" --exclude="\.swp$$" .; do \
+	while inotifywait -r -e modify,delete,move --exclude="^\./\.git" --exclude="\.swp.?$$" .; do \
 		$(MAKE); \
 	done
 
