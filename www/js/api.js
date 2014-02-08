@@ -77,6 +77,7 @@ window.html5ks.api = new (function () {
       audio.loop = true;
     }
     html5ks.elements.audio[channel] = audio;
+    html5ks.state[channel] = name;
 
     var src = "dump/", volume;
 
@@ -280,6 +281,7 @@ window.html5ks.api = new (function () {
       deferred.resolve();
     };
     el.onerror = function () {
+      el.parentNode.removeChild(el);
       deferred.resolve();
     };
     var nom = name;
@@ -370,7 +372,7 @@ window.html5ks.api = new (function () {
       switch (str[i]) {
       case '{':
         var close = str.indexOf('}', i),
-            tag = str.slice(i, close + 1);
+            tag = str.slice(i, close);
         i = close;
         if (tag[1] === '/') {
           text.push('');
@@ -432,11 +434,7 @@ window.html5ks.api = new (function () {
       var who = html5ks.elements.who;
       if (!extend) {
         who.innerHTML = chr.name;
-        if (chr.color) {
-          who.style.color = chr.color;
-        } else {
-          who.style.color = "#ffffff";
-        }
+        who.style.color = chr.color || "#ffffff";
       }
 
       say = html5ks.elements.say;
@@ -444,16 +442,14 @@ window.html5ks.api = new (function () {
       ctc = html5ks.elements.ctc;
     }
 
-    var tm, done;
+    text.forEach(say.appendChild.bind(say));
 
-    text.forEach(function (txt) {
-      say.appendChild(txt);
-    });
+    var tm, done;
 
     var ptxt = function (immed) {
       var txt = text.shift();
       if (typeof txt !== 'undefined') {
-        txt.style.visibility = "visible";
+        txt.removeAttribute("style");
         if (immed) return ptxt(immed);
         else tm = setTimeout(ptxt, 1000 / html5ks.persistent.textSpeed);
       } else {
@@ -476,7 +472,7 @@ window.html5ks.api = new (function () {
       html5ks.api._setNextTimeout(str, true);
     };
 
-    if (html5ks.persistent.textSpeed === "200") {
+    if (html5ks.persistent.textSpeed == 200) {
       ptxt(true);
     }
 

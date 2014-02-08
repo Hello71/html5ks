@@ -27,6 +27,7 @@ body {
   padding: 0;
   background: gray;
   font: 22px/27px Playtime, sans-serif;
+  text-rendering: geometricPrecision;
 }
 #all {
   height: 100%;
@@ -79,13 +80,9 @@ html.no-js #gotit {
 .webp #container, .webp #vid {
   cursor: url("../dump/ui/mousecursor.webp"), default;
 }
-.no-webp #container, .no-webp #vid {
+#container, #vid {
   cursor: url("../dump/ui/mousecursor.png"), default;
-}
-#container, #vid {
   position: absolute;
-}
-#container, #vid {
   top: 50%;
   left: 50%;
   width: 800px;
@@ -106,18 +103,16 @@ html.no-js #gotit {
 }
 
 /* dialogs */
-.webp #dialogs {
-  background: url("../dump/ui/bg-config.webp");
-}
-.no-webp #dialogs {
-  background: url("../dump/ui/bg-config.png");
-}
 #dialogs {
+  background: url("../dump/ui/bg-config.png");
   z-index: 50;
   width: 504px;
   height: 395px;
   margin-left: -252px;
   margin-top: -197.5px;
+}
+.webp #dialogs {
+  background: url("../dump/ui/bg-config.webp");
 }
 #options {
   padding: 10px 20px;
@@ -135,18 +130,16 @@ html.no-js #gotit {
 #show img {
   position: absolute;
 }
-.webp #window {
-  background: url("../dump/ui/bg-say.webp");
-}
-.no-webp #window {
-  background: url("../dump/ui/bg-say.png");
-}
 #window {
+  background: url("../dump/ui/bg-say.png");
   width: 800px;
   height: 160px;
   position: absolute;
   top: 440px;
   left: 0;
+}
+.webp #window {
+  background: url("../dump/ui/bg-say.webp");
 }
 #who {
   color: black;
@@ -165,18 +158,16 @@ html.no-js #gotit {
   top: 53px;
   left: 28px;
 }
-.webp #nvl {
-  background: url("../dump/ui/bg-nvl.webp") no-repeat top left;
-}
-.no-webp #nvl {
-  background: url("../dump/ui/bg-nvl.png") no-repeat top left;
-}
 #nvl {
+  background: url("../dump/ui/bg-nvl.png") no-repeat top left;
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
+}
+.webp #nvl {
+  background: url("../dump/ui/bg-nvl.webp") no-repeat top left;
 }
 #nvlsay {
   padding: 15px 35px;
@@ -188,15 +179,13 @@ html.no-js #gotit {
 .webp .ctc {
   background-image: url("../dump/ui/ctc.webp");
 }
-.no-webp .ctc {
-  background-image: url("../dump/ui/ctc.png");
-}
 .ctc {
   position: absolute;
   bottom: 20px;
   right: 10px;
   width: 16px;
   height: 16px;
+  background-image: url("../dump/ui/ctc.png");
   -o-animation: blink 2s infinite linear;
   -moz-animation: blink 2s infinite linear;
   -webkit-animation: blink 2s infinite linear;
@@ -246,10 +235,8 @@ html.no-js #gotit {
 .webp .choice {
   background: url("../dump/ui/bg-choice.webp") no-repeat top center;
 }
-.no-webp .choice {
-  background: url("../dump/ui/bg-choice.png") no-repeat top center;
-}
 .choice {
+  background: url("../dump/ui/bg-choice.png") no-repeat top center;
   text-align: center;
   height: 35px;
   line-height: 30px;
@@ -261,10 +248,8 @@ html.no-js #gotit {
 .webp #context-menu {
   background: url("../dump/ui/bg-gm.webp") no-repeat top center;
 }
-.no-webp #context-menu {
-  background: url("../dump/ui/bg-gm.png") no-repeat top center;
-}
 #context-menu {
+  background: url("../dump/ui/bg-gm.png") no-repeat top center;
   margin-top: -210px;
   padding-top: 60px;
   position: absolute;
@@ -317,10 +302,8 @@ input[type="checkbox"] {
 .webp input[type="checkbox"] + span:before {
   background-image: url("../dump/ui/bt-cf-unchecked.webp");
 }
-.no-webp input[type="checkbox"] + span:before {
-  background-image: url("../dump/ui/bt-cf-unchecked.png");
-}
 input[type="checkbox"] + span:before {
+  background-image: url("../dump/ui/bt-cf-unchecked.png");
   display: inline-block;
   height: 19px;
   width: 20px;
@@ -328,9 +311,9 @@ input[type="checkbox"] + span:before {
   background-position: left bottom;
   background-repeat: no-repeat;
 }
+input[type="checkbox"]:checked + span:before {
+  background-image: url("../dump/ui/bt-cf-checked.png");
+}
 .webp input[type="checkbox"]:checked + span:before {
   background-image: url("../dump/ui/bt-cf-checked.webp");
-}
-.no-webp input[type="checkbox"]:checked + span:before {
-  background-image: url("../dump/ui/bt-cf-checked.png");
 }

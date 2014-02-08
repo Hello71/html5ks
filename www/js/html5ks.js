@@ -51,7 +51,9 @@ window.html5ks = {
       hanako: 0
     }
   },
-  state: {},
+  state: {
+    play: {}
+  },
   next: function () {
     var _next = html5ks._next;
     html5ks._next = function () {};
