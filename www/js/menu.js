@@ -106,37 +106,37 @@
         e.preventDefault();
       }.bind(this), true);
 
-      document.getElementById("context-return").addEventListener("click", function () {
-        html5ks.menu.context(false);
-      }, false);
+      var contextButtonFactory = function (id, fn, nooff) {
+        document.getElementById(id).addEventListener("click", function (e) {
+          if (!nooff) html5ks.menu.context(false);
+          if (fn) fn(e);
+        }, false);
+      };
 
-      document.getElementById("show-image").addEventListener("click", function () {
-        var state = html5ks.menu._state;
-        html5ks.menu._state = {};
-        html5ks.menu.context(false);
+      contextButtonFactory("context-return");
+
+      contextButtonFactory("show-image", function () {
+        html5ks.menu.context("showImage");
         var done = function () {
           this.removeEventListener("click", done, true);
-          html5ks.menu._state = state;
           html5ks.menu.context(true);
         };
         html5ks.elements.container.addEventListener("click", done, true);
-      }, false);
+      }, true);
 
-      document.getElementById("skip-mode").addEventListener("click", function () {
-        html5ks.menu.context(false);
+      contextButtonFactory("skip-mode", function () {
         html5ks.api.speed("skip", true);
         html5ks.next();
-      }, false);
+      });
 
-      document.getElementById("auto-mode").addEventListener("click", function () {
-        html5ks.menu.context(false);
+      contextButtonFactory("auto-mode", function () {
         html5ks.api.speed("auto", true);
         html5ks.next();
-      }, false);
+      });
 
-      document.getElementById("goto-main-menu").addEventListener("click", function () {
+      contextButtonFactory("goto-main-menu", function () {
         html5ks.menu.mainMenu();
-      }, false);
+      });
     },
 
     initOptions: function () {
@@ -188,8 +188,8 @@
           // return early if context already on
           if (this.context("status")) return;
           this._state = this._state || {
-            window: html5ks.api.window(),
-            nvl: html5ks.api.nvl("status"),
+            window: html5ks.state.window,
+            nvl: html5ks.state.nvl,
             status: html5ks.state.status
           };
           html5ks.api.window("hide");
@@ -198,15 +198,15 @@
           html5ks.elements.gray.style.display = "block";
           this.elements.context.style.display = "block";
           break;
-        case false:
+        case "showImage":
           this.elements.context.style.display = "none";
           html5ks.elements.gray.style.display = "none";
-          if (this._state) {
-            html5ks.api.window(this._state.window);
-            html5ks.api.nvl(this._state.nvl);
-            html5ks.state.status = this._state.status;
-            this._state = null;
-          }
+          /* falls through */
+        case false:
+          if (!this._state) return;
+          html5ks.api.window(this._state.window);
+          html5ks.api.nvl(this._state.nvl);
+          html5ks.state.status = this._state.status;
           break;
         case "status":
           return this.elements.context.style.display === "block";
