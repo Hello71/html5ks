@@ -122,9 +122,10 @@ $(DUMP)/ui/ctc_anim.webp: $(CTC_ANIM_TMP_WEBP)
 
 # === JS ===
 
-JSCODE := www/js/html5ks.js www/js/menu.js www/js/api.js www/js/characters.js www/js/imachine.js www/js/i18n.js
+MYJS := www/js/html5ks.js www/js/menu.js www/js/api.js www/js/characters.js www/js/imachine.js www/js/i18n.js
+JSLIBS := www/js/lib/when/when.js www/js/lib/fastclick/lib/fastclick.js www/js/lib/modernizr-build.min.js
 JSDATA := www/js/play.js www/js/images.js
-JS := $(JSCODE) $(JSDATA)
+JS := $(JSLIBS) $(MYJS) $(JSDATA)
 
 js: www/js/all.min.js
 
@@ -136,7 +137,7 @@ www/js/all.min.js: $(JS)
 clean:
 	$(RM) $(CVIDEO) $(CAUDIO) $(CIMAGE)
 
-jshint: $(JSCODE)
+jshint: $(MYJS)
 	jshint $^
 
 space:

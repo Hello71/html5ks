@@ -4,3 +4,6 @@
 [submodule "fastclick"]
 	path = fastclick
 	url = https://github.com/ftlabs/fastclick.git
+[submodule "spin.js"]
+	path = spin.js
+	url = https://github.com/fgnass/spin.js.git
