@@ -34,7 +34,6 @@ window.html5ks.api = new (function () {
   },
 
   _loadMedia: function (el, src, types) {
-    var deferred = when.defer();
     var i = 0;
     var _nextType = function () {
       i++;
@@ -59,14 +58,11 @@ window.html5ks.api = new (function () {
       if (e.code === e.MEDIA_ERR_SRC_NOT_SUPPORTED) {
         if (!_nextType()) {
           console.log("no audio formats supported");
-          deferred.resolve();
         }
       } else {
         console.error("unknown audio error");
-        deferred.resolve();
       }
     };
-    return deferred.promise;
   },
 
   play: function (channel, name, ignore, fade) {
@@ -108,8 +104,7 @@ window.html5ks.api = new (function () {
       ['audio/ogg; codecs="vorbis"', "ogg"],
       ['audio/x-m4a', "m4a"],
       ['audio/aac', "aac"],
-      ['audio/wav; codecs="1"', "wav"]]).then(function () { deferred.resolve(); });
-    // TODO: fix this garbage -------------------------------^
+      ['audio/wav; codecs="1"', "wav"]])
 
     return deferred.promise;
   },
@@ -150,8 +145,7 @@ window.html5ks.api = new (function () {
       ['video/webm; codecs="vp8,vorbis"', "webm"],
       ['video/ogg; codecs="theora,vorbis"', "ogv"],
       // TODO: check that this is the right codec
-      ['video/mp4; codecs="avc1.42E01E,mp4a.40.2"']]).then(function () { deferred.resolve(); });
-      // TODO: fix this garbage
+      ['video/mp4; codecs="avc1.42E01E,mp4a.40.2"']]);
     video.style.display = "block";
     video.volume = html5ks.persistent.musicVolume;
     var done = function () {
@@ -271,7 +265,6 @@ window.html5ks.api = new (function () {
         // calculate position
         // we don't actually know how big the image is till we fetch it
         var pos = html5ks.api._positions[location];
-        // TODO: implement transitions
         if (pos) {
           el.style.left = pos.xpos * 800 + "px";
           el.style.top = pos.ypos * 600 + "px";

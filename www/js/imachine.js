@@ -12,10 +12,10 @@ html5ks.imachine = new (function () {
     },
     run: function (label) {
       var deferred = when.defer(),
-          ilabel = typeof label === "string" ? html5ks.data.imachine[label] : label,
+          cmds = typeof label === "string" ? html5ks.data.imachine[label] : label,
           i = 0,
           runInst = function () {
-            var inst = ilabel[i++];
+            var inst = cmds[i++];
             switch (typeof inst) {
               case "undefined":
                 deferred.resolve();
@@ -29,7 +29,7 @@ html5ks.imachine = new (function () {
                     if (newlabel === "restart") {
                       html5ks.menu.mainMenu();
                     } else if (!html5ks.data.imachine[newlabel]) {
-                      throw new Error("label does not exist");
+                      deferred.reject(Error("label does not exist"));
                     } else {
                       this.run(newlabel);
                     }
@@ -43,7 +43,7 @@ html5ks.imachine = new (function () {
                         html5ks.api.movie_cutscene("op_1").then(runInst, deferred.reject);
                         break;
                       default:
-                        html5ks.api[cmd].apply(html5ks.api, args).then(function () { runInst(); }, deferred.reject);
+                        html5ks.api[cmd].apply(html5ks.api, args).then(runInst, deferred.reject);
                     }
                     break;
                   case "imenu":
@@ -91,12 +91,12 @@ html5ks.imachine = new (function () {
                     }
                     return html5ks.imachine.run(next).then(runInst, console.error);
                   case "path_end":
-                    // TODO: disp vid + add to persistent
+                    console.error("TODO: disp vid + add to persistent, args:");
+                    console.log(args);
                     deferred.resolve();
                     break;
                   default:
-                    console.error("unknown imachine inst");
-                    console.log(inst);
+                    deferred.reject(Error("unknown imachine inst: " + inst));
                 }
             }
           }.bind(this);
