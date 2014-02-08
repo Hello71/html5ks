@@ -83,8 +83,10 @@ window.html5ks.api = new (function () {
 
     switch (channel) {
       case "music":
-        src += "bgm/" + html5ks.data.music[name];
+        var fname = html5ks.data.music[name];
+        src += "bgm/" + fname;
         volume = html5ks.persistent.musicVolume;
+        document.getElementById("current-music-track").innerHTML = fname.replace(/_/g, " ");
         break;
       case "ambient":
       case "sound":
@@ -221,14 +223,14 @@ window.html5ks.api = new (function () {
     switch (action) {
       case true:
       case "show":
+        html5ks.state.window = true;
         windw.style.display = "block";
         break;
       case false:
       case "hide":
+        html5ks.state.window = false;
         windw.style.display = "none";
         break;
-      default:
-        return windw.style.display !== "none";
     }
     return when.resolve();
   },
@@ -507,14 +509,14 @@ window.html5ks.api = new (function () {
   nvl: function (action, transition) {
     var nvl = html5ks.elements.nvl;
     switch (action) {
-    case "status":
-      return nvl.style.display === "block";
     case true:
     case "show":
+      html5ks.state.nvl = true;
       nvl.style.display = "block";
       break;
     case false:
     case "hide":
+      html5ks.state.nvl = false;
       nvl.style.display = "none";
       break;
     case "clear":

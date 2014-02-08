@@ -33,8 +33,7 @@ body {
   width: 100%;
 }
 h2 {
-  font-size: 20px
-  line-height: 24px; /* yes, h2 has *smaller* font */
+  line-height: 24px;
   font-weight: bold;
 }
 
@@ -189,19 +188,17 @@ html.no-js #gotit {
   -webkit-animation: blink 2s infinite linear;
   animation: blink 2s infinite linear;
 }
-.apng .ctc {
-  background-image: url("../dump/ui/ctc_anim.png");
+.apng .ctc, .webpanimation .ctc {
   -o-animation: none;
   -moz-animation: none;
   -webkit-animation: none;
   animation: none;
 }
+.apng .ctc {
+  background-image: url("../dump/ui/ctc_anim.png");
+}
 .webpanimation .ctc {
   background-image: url("../dump/ui/ctc_anim.webp");
-  -o-animation: none;
-  -moz-animation: none;
-  -webkit-animation: none;
-  animation: none;
 }
 #nvlctc {
   bottom: 25px;
