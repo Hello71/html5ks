@@ -1,14 +1,12 @@
 /* font-face */
 @font-face {
   font-family: "Playtime";
-  /* src: url("playtime.ttf"); */
   src: url("font/playtime-webfont.woff") format('woff'),
        url("font/playtime-webfont.ttf") format('ttf'),
        url("font/playtime-webfont.svg") format('svg');
 }
 @font-face {
   font-family: "Gentium";
-  /* src: url("gentium.ttf"); */
   src: url("font/GentiumPlus.svg");
   src: url("font/GentiumPlus.ttf");
   src: url("font/GentiumPlus.woff");
@@ -316,4 +314,28 @@ input[type="checkbox"]:checked + span:before {
 }
 .webp input[type="checkbox"]:checked + span:before {
   background-image: url("../dump/ui/bt-cf-checked.webp");
+}
+
+/* anim */
+
+@-webkit-keyframes blink {
+  0% { opacity: 0; }
+  25% { opacity: 0; }
+  50% { opacity: 1; }
+  75% { opacity: 1; }
+  100% { opacity: 0; }
+}
+@-moz-keyframes blink {
+  0% { opacity: 0; }
+  25% { opacity: 0; }
+  50% { opacity: 1; }
+  75% { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes blink {
+  0% { opacity: 0; }
+  25% { opacity: 0; }
+  50% { opacity: 1; }
+  75% { opacity: 1; }
+  100% { opacity: 0; }
 }

@@ -168,13 +168,6 @@ window.html5ks = {
     this.menu.init();
   },
   start: function () {
-    this.fetch("json", "script").then(function (d) {
-      for (var k in d) {
-        if (k.slice(0, 3) === (html5ks.persistent.language === "en" ? "fr_" : "en_")) {
-          delete d[k];
-        }
-      }
-    }, console.error);
     html5ks.api.movie_cutscene("4ls", true).then(function () {
       html5ks.menu.mainMenu();
     }, console.error);
