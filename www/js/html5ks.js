@@ -49,10 +49,9 @@ window.html5ks = {
       kenji: 0,
       sc: 0,
       hanako: 0
-    }
-  },
-  state: {
-    play: {}
+    },
+    play: {},
+    speed: ""
   },
   next: function () {
     var _next = html5ks._next;
@@ -112,10 +111,10 @@ window.html5ks = {
   initEvents: function () {
     window.onresize = html5ks.scale;
     this.elements.container.addEventListener("mouseup", function (e) {
-      if (html5ks.state.status === "scene") {
+      if (html5ks.store.status === "scene") {
         switch (e.button) {
           case 0:
-            html5ks.api.speed("all", false);
+            html5ks.api.speed("");
             html5ks.next();
             break;
           case 1:
