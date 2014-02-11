@@ -1,5 +1,4 @@
-window.html5ks.api = new (function () {
-  "use strict"; return {
+window.html5ks.api = {
   init: function () {
     var chrs = html5ks.data.characters;
     for (var ch in chrs) {
@@ -105,7 +104,7 @@ window.html5ks.api = new (function () {
       ['audio/ogg; codecs="vorbis"', "ogg"],
       ['audio/x-m4a', "m4a"],
       ['audio/aac', "aac"],
-      ['audio/wav; codecs="1"', "wav"]])
+      ['audio/wav; codecs="1"', "wav"]]);
 
     return deferred.promise;
   },
@@ -589,4 +588,4 @@ window.html5ks.api = new (function () {
       document.getElementById("skip").style.display = "none";
     }
   }
-};})();
+};
