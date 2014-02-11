@@ -9,7 +9,7 @@
       html5ks.api.play("music", "music_menus");
       html5ks.api.show("url", "ui/main/bg-main.png");
       this.elements.mainMenu.style.display = "block";
-      html5ks.state.status = "menu";
+      html5ks.store.status = "menu";
     },
 
     activeDialog: null,
@@ -70,7 +70,7 @@
         html5ks.menu.activeDialog.style.display = "none";
         html5ks.menu.activeDialog = null;
         html5ks.menu.elements.dialogs.style.display = "none";
-        if (html5ks.state.status === "context") {
+        if (html5ks.store.status === "context") {
           html5ks.menu.context(true);
         } else {
           html5ks.elements.gray.style.display = "none";
@@ -97,7 +97,7 @@
 
       // context menu
       html5ks.elements.container.addEventListener("contextmenu", function (e) {
-        switch (html5ks.state.status) {
+        switch (html5ks.store.status) {
           case "scene":
           case "context":
             this.context();
@@ -125,12 +125,12 @@
       }, true);
 
       contextButtonFactory("skip-mode", function () {
-        html5ks.api.speed("skip", true);
+        html5ks.api.speed("skip");
         html5ks.next();
       });
 
       contextButtonFactory("auto-mode", function () {
-        html5ks.api.speed("auto", true);
+        html5ks.api.speed("auto");
         html5ks.next();
       });
 
@@ -188,13 +188,13 @@
           // return early if context already on
           if (this.context("status")) return;
           this._state = this._state || {
-            window: html5ks.state.window,
-            nvl: html5ks.state.nvl,
-            status: html5ks.state.status
+            window: html5ks.store.window,
+            nvl: html5ks.store.nvl,
+            status: html5ks.store.status
           };
           html5ks.api.window("hide");
           html5ks.api.nvl("hide");
-          html5ks.state.status = "context";
+          html5ks.store.status = "context";
           html5ks.elements.gray.style.display = "block";
           this.elements.context.style.display = "block";
           break;
@@ -206,7 +206,7 @@
           if (!this._state) return;
           html5ks.api.window(this._state.window);
           html5ks.api.nvl(this._state.nvl);
-          html5ks.state.status = this._state.status;
+          html5ks.store.status = this._state.status;
           break;
         case "status":
           return this.elements.context.style.display === "block";

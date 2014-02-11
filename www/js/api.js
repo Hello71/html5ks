@@ -26,7 +26,8 @@ window.html5ks.api = new (function () {
             audio.pause();
             /* falls through */
           case 1:
-            clearInterval(this._fading);
+            clearInterval(this._fading[channel]);
+            delete this._fading[channel];
         }
       }.bind(this), 50);
     }
@@ -73,7 +74,7 @@ window.html5ks.api = new (function () {
       audio.loop = true;
     }
     html5ks.elements.audio[channel] = audio;
-    html5ks.state[channel] = name;
+    html5ks.store[channel] = name;
 
     var src = "dump/", volume;
 
@@ -136,7 +137,7 @@ window.html5ks.api = new (function () {
     this.stop("all");
     clearInterval(html5ks._nextTimeout);
 
-    if (html5ks.state.skip) {
+    if (html5ks.api.skip()) {
       return deferred.resolve();
     }
 
@@ -176,7 +177,7 @@ window.html5ks.api = new (function () {
 
 
   iscene: function (target, is_h, is_end) {
-    html5ks.state.status = "scene";
+    html5ks.store.status = "scene";
     var deferred = when.defer(),
         label = html5ks.data.script[html5ks.persistent.language + "_" + target],
         i = 0;
@@ -217,12 +218,12 @@ window.html5ks.api = new (function () {
     switch (action) {
       case true:
       case "show":
-        html5ks.state.window = true;
+        html5ks.store.window = true;
         windw.style.display = "block";
         break;
       case false:
       case "hide":
-        html5ks.state.window = false;
+        html5ks.store.window = false;
         windw.style.display = "none";
         break;
     }
@@ -478,10 +479,10 @@ window.html5ks.api = new (function () {
 
   _setNextTimeout: function (str, done) {
     if (done) {
-      if (html5ks.state.auto) {
-        setTimeout(html5ks.next, 3.5 * html5ks.persistent.autoModeDelay);
+      if (this.auto()) {
+        setTimeout(html5ks.next, str.length + 3.5 * html5ks.persistent.autoModeDelay);
       }
-    } else if (html5ks.state.skip || str.indexOf("{nw}") > -1) {
+    } else if (html5ks.api.skip() || str.indexOf("{nw}") > -1) {
       html5ks._next();
       html5ks._nextTimeout = setTimeout(html5ks._next, 50);
     }
@@ -504,12 +505,12 @@ window.html5ks.api = new (function () {
     switch (action) {
     case true:
     case "show":
-      html5ks.state.nvl = true;
+      html5ks.store.nvl = true;
       nvl.style.display = "block";
       break;
     case false:
     case "hide":
-      html5ks.state.nvl = false;
+      html5ks.store.nvl = false;
       nvl.style.display = "none";
       break;
     case "clear":
@@ -558,15 +559,34 @@ window.html5ks.api = new (function () {
     return deferred.promise;
   },
 
-  speed: function (type, status) {
-    switch (type) {
-    case "all":
-      this.speed("skip", status);
-      this.speed("auto", status);
+  auto: function (arg) {
+    if (arg) {
+      return this.speed("auto");
+    } else {
+      return html5ks.store.speed === "auto";
+    }
+  },
+
+  skip: function (arg) {
+    if (arg) {
+      return this.speed("skip");
+    } else {
+      return html5ks.store.speed === "skip";
+    }
+  },
+
+  speed: function (state) {
+    switch (state) {
+    case "skip":
+    case "auto":
+      this.speed();
+      html5ks.store.speed = state;
+      document.getElementById(state).style.display = "block";
       break;
     default:
-      html5ks.state[type] = status;
-      document.getElementById(type).style.display = status ? "block" : "none";
+      html5ks.store.speed = "";
+      document.getElementById("auto").style.display = "none";
+      document.getElementById("skip").style.display = "none";
     }
   }
 };})();
