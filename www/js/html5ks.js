@@ -117,9 +117,6 @@ window.html5ks = {
             html5ks.api.speed("");
             html5ks.next();
             break;
-          case 1:
-            html5ks.menu.showImage();
-            break;
         }
       }
     }, false);
