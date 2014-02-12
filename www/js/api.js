@@ -455,7 +455,7 @@ window.html5ks.api = {
 
     ptxt();
 
-    html5ks._next = function _next() {
+    html5ks.next = function () {
       if (!done) {
         clearTimeout(tm);
         ptxt(true);
@@ -463,7 +463,6 @@ window.html5ks.api = {
         ctc.style.display = "none";
         deferred.resolve();
       }
-      html5ks._next = _next;
       html5ks.api._setNextTimeout(str, true);
     };
 
@@ -482,8 +481,8 @@ window.html5ks.api = {
         setTimeout(html5ks.next, str.length + 3.5 * html5ks.persistent.autoModeDelay);
       }
     } else if (html5ks.api.skip() || str.indexOf("{nw}") > -1) {
-      html5ks._next();
-      html5ks._nextTimeout = setTimeout(html5ks._next, 50);
+      html5ks.next();
+      html5ks._nextTimeout = setTimeout(html5ks.next, 50);
     }
   },
 
