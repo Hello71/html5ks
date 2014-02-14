@@ -21,6 +21,8 @@ all: .modules video audio images js
 # === GIT SUBMODULES ===
 .modules: .gitmodules
 	git submodule update --init
+	ln -fs ../../config-all.json Modernizr/lib/config-all.json
+	cd Modernizr && npm update && grunt build
 	touch .modules
 
 # === VIDEO ===
@@ -123,14 +125,15 @@ $(DUMP)/ui/ctc_anim.webp: $(CTC_ANIM_TMP_WEBP)
 # === JS ===
 
 MYJS := www/js/html5ks.js www/js/menu.js www/js/api.js www/js/characters.js www/js/imachine.js www/js/i18n.js
-JSLIBS := www/js/lib/when/when.js www/js/lib/fastclick/lib/fastclick.js www/js/lib/modernizr-build.min.js www/js/lib/spin.js/spin.js
+JSLIBS := www/js/lib/when/when.js www/js/lib/fastclick/lib/fastclick.js \
+          www/js/lib/Modernizr/dist/modernizr-build.js www/js/lib/spin.js/spin.js
 JSDATA := www/js/play.js www/js/images.js
 JS := $(JSLIBS) $(MYJS) $(JSDATA)
 
 js: www/js/all.min.js
 
-www/js/all.min.js: $(JS)
-	$(UGLIFYJS) $^ -o "$@" --source-map "$@".map --source-map-url ./all.min.js.map -p 2 -m -c drop_debugger=false
+www/js/all.min.js: $(JS) .modules
+	$(UGLIFYJS) $(JS) -o "$@" --source-map "$@".map --source-map-url ./all.min.js.map -p 2 -m -c drop_debugger=false
 
 # === MISC ===
 
