@@ -336,3 +336,9 @@ input[type="checkbox"]:checked + span:before {
   75% { opacity: 1; }
   100% { opacity: 0; }
 }
+
+.spinner {
+  opacity: 0;
+  -webkit-transition: opacity 2s;
+  transition: opacity 2s;
+}

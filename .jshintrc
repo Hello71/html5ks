@@ -5,6 +5,7 @@
   "globals": {
     "FastClick": false,
     "Modernizr": false,
+    "Spinner": false,
     "html5ks": false,
     "when": false
   }

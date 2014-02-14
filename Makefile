@@ -123,7 +123,7 @@ $(DUMP)/ui/ctc_anim.webp: $(CTC_ANIM_TMP_WEBP)
 # === JS ===
 
 MYJS := www/js/html5ks.js www/js/menu.js www/js/api.js www/js/characters.js www/js/imachine.js www/js/i18n.js
-JSLIBS := www/js/lib/when/when.js www/js/lib/fastclick/lib/fastclick.js www/js/lib/modernizr-build.min.js
+JSLIBS := www/js/lib/when/when.js www/js/lib/fastclick/lib/fastclick.js www/js/lib/modernizr-build.min.js www/js/lib/spin.js/spin.js
 JSDATA := www/js/play.js www/js/images.js
 JS := $(JSLIBS) $(MYJS) $(JSDATA)
 
@@ -147,6 +147,7 @@ space:
 	$(RM) www/js/all.min.js www/js/all.min.js.map
 
 watch:
+	$(MAKE)
 	while inotifywait -r -e modify,delete,move --exclude="^\./\.git" --exclude="\.swp.?$$" .; do \
 		$(MAKE); \
 	done
