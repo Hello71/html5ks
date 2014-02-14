@@ -264,7 +264,6 @@ window.html5ks.api = {
     var lookup = document.getElementById(name),
         el = lookup || document.createElement("img");
     if (!location && !lookup) location = "center";
-    html5ks.spin(1);
     el.onload = function () {
       if (location) {
         // calculate position
@@ -326,6 +325,7 @@ window.html5ks.api = {
     }
     el.id = name;
     el.src = "dump/" + src;
+    html5ks.spin(1);
     // prevent FOUIPC (flash of incorrectly placed content)
     if (!lookup) {
       el.style.display = "none";
