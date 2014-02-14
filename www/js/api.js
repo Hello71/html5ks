@@ -1,3 +1,4 @@
+"use strict";
 window.html5ks.api = {
   init: function () {
     var chrs = html5ks.data.characters;
@@ -48,10 +49,13 @@ window.html5ks.api = {
       return false;
     };
 
+    html5ks.spin(1);
+
     _nextType();
 
     el.oncanplaythrough = function () {
       el.play();
+      html5ks.spin(-1);
     };
 
     el.onerror = function (e) {
@@ -260,6 +264,7 @@ window.html5ks.api = {
     var lookup = document.getElementById(name),
         el = lookup || document.createElement("img");
     if (!location && !lookup) location = "center";
+    html5ks.spin(1);
     el.onload = function () {
       if (location) {
         // calculate position
@@ -273,10 +278,12 @@ window.html5ks.api = {
         }
         el.style.display = "block";
       }
+      html5ks.spin(-1);
       deferred.resolve();
     };
     el.onerror = function () {
       el.parentNode.removeChild(el);
+      html5ks.spin(-1);
       deferred.resolve();
     };
     var nom = name;

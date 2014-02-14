@@ -77,8 +77,26 @@ window.html5ks = {
       nvlsay: document.getElementById("nvlsay"),
       nvlctc: document.getElementById("nvlctc"),
       choices: document.getElementById("choices"),
-      show: document.getElementById("show")
+      show: document.getElementById("show"),
     };
+    this.elements.spinner = new Spinner({
+      color: '#CC7C2A',
+      hwaccel: true,
+      length: 30,
+      lines: 15,
+      radius: 60,
+      width: 15
+    }).spin(this.elements.container).el;
+  },
+  _spinners: 0,
+  _spintm: null,
+  spin: function (mod) {
+    clearTimeout(this._spintm);
+    this._spintm = setTimeout(function () {
+      html5ks.elements.spinner.style.opacity = html5ks._spinners === 0 ? 0 : 1;
+    }, 1000);
+    this._spinners += mod;
+    console.assert(this._spinners >= 0);
   },
   scale: function () {
     var newScale = 1;
