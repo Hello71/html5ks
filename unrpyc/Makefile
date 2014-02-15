@@ -13,7 +13,7 @@ script.json: $(patsubst %.rpyc,%.json,$(wildcard script-*.rpyc))
 	sed -i -e 's/^/{/;s/,$$/}/' script.json
 
 %.json: %.json.o
-	node fix.js $< $@
+	uglifyjs $< --expr > $@
 
 ui-strings.json.o ui-strings_FR.json.o: ui-strings%.json.o: ui-strings%.rpyc *.py
 	python unrpyc.py --clobber $< $@
@@ -27,7 +27,7 @@ ui_settings.json.o: ui_settings.rpyc *.py
 	python unrpyc.py --clobber $< $@
 
 script-%.json: script-%.json.o
-	node fix.js $< $@
+	uglifyjs $< --expr > $@
 	sed -i -e 's/^{//;s/}$$/,/' $@
 
 clean:

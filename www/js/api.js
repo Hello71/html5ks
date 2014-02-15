@@ -148,7 +148,6 @@ window.html5ks.api = {
       ['video/webm; codecs="vp9,opus"', "vp9.webm"],
       ['video/webm; codecs="vp8,vorbis"', "webm"],
       ['video/ogg; codecs="theora,vorbis"', "ogv"],
-      // TODO: check that this is the right codec
       ['video/mp4; codecs="avc1.42E01E,mp4a.40.2"']]);
     video.style.display = "block";
     video.volume = html5ks.persistent.musicVolume;
