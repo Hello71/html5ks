@@ -173,9 +173,6 @@ html.no-js #gotit {
   display: block;
   margin: 10px 8px;
 }
-.webp .ctc {
-  background-image: url("../dump/ui/ctc.webp");
-}
 .ctc {
   position: absolute;
   bottom: 20px;
@@ -187,6 +184,9 @@ html.no-js #gotit {
   -moz-animation: blink 2s infinite linear;
   -webkit-animation: blink 2s infinite linear;
   animation: blink 2s infinite linear;
+}
+.webp .ctc {
+  background-image: url("../dump/ui/ctc.webp");
 }
 .apng .ctc, .webpanimation .ctc {
   -o-animation: none;
