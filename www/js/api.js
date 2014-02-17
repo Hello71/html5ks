@@ -51,8 +51,6 @@ window.html5ks.api = {
 
     html5ks.spin(1);
 
-    _nextType();
-
     el.oncanplaythrough = function () {
       el.play();
       html5ks.spin(-1);
@@ -67,6 +65,8 @@ window.html5ks.api = {
         console.error("unknown audio error");
       }
     };
+
+    _nextType();
   },
 
   play: function (channel, name, ignore, fade) {
