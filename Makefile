@@ -13,6 +13,9 @@ WEBPMUX ?= webpmux
 CONVERT ?= convert
 APNGASM ?= apngasm
 UGLIFYJS ?= uglifyjs
+GRUNT ?= grunt
+#JPEGTRAN ?= jpegtran
+#JPEGRESCAN ?= jpegrescan
 
 DUMP ?= www/dump
 
@@ -22,7 +25,7 @@ all: .modules video audio images js
 .modules: .gitmodules
 	git submodule update --init
 	ln -fs ../../config-all.json Modernizr/lib/config-all.json
-	cd Modernizr && npm update && grunt build
+	cd Modernizr && npm update && $(GRUNT) build
 	touch .modules
 
 # === VIDEO ===
