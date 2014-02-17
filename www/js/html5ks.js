@@ -1,4 +1,8 @@
 "use strict";
+window.assert = function (c, m) {
+  if (console.assert) console.assert.apply(console, arguments);
+  else if (!c) throw new Error(m);
+};
 window.html5ks = {
   data: {},
   persistent: {},
@@ -105,7 +109,7 @@ window.html5ks = {
       }
     }, 1000);
     this._spinners += mod;
-    console.assert(this._spinners >= 0);
+    assert(this._spinners >= 0);
   },
   scale: function () {
     var newScale = 1;
