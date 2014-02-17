@@ -90,14 +90,8 @@ def import_cython():
     
 def import_all():
 
-    import renpy.log #@UnresolvedImport
     
     import renpy.display #@UnresolvedImport
-
-    # Should probably be early, as we will add it as a base to serialized things.
-    import renpy.object #@UnresolvedImport
-
-    import renpy.game #@UnresolvedImport
 
     # Adds in the Ren'Py loader.
     import renpy.loader #@UnresolvedImport
@@ -237,7 +231,6 @@ def reload_all():
     renpy.display.im.cache.quit()
         
     blacklist = [ "renpy",
-                  "renpy.log",
                   "renpy.bootstrap",
                   "renpy.display",
                   "renpy.display.pgrender",

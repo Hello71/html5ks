@@ -26,11 +26,10 @@ DUMP ?= www/dump
 all: .modules video audio images js
 
 # === GIT SUBMODULES ===
-.modules: .gitmodules
+modules:
 	git submodule update --init
 	ln -fs ../../config-all.json Modernizr/lib/config-all.json
 	cd Modernizr && npm update && $(GRUNT) build
-	touch .modules
 
 # === VIDEO ===
 
@@ -166,4 +165,4 @@ watch:
 .SUFFIXES:
 
 .INTERMEDIATE: $(CTC_ANIM_TMP) $(CTC_ANIM_TMP_WEBP)
-.PHONY: video audio images js jshint clean space watch
+.PHONY: modules video audio images js jshint clean space watch
