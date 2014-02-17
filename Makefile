@@ -2,11 +2,6 @@ null :=
 SPACE := $(null) $(null)
 
 FFMPEG ?= ffmpeg -v warning -y
-OPUSENC ?= opusenc
-ZOPFLIPNG ?= zopflipng
-DEFLOPT ?= wine DeflOpt
-DEFLUFF ?= defluff
-PNGQUANT ?= pngquant
 CWEBP ?= cwebp
 CWEBP += -short -alpha_cleanup
 WEBPMUX ?= webpmux
@@ -14,8 +9,17 @@ CONVERT ?= convert
 APNGASM ?= apngasm
 UGLIFYJS ?= uglifyjs
 GRUNT ?= grunt
-#JPEGTRAN ?= jpegtran
-#JPEGRESCAN ?= jpegrescan
+ifdef MINIMAL
+ZOPFLIPNG ?= zopflipng
+DEFLOPT ?= wine DeflOpt
+DEFLUFF ?= defluff
+PNGQUANT ?= pngquant
+else
+ZOPFLIPNG ?= :
+DEFLOPT ?= :
+DEFLUFF ?= :
+PNGQUANT ?= :
+endif
 
 DUMP ?= www/dump
 

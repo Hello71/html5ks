@@ -58,8 +58,10 @@ window.html5ks.api = {
 
     el.onerror = function (e) {
       if (e.code === e.MEDIA_ERR_SRC_NOT_SUPPORTED) {
-        if (!_nextType()) {
-          console.log("no audio formats supported");
+        if (_nextType()) {
+          console.warn("browser claimed support for " + types[i-1] + " but failed");
+        } else {
+          console.error("no media formats supported");
         }
       } else {
         console.error("unknown audio error");
