@@ -3,13 +3,14 @@ This is a WIP HTML5 implementation of the game Katawa Shoujo. [0]
 == Requirements ==
 - Katawa Shoujo (obviously)
 - Firefox/Chrome/a sensible browser (i.e. not IE)
-- a shell (Bash, dash, zsh, etc)
-- GNU make
-- ffmpeg with fdk-aac, libopus, libtheora, libvpx, libx264 (preferably git HEAD)
+- A shell (Bash, dash, zsh, etc)
+- GNU Make
+- FFmpeg with fdk-aac, libopus, libtheora, libvpx, libx264 (preferably git HEAD)
 - cwebp and webpmux from libwebp
 - convert from ImageMagick
 - apngasm
 - uglifyjs
+- Node.js, npm, grunt
 
 === Recommended ===
 - jpegmini
@@ -36,10 +37,8 @@ This is a WIP HTML5 implementation of the game Katawa Shoujo. [0]
 -- or --
 4. Open www/index.html in a browser.
 
-== Reducing setup time ==
-To reduce the setup time (many hours), try the following:
-
-Turn off zopflipng recompression by passing ZOPFLIPNG=: as an environment variable to setup.sh. It saves only a few MB but takes several hours to complete, depending on CPU. Useful if you're serving many, MANY copies, but not useful if you're serving one locally.
+== Disabling conversions ==
+Some conversions can be safely disabled.
 
 == Reducing file size ==
 Run `make space`. Warning: This will remove source files from dump.

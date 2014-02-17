@@ -93,7 +93,16 @@ window.html5ks = {
   spin: function (mod) {
     clearTimeout(this._spintm);
     this._spintm = setTimeout(function () {
-      html5ks.elements.spinner.style.opacity = html5ks._spinners === 0 ? 0 : 1;
+      var spinner = html5ks.elements.spinner;
+      if (html5ks._spinners) {
+        spinner.style.display = "block";
+        spinner.style.opacity = 1;
+      } else {
+        spinner.style.opacity = 0;
+        this._spintm = setTimeout(function () {
+          spinner.removeAttribute("style");
+        }, 2000);
+      }
     }, 1000);
     this._spinners += mod;
     console.assert(this._spinners >= 0);
