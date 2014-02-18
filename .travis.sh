@@ -9,14 +9,22 @@ case "$1" in
     sudo apt-get update -qq
     sudo apt-get install -qq git
 
-    git clone --depth 1 git://source.ffmpeg.org/ffmpeg
     git clone --depth 1 git://git.code.sf.net/p/opencore-amr/fdk-aac
+    wget http://downloads.xiph.org/releases/opus/opus-1.1.tar.gz
+    tar -xf opus-1.1.tar.gz
+    git clone --depth 1 git://source.ffmpeg.org/ffmpeg
     ;;
   install)
-    sudo apt-get install -qq autoconf automake build-essential git imagemagick libjpeg-progs libopus libtheora-dev libtool libvpx-dev libx264-dev nodejs optipng pkg-config yasm zlib1g-dev
+    sudo apt-get install -qq autoconf automake build-essential git imagemagick libjpeg-progs libtheora-dev libtool libvpx-dev libx264-dev optipng pkg-config yasm zlib1g-dev
 
     cd fdk-aac
     autoreconf -fiv
+    ./configure --disable-shared
+    make $MAKEOPTS
+    sudo make install
+    cd ..
+
+    cd opus-1.1
     ./configure --disable-shared
     make $MAKEOPTS
     sudo make install
