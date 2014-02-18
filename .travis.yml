@@ -1,0 +1,16 @@
+language: c
+env:
+  - MINIMAL=1
+  - CFLAGS="-O2 -march=native -pipe"
+  - CXXFLAGS="-O2 -march=native -pipe"
+before_install: ./.travis.sh before_install
+install: ./.travis.sh install
+script: ./.travis.sh script
+notifications:
+  email:
+    - alex_y_xu@yahoo.ca
+  irc:
+    channels:
+      - "chat.freenode.net#html5ks"
+    on_success: change
+    on_failure: always
