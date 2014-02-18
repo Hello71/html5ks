@@ -18,7 +18,7 @@ case "$1" in
   install)
     sudo apt-get install -q autoconf automake build-essential git imagemagick libjpeg-progs libtheora-dev libtool libvpx-dev libx264-dev optipng pkg-config yasm zlib1g-dev
 
-    cd fdk-aac
+    cd fdk-aac-0.1.3
     ./configure --disable-shared
     make $MAKEOPTS
     sudo make install
