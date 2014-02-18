@@ -16,7 +16,7 @@ case "$1" in
     curl https://webp.googlecode.com/files/libwebp-0.4.0.tar.gz | tar -xz
     ;;
   install)
-    sudo apt-get install -q libjpeg-progs libtheora-dev libvpx-dev libx264-dev npm webp yasm
+    sudo apt-get install -q libjpeg-progs libtheora-dev libvpx-dev libx264-dev webp yasm
 
     cd fdk-aac-0.1.3
     ./configure --disable-shared
