@@ -1,6 +1,8 @@
-====================
-Katawa Shoujo README
-====================
+=======
+HTML5KS
+=======
+
+.. image:: https://travis-ci.org/Hello71/html5ks.png?branch=master   :target: https://travis-ci.org/Hello71/html5ks
 
 This is a WIP HTML5 implementation of the game `Katawa Shoujo`_.
 
