@@ -13,10 +13,10 @@ case "$1" in
     curl http://ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2 | tar -xj
     curl http://dl.katawa-shoujo.com/gold_1.1/%5B4ls%5D_katawa_shoujo_1.1-%5Blinux-x86%5D%5BB5C707D5%5D.tar.bz2 | tar -xj --strip-components 2 --wildcards "Katawa Shoujo-linux-x86/game/script-a*" "Katawa Shoujo-linux-x86/game/imachine.rpyc" "Katawa Shoujo-linux-x86/game/ui-strings.rpyc" "Katawa Shoujo-linux-x86/game/ui-strings_FR.rpyc" "Katawa Shoujo-linux-x86/game/data.rpa"
     mv *.rpyc unrpyc
-    rm data.rpa
     ;;
   install)
     curl https://raw.github.com/Lattyware/unrpa/master/unrpa | python2 - -p www/dump -m data.rpa
+    rm data.rpa
 
     sudo apt-get install -q autoconf automake build-essential git imagemagick libjpeg-progs libtheora-dev libtool libvpx-dev libx264-dev optipng pkg-config yasm zlib1g-dev
 
