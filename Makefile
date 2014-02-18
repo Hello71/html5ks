@@ -140,7 +140,7 @@ JSOUT := www/js/all.min.js
 
 js: $(JSOUT)
 
-$(JSOUT): $(JS) .modules
+$(JSOUT): $(JS) modules
 	$(UGLIFYJS) $(JS) -o "$@" --source-map "$@".map --source-map-url ./all.min.js.map -p 2 -m -c drop_debugger=false
 
 # === MISC ===
