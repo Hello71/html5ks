@@ -23,7 +23,7 @@ endif
 
 DUMP ?= www/dump
 
-all: .modules video audio images js
+all: modules video audio images js
 
 # === GIT SUBMODULES ===
 modules:

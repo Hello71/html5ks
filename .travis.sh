@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/bin/sh
 
-set -e
+set -e -x
 
-MAKEOPTS="-j$(nproc)"
+MAKEOPTS="-j`nproc`"
 
 case "$1" in
   before_install)

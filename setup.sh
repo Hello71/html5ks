@@ -1,6 +1,10 @@
 #!/bin/sh
 
-set -e
+if [ -z $MAKEOPTS ]; then
+  MAKEOPTS="-j`nproc`"
+fi
+
+set -e -x
 
 cd $(dirname $0)
 
