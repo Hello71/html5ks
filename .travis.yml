@@ -1,4 +1,6 @@
 language: c
+python:
+  - "3.3"
 env: MINIMAL=1 CFLAGS="-O2 -march=native -pipe" CXXFLAGS="-O2 -march=native -pipe"
 before_install: ./.travis.sh before_install
 install: ./.travis.sh install
