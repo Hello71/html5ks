@@ -16,15 +16,15 @@ script.json: $(patsubst %.rpyc,%.json,$(wildcard script-*.rpyc))
 	uglifyjs $< --expr > $@
 
 ui-strings.json.o ui-strings_FR.json.o: ui-strings%.json.o: ui-strings%.rpyc *.py
-	python unrpyc.py --clobber $< $@
+	python3 unrpyc.py --clobber $< $@
 	sed -i -e 's/    \["init_language", "[a-z]*", \],//;s/^\]}$$/}/' $@
 
 ui_settings.json.o: ui_settings.rpyc *.py
-	python unrpyc.py --clobber $< --ignore-python $@
+	python3 unrpyc.py --clobber $< --ignore-python $@
 	sed -i -e 's/,,/,/g;/: *,$$/d' $@
 
 %.json.o: %.rpyc *.py
-	python unrpyc.py --clobber $< $@
+	python3 unrpyc.py --clobber $< $@
 
 script-%.json: script-%.json.o
 	uglifyjs $< --expr > $@
