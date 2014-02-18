@@ -6,19 +6,19 @@ MAKEOPTS="-j$(nproc)"
 
 case "$1" in
   before_install)
-    sudo apt-get update -qq
-    sudo apt-get install -qq git
+    sudo apt-get update -q
+    sudo apt-get install -q git
 
-    git clone --depth 1 git://git.code.sf.net/p/opencore-amr/fdk-aac
+    wget http://downloads.sourceforge.net/project/opencore-amr/fdk-aac/fdk-aac-0.1.3.tar.gz
+    tar -xf fdk-aac-0.1.3.tar.gz
     wget http://downloads.xiph.org/releases/opus/opus-1.1.tar.gz
     tar -xf opus-1.1.tar.gz
     git clone --depth 1 git://source.ffmpeg.org/ffmpeg
     ;;
   install)
-    sudo apt-get install -qq autoconf automake build-essential git imagemagick libjpeg-progs libtheora-dev libtool libvpx-dev libx264-dev optipng pkg-config yasm zlib1g-dev
+    sudo apt-get install -q autoconf automake build-essential git imagemagick libjpeg-progs libtheora-dev libtool libvpx-dev libx264-dev optipng pkg-config yasm zlib1g-dev
 
     cd fdk-aac
-    autoreconf -fiv
     ./configure --disable-shared
     make $MAKEOPTS
     sudo make install
