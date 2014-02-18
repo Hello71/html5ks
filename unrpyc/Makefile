@@ -1,6 +1,6 @@
 GZIP := $(shell ./find-gzip.sh)
 
-TARGETS := script.json script.json.gz imachine.json imachine.json.gz imachine_replay.json imachine_replay.json.gz ui-strings.json ui-strings.json.gz ui-strings_FR.json ui-strings_FR.json.gz
+TARGETS := script.json script.json.gz imachine.json imachine.json.gz ui-strings.json ui-strings.json.gz ui-strings_FR.json ui-strings_FR.json.gz
 
 all: $(TARGETS)
 
