@@ -8,7 +8,7 @@ case "$1" in
   before_install)
     sudo apt-get update -q
 
-    curl http://downloads.sourceforge.net/project/opencore-amr/fdk-aac/fdk-aac-0.1.3.tar.gz | tar -xz
+    curl -L http://downloads.sourceforge.net/project/opencore-amr/fdk-aac/fdk-aac-0.1.3.tar.gz | tar -xz
     curl http://downloads.xiph.org/releases/opus/opus-1.1.tar.gz | tar -xz
     curl http://ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2 | tar -xj
     ;;
