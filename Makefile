@@ -34,6 +34,7 @@ modules:
 # === VIDEO ===
 
 VIDEO := $(wildcard $(DUMP)/video/*.mkv)
+Y4M := $(patsubst %.mkv,%.y4m,$(VIDEO))
 MP4 := $(patsubst %.mkv,%.mp4,$(VIDEO))
 WEBM := $(patsubst %.mkv,%.webm,$(VIDEO))
 VP9 := $(patsubst %.mkv,%.vp9.webm,$(VIDEO))
@@ -45,21 +46,21 @@ video: $(CVIDEO)
 %.y4m: %.mkv
 	$(FFMPEG) -i "$<" -c:a copy "$@"
 
-%.mp4: %.mkv
+%.mp4: %.y4m
 	$(FFMPEG) -i "$<" -c:v libx264 -preset slower -tune animation -movflags empty_moov -profile:v baseline -c:a libfdk_aac -vbr 1 "$@"
 
-%.webm: %.mkv
+%.webm: %.y4m
 	$(FFMPEG) -i "$<" -crf 10 -b:v 1M -c:a copy "$@"
 
-%.vp9.webm: %.mkv
+%.vp9.webm: %.y4m
 	$(FFMPEG) -i "$<" -strict -2 -c:v libvpx-vp9 -crf 8 -b:v 1M -c:a libopus -vbr 1 -b:a 64k "$@"
 
-%.ogv: %.mkv
+%.ogv: %.y4m
 	$(FFMPEG) -i "$<" -c:v libtheora -qscale:v 10 -c:a copy "$@"
 
 # === AUDIO ===
 
-AUDIO := $(shell find $(DUMP)/bgm $(DUMP)/sfx -name '*.ogg')
+AUDIO := $(wildcard $(DUMP)/bgm/*.ogg) $(wildcard $(DUMP)/sfx/*.ogg)
 OPUS := $(patsubst %.ogg,%.opus,$(AUDIO))
 M4A := $(patsubst %.ogg,%.m4a,$(AUDIO))
 WAV := $(patsubst %.ogg,%.wav,$(AUDIO))
@@ -135,10 +136,11 @@ JSLIBS := www/js/lib/when/when.js www/js/lib/fastclick/lib/fastclick.js \
           www/js/lib/Modernizr/dist/modernizr-build.js www/js/lib/spin.js/spin.js
 JSDATA := www/js/play.js www/js/images.js
 JS := $(JSLIBS) $(MYJS) $(JSDATA)
+JSOUT := www/js/all.min.js
 
-js: www/js/all.min.js
+js: $(JSOUT)
 
-www/js/all.min.js: $(JS) .modules
+$(JSOUT): $(JS) .modules
 	$(UGLIFYJS) $(JS) -o "$@" --source-map "$@".map --source-map-url ./all.min.js.map -p 2 -m -c drop_debugger=false
 
 # === MISC ===
@@ -150,10 +152,8 @@ jshint: $(MYJS)
 	jshint $^
 
 space:
-	find $(DUMP)/bgm $(DUMP)/sfx $(DUMP)/video \( -name '*.wav' -o -name '*.mkv' \) -delete
 	$(RM) -r $(DUMP)/font
-	$(RM) $(CTC_ANIM_TMP) $(CTC_ANIM_TMP_WEBP)
-	$(RM) www/js/all.min.js www/js/all.min.js.map
+	$(RM) $(WAV) $(VIDEO) $(CTC_ANIM_TMP) $(CTC_ANIM_TMP_WEBP) $(JSOUT) $(JSOUT).map
 
 watch:
 	$(MAKE)
@@ -164,5 +164,5 @@ watch:
 # disable default rules, increases `make` speed by 3 seconds
 .SUFFIXES:
 
-.INTERMEDIATE: $(CTC_ANIM_TMP) $(CTC_ANIM_TMP_WEBP)
+.INTERMEDIATE: $(Y4M) $(CTC_ANIM_TMP) $(CTC_ANIM_TMP_WEBP)
 .PHONY: modules video audio images js jshint clean space watch
