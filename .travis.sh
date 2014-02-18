@@ -25,6 +25,10 @@ case "$1" in
     make $MAKEOPTS
     sudo make install
     cd ..
+    ;;
   script)
     exec ./setup.sh "$@"
+    ;;
+  *)
+    exit 1
 esac
