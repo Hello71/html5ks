@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 MAKEOPTS="-j$(nproc)"
 
 case "$1" in
@@ -11,7 +13,7 @@ case "$1" in
     git clone --depth 1 git://git.code.sf.net/p/opencore-amr/fdk-aac
     ;;
   install)
-    sudo apt-get install -qq autoconf automake build-essential git imagemagick libjpeg-progs libopus0 libtheora-dev libtool libvpx-dev libx264-dev nodejs optipng pkg-config zlib1g-dev
+    sudo apt-get install -qq autoconf automake build-essential git imagemagick libjpeg-progs libopus libtheora-dev libtool libvpx-dev libx264-dev nodejs optipng pkg-config yasm zlib1g-dev
 
     cd fdk-aac
     autoreconf -fiv
