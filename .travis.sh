@@ -28,10 +28,6 @@ case "$1" in
     ./configure --disable-shared --disable-dependency-tracking --enable-libwebpmux
     make $MAKEOPTS
     sudo make $MAKEOPTS install
-    which cwebp
-    cwebp
-    which webpmux
-    webpmux
     cd ..
 
     cd node-v*
