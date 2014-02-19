@@ -20,10 +20,10 @@ case "$1" in
   install)
     MAKEOPTS="-j`nproc`"
 
-    sudo apt-get install -q libtheora-dev libvpx-dev libx264-dev yasm
+    sudo apt-get install -q libssl-dev libtheora-dev libvpx-dev libx265-dev yasm zlib1g-dev
 
     cd node-v*
-    ./configure
+    ./configure --openssl-use-sys --shared-zlib
     make $MAKEOPTS
     sudo make install
     cd ..
