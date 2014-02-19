@@ -19,7 +19,7 @@ case "$1" in
   install)
     sudo apt-get install -q libjpeg-progs libtheora-dev libvpx-dev libx264-dev npm webp yasm
 
-    sudo npm install -g grunt-cli uglifyjs
+    sudo npm install -g uglifyjs
 
     cd fdk-aac-0.1.3
     ./configure --disable-shared
