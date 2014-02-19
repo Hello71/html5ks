@@ -7,7 +7,7 @@ CWEBP += -short -alpha_cleanup
 WEBPMUX ?= webpmux
 CONVERT ?= convert
 APNGASM ?= apngasm
-UGLIFYJS ?= node_modules/.bin/uglifyjs
+UGLIFYJS ?= uglifyjs
 ifdef MINIMAL
 ZOPFLIPNG ?= zopflipng
 DEFLOPT ?= wine DeflOpt
@@ -22,12 +22,7 @@ endif
 
 DUMP ?= www/dump
 
-all: modules video audio images js
-
-# === GIT SUBMODULES ===
-Modernizr/dist/modernizr-build.js: config-all.json
-	ln -fs ../../config-all.json Modernizr/lib/config-all.json
-	cd Modernizr && npm update && node_modules/.bin/grunt build
+all: video audio images js
 
 # === VIDEO ===
 
@@ -136,9 +131,13 @@ JSDATA := www/js/play.js www/js/images.js
 JS := $(JSLIBS) $(MYJS) $(JSDATA)
 JSOUT := www/js/all.min.js
 
+Modernizr/dist/modernizr-build.js: config-all.json
+	ln -fs ../../config-all.json Modernizr/lib/config-all.json
+	cd Modernizr && npm update && node_modules/.bin/grunt build
+
 js: $(JSOUT)
 
-$(JSOUT): $(JS) modules
+$(JSOUT): $(JS)
 	$(UGLIFYJS) $(JS) -o "$@" --source-map "$@".map --source-map-url ./all.min.js.map -p 2 -m -c drop_debugger=false
 
 # === MISC ===
@@ -163,4 +162,4 @@ watch:
 .SUFFIXES:
 
 .INTERMEDIATE: $(Y4M) $(CTC_ANIM_TMP) $(CTC_ANIM_TMP_WEBP)
-.PHONY: modules video audio images js jshint clean space watch
+.PHONY: video audio images js jshint clean space watch
