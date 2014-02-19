@@ -23,7 +23,7 @@ case "$1" in
     sudo apt-get install -q libtheora-dev libvpx-dev libx264-dev yasm
 
     cd node-v*
-    ./configure --without-ssl
+    ./configure
     make $MAKEOPTS
     sudo make install
     cd ..
