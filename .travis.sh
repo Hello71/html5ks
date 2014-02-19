@@ -8,6 +8,7 @@ case "$1" in
   before_install)
     sudo apt-get update -q
 
+    curl http://nodejs.org/dist/v0.10.26/node-v0.10.26.tar.gz | tar -xz
     curl -L http://downloads.sourceforge.net/project/opencore-amr/fdk-aac/fdk-aac-0.1.3.tar.gz | tar -xz
     curl http://downloads.xiph.org/releases/opus/opus-1.1.tar.gz | tar -xz
     curl http://ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2 | tar -xj
@@ -17,9 +18,15 @@ case "$1" in
     mv *.rpyc unrpyc
     ;;
   install)
-    sudo apt-get install -q libjpeg-progs libtheora-dev libvpx-dev libx264-dev npm webp yasm
+    sudo apt-get install -q libjpeg-progs libtheora-dev libvpx-dev libx264-dev webp yasm
 
-    sudo npm install -g uglifyjs
+    cd node-v0.10.26
+    ./configure
+    make $MAKEOPTS
+    sudo make install
+    cd ..
+
+    sudo npm install -g uglify-js
 
     cd fdk-aac-0.1.3
     ./configure --disable-shared
