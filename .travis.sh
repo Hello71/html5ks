@@ -11,12 +11,15 @@ case "$1" in
     curl -L http://downloads.sourceforge.net/project/opencore-amr/fdk-aac/fdk-aac-0.1.3.tar.gz | tar -xz
     curl http://downloads.xiph.org/releases/opus/opus-1.1.tar.gz | tar -xz
     curl http://ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2 | tar -xj
+    curl https://webp.googlecode.com/files/libwebp-0.4.0.tar.gz | tar -xz
+
     curl http://dl.katawa-shoujo.com/gold_1.1/%5B4ls%5D_katawa_shoujo_1.1-%5Blinux-x86%5D%5BB5C707D5%5D.tar.bz2 | tar -xj --strip-components 2 --wildcards "Katawa Shoujo-linux-x86/game/script-a*" "Katawa Shoujo-linux-x86/game/imachine.rpyc" "Katawa Shoujo-linux-x86/game/ui-strings.rpyc" "Katawa Shoujo-linux-x86/game/ui-strings_FR.rpyc" "Katawa Shoujo-linux-x86/game/data.rpa"
     mv *.rpyc unrpyc
-    curl https://webp.googlecode.com/files/libwebp-0.4.0.tar.gz | tar -xz
     ;;
   install)
-    sudo apt-get install -q libjpeg-progs libtheora-dev libvpx-dev libx264-dev webp yasm
+    sudo apt-get install -q libjpeg-progs libtheora-dev libvpx-dev libx264-dev npm webp yasm
+
+    sudo npm install -g grunt-cli uglifyjs
 
     cd fdk-aac-0.1.3
     ./configure --disable-shared
@@ -36,16 +39,14 @@ case "$1" in
     sudo make install
     cd ..
 
-    curl https://raw.github.com/Lattyware/unrpa/master/unrpa | python2 - -p www/dump -m data.rpa
-    rm data.rpa
-
     cd libwebp-0.4.0
     ./configure
     make $MAKEOPTS
     sudo make install
     cd ..
 
-    sudo npm install -g grunt-cli uglifyjs
+    curl https://raw.github.com/Lattyware/unrpa/master/unrpa | python2 - -p www/dump -m data.rpa
+    rm data.rpa
     ;;
   script)
     exec ./setup.sh "$@"

@@ -7,8 +7,7 @@ CWEBP += -short -alpha_cleanup
 WEBPMUX ?= webpmux
 CONVERT ?= convert
 APNGASM ?= apngasm
-UGLIFYJS ?= uglifyjs
-GRUNT ?= grunt
+UGLIFYJS ?= node_modules/.bin/uglifyjs
 ifdef MINIMAL
 ZOPFLIPNG ?= zopflipng
 DEFLOPT ?= wine DeflOpt
@@ -26,10 +25,9 @@ DUMP ?= www/dump
 all: modules video audio images js
 
 # === GIT SUBMODULES ===
-modules:
-	git submodule update --init
+Modernizr/dist/modernizr-build.js: config-all.json
 	ln -fs ../../config-all.json Modernizr/lib/config-all.json
-	cd Modernizr && npm update && $(GRUNT) build
+	cd Modernizr && npm update && node_modules/.bin/grunt build
 
 # === VIDEO ===
 
@@ -133,7 +131,7 @@ $(DUMP)/ui/ctc_anim.webp: $(CTC_ANIM_TMP_WEBP)
 
 MYJS := www/js/html5ks.js www/js/menu.js www/js/api.js www/js/characters.js www/js/imachine.js www/js/i18n.js
 JSLIBS := www/js/lib/when/when.js www/js/lib/fastclick/lib/fastclick.js \
-          www/js/lib/Modernizr/dist/modernizr-build.js www/js/lib/spin.js/spin.js
+          Modernizr/dist/modernizr-build.js www/js/lib/spin.js/spin.js
 JSDATA := www/js/play.js www/js/images.js
 JS := $(JSLIBS) $(MYJS) $(JSDATA)
 JSOUT := www/js/all.min.js
