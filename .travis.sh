@@ -4,6 +4,8 @@ set -e -x
 
 case "$1" in
   before_install)
+    sudo service postgresql stop
+    sudo service mysql stop
     sudo apt-get update -q
 
     curl http://nodejs.org/dist/node-latest.tar.gz | tar -xz
