@@ -9,15 +9,15 @@ CONVERT ?= convert
 APNGASM ?= apngasm
 UGLIFYJS ?= uglifyjs
 ifdef MINIMAL
-ZOPFLIPNG ?= zopflipng
-DEFLOPT ?= wine DeflOpt
-DEFLUFF ?= defluff
-PNGQUANT ?= pngquant
-else
 ZOPFLIPNG ?= :
 DEFLOPT ?= :
 DEFLUFF ?= :
 PNGQUANT ?= :
+else
+ZOPFLIPNG ?= zopflipng
+DEFLOPT ?= wine DeflOpt
+DEFLUFF ?= defluff
+PNGQUANT ?= pngquant
 endif
 
 DUMP ?= www/dump
