@@ -18,7 +18,7 @@ case "$1" in
     mv *.rpyc unrpyc
     ;;
   install)
-    MAKEOPTS="-j`nproc` -s"
+    MAKEOPTS="-j`nproc` ${MAKEOPTS}"
 
     sudo apt-get install -q libtheora-dev libvpx-dev libx264-dev yasm
 
