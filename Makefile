@@ -39,16 +39,32 @@ video: $(CVIDEO)
 %.y4m: %.mkv
 	$(FFMPEG) -i "$<" -c:a copy "$@"
 
+ifdef NOTEMP
+%.mp4: %.mkv
+else
 %.mp4: %.y4m
+endif
 	$(FFMPEG) -i "$<" -c:v libx264 -preset slower -tune animation -movflags empty_moov -profile:v baseline -c:a libfdk_aac -vbr 1 "$@"
 
+ifdef NOTEMP
+%.webm: %.mkv
+else
 %.webm: %.y4m
+endif
 	$(FFMPEG) -i "$<" -crf 10 -b:v 1M -c:a copy "$@"
 
+ifdef NOTEMP
+%.vp9.webm: %.mkv
+else
 %.vp9.webm: %.y4m
+endif
 	$(FFMPEG) -i "$<" -strict -2 -c:v libvpx-vp9 -crf 8 -b:v 1M -c:a libopus -vbr 1 -b:a 64k "$@"
 
+ifdef NOTEMP
+%.ogv: %.mkv
+else
 %.ogv: %.y4m
+endif
 	$(FFMPEG) -i "$<" -c:v libtheora -qscale:v 10 -c:a copy "$@"
 
 # === AUDIO ===

@@ -47,7 +47,7 @@ Build steps
 3. Install prerequisites, download DeflOpt and defluff and place exes in this directory.
 4. Run setup.sh. If you're on Windoze, sucks for you. Use a better OS. Patches may or may not be accepted.
 5. Run nginx.sh to start nginx, then navigate to localhost:8080 in your browser.
--- OR --
+   -- OR --
 5. Open www/index.html in a browser.
 
 Disabling unused conversions
