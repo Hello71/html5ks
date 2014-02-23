@@ -53,7 +53,8 @@ Build steps
 Disabling unused conversions
 ----------------------------
 
-To reduce programs and build time required, some conversions can be disabled. Defining MINIMAL as an environment variable will disable the safe ones.
+To reduce programs and build time required, some conversions can be disabled.
+Defining MINIMAL as an environment variable will disable the safe ones.
 
 Alternatively, specific conversions can be disabled by setting the appropriate program variable to ":". See the Makefile for more information.
 
