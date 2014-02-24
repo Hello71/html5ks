@@ -23,6 +23,8 @@ endif
 DUMP ?= www/dump
 
 all: video audio images js
+# fails miserably, fix pls
+#	cd unrpyc && $(MAKE) install
 
 # === VIDEO ===
 

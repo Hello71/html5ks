@@ -1,8 +1,8 @@
 GZIP := $(shell ./find-gzip.sh)
 
-TARGETS := script.json script.json.gz imachine.json imachine.json.gz ui-strings.json ui-strings.json.gz ui-strings_FR.json ui-strings_FR.json.gz
+JSON := script.json script.json.gz imachine.json imachine.json.gz ui-strings.json ui-strings.json.gz ui-strings_FR.json ui-strings_FR.json.gz
 
-all: $(TARGETS)
+all: $(JSON)
 
 %.json.gz: %.json
 	$(GZIP) -c $< > $@
@@ -38,7 +38,7 @@ test: all
 
 install: all
 	[ -d ../www/json ] || mkdir ../www/json
-	cp -f $(TARGETS) ../www/json
+	cp -f $(JSON) ../www/json
 
 uninstall:
 	$(RM) ../www/json/*
