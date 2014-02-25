@@ -26,6 +26,8 @@ html5ks.menu = {
       dialogs: document.getElementById("dialogs"),
       dialog: {
         options: document.getElementById("options"),
+        load: document.getElementById("load_dlg"),
+        save: document.getElementById("save_dlg"),
         retn: document.getElementById("return")
       },
       mainMenu: document.getElementById("main-menu"),

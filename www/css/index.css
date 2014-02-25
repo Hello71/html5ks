@@ -101,23 +101,69 @@ html.no-js #gotit {
 
 /* dialogs */
 #dialogs {
-  background: url("../dump/ui/bg-config.png");
   z-index: 50;
   width: 504px;
   height: 395px;
   margin-left: -252px;
   margin-top: -197.5px;
 }
+.no-webp #dialogs {
+  background: url("../dump/ui/bg-config.png");
+}
 .webp #dialogs {
   background: url("../dump/ui/bg-config.webp");
 }
-#options {
+#dialogs > div {
+  display: none;
   padding: 10px 20px;
+}
+.config_sfxtest_label {
+  padding-left: 24px;
+  background-repeat: no-repeat;
+}
+.no-webp .config_sfxtest_label {
+  background-image: url("../dump/ui/bt-musicplay.png");
+}
+.webp .config_sfxtest_label {
+  background-image: url("../dump/ui/bt-musicplay.webp");
+}
+.config_language_sel {
+  padding-left: 24px;
+  background-repeat: no-repeat;
+}
+.no-webp .config_language_sel {
+  background-image: url("../dump/ui/bt-language.png");
+}
+.webp .config_language_sel {
+  background-image: url("../dump/ui/bt-language.webp");
+}
+.saves {
+  overflow-y: scroll;
+  height: 260px;
+  width: 450px;
+}
+.new_save_button {
+  padding-left: 30px;
+  background-repeat: no-repeat;
+}
+.no-webp .new_save_button {
+  background-image: url("../dump/ui/bt-star.png");
+}
+.webp .new_save_button {
+  background-image: url("../dump/ui/bt-star.webp");
 }
 #return {
   position: absolute;
   bottom: 15px;
   right: 20px;
+  padding-left: 30px;
+  background-repeat: no-repeat;
+}
+.no-webp #return {
+  background-image: url("../dump/ui/bt-return.png");
+}
+.webp #return {
+  background-image: url("../dump/ui/bt-return.webp");
 }
 
 /* content */
@@ -128,12 +174,14 @@ html.no-js #gotit {
   position: absolute;
 }
 #window {
-  background: url("../dump/ui/bg-say.png");
   width: 800px;
   height: 160px;
   position: absolute;
   top: 440px;
   left: 0;
+}
+.no-webp #window {
+  background: url("../dump/ui/bg-say.png");
 }
 .webp #window {
   background: url("../dump/ui/bg-say.webp");
@@ -156,15 +204,18 @@ html.no-js #gotit {
   left: 28px;
 }
 #nvl {
-  background: url("../dump/ui/bg-nvl.png") no-repeat top left;
+  background: white no-repeat top left;
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
 }
+.no-webp #nvl {
+  background-image: url("../dump/ui/bg-nvl.png");
+}
 .webp #nvl {
-  background: url("../dump/ui/bg-nvl.webp") no-repeat top left;
+  background-image: url("../dump/ui/bg-nvl.webp");
 }
 #nvlsay {
   padding: 15px 35px;
@@ -179,11 +230,13 @@ html.no-js #gotit {
   right: 10px;
   width: 16px;
   height: 16px;
-  background-image: url("../dump/ui/ctc.png");
   -o-animation: blink 2s infinite linear;
   -moz-animation: blink 2s infinite linear;
   -webkit-animation: blink 2s infinite linear;
   animation: blink 2s infinite linear;
+}
+.no-webp .ctc {
+  background-image: url("../dump/ui/ctc.png");
 }
 .webp .ctc {
   background-image: url("../dump/ui/ctc.webp");
@@ -224,14 +277,29 @@ html.no-js #gotit {
   right: 10px;
   display: none;
 }
+.no-webp #auto {
+  background: url("dump/ui/sd-auto.png");
+}
+.webp #auto {
+  background: url("dump/ui/sd-auto.webp");
+}
+.no-webp #skip {
+  background: url("dump/ui/sd-skip.png");
+}
+.webp #skip {
+  background: url("dump/ui/sd-skip.webp");
+}
 #choices {
   left: 0;
 }
 .webp .choice {
-  background: url("../dump/ui/bg-choice.webp") no-repeat top center;
+  background-image: url("../dump/ui/bg-choice.webp");
+}
+.no-webp .choice {
+  background-image: url("../dump/ui/bg-choice.png");
 }
 .choice {
-  background: url("../dump/ui/bg-choice.png") no-repeat top center;
+  background: white no-repeat top center;
   text-align: center;
   height: 35px;
   line-height: 30px;
@@ -241,10 +309,13 @@ html.no-js #gotit {
   text-align: center;
 }
 .webp #context-menu {
-  background: url("../dump/ui/bg-gm.webp") no-repeat top center;
+  background-image: url("../dump/ui/bg-gm.webp");
+}
+.no-webp #context-menu {
+  background-image: url("../dump/ui/bg-gm.png");
 }
 #context-menu {
-  background: url("../dump/ui/bg-gm.png") no-repeat top center;
+  background: white no-repeat top center;
   margin-top: -210px;
   padding-top: 60px;
   position: absolute;
@@ -266,6 +337,11 @@ html.no-js #gotit {
 }
 
 /* main menu */
+#main-menu-buttons {
+  top: 377px;
+  position: absolute;
+  left: 81px;
+}
 #main-menu-buttons .button {
   margin: 4px;
 }
@@ -297,16 +373,17 @@ input[type="checkbox"] {
 .webp input[type="checkbox"] + span:before {
   background-image: url("../dump/ui/bt-cf-unchecked.webp");
 }
-input[type="checkbox"] + span:before {
+.no-webp input[type="checkbox"] + span:before {
   background-image: url("../dump/ui/bt-cf-unchecked.png");
+}
+input[type="checkbox"] + span:before {
   display: inline-block;
   height: 19px;
   width: 20px;
   content: "";
-  background-position: left bottom;
-  background-repeat: no-repeat;
+  background: white left bottom no-repeat;
 }
-input[type="checkbox"]:checked + span:before {
+.no-webp input[type="checkbox"]:checked + span:before {
   background-image: url("../dump/ui/bt-cf-checked.png");
 }
 .webp input[type="checkbox"]:checked + span:before {

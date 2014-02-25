@@ -3,7 +3,7 @@ SPACE := $(null) $(null)
 
 FFMPEG ?= ffmpeg -v warning -y
 CWEBP ?= cwebp
-CWEBP += -short -alpha_cleanup
+CWEBP += -quiet -alpha_cleanup
 WEBPMUX ?= webpmux
 CONVERT ?= convert
 APNGASM ?= apngasm
@@ -11,7 +11,7 @@ UGLIFYJS ?= uglifyjs
 ifdef MINIMAL
 ZOPFLIPNG ?= :
 DEFLOPT ?= :
-DEFLUFF ?= :
+DEFLUFF ?= cat
 PNGQUANT ?= :
 else
 ZOPFLIPNG ?= zopflipng
@@ -129,7 +129,7 @@ $(DUMP)/ui/bt-cf-unchecked.webp $(DUMP)/ui/bt-cf-checked.webp: %.webp: %.png
 	mv -f "$<".tmp "$<"
 
 $(DUMP)/ui/ctc_strip-0.png: $(CTC_ANIM_SRC)
-	$(CONVERT) "$<" -crop 16x16 $(patsubst %.png,%*.png,$<)
+	$(CONVERT) "$<" -crop 16x16 $(DUMP)/ui/ctc_strip-%d.png
 
 $(DUMP)/ui/ctc_strip-%.png: $(CTC_ANIM_SRC) $(DUMP)/ui/ctc_strip-0.png
 	@touch -r "$(DUMP)/ui/ctc_strip-0.png" "$@"
