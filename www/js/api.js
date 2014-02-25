@@ -37,7 +37,6 @@ window.html5ks.api = {
   _loadMedia: function (el, src, types) {
     var i = 0;
     var _nextType = function () {
-      i++;
       for (; i < types.length; i++) {
         var type = types[i];
         if (el.canPlayType(type[0])) {
@@ -46,7 +45,6 @@ window.html5ks.api = {
           return true;
         }
       }
-      return false;
     };
 
     html5ks.spin(1);
@@ -58,7 +56,7 @@ window.html5ks.api = {
 
     el.onerror = function (e) {
       if (e.code === e.MEDIA_ERR_SRC_NOT_SUPPORTED) {
-        if (_nextType()) {
+        if (_nextType(++i)) {
           console.warn("browser claimed support for " + types[i-1] + " but failed");
         } else {
           console.error("no media formats supported");

@@ -48,11 +48,11 @@
         </div>
         <div id="choices" class="centered"></div>
         <div id="centered" class="centered say"></div>
-        <img class="status" id="auto" src="dump/ui/sd-auto.png" alt="Auto">
-        <img class="status" id="skip" src="dump/ui/sd-skip.png" alt="Skip">
+        <span class="status" id="auto" alt="Auto">
+        <span class="status" id="skip" alt="Skip">
       </div>
       <div id="main-menu" style="display: none;">
-        <div id="main-menu-buttons" style="top: 377px; position: absolute; left: 81px;">
+        <div id="main-menu-buttons">
           <div id="start" class="button main_menu_start disabled"></div>
           <div id="load" class="button main_menu_load disabled"></div>
           <div id="extras" class="button main_menu_extra disabled"></div>
@@ -66,7 +66,7 @@
         </div>
       </div>
       <div id="dialogs" class="centered" style="display: none;">
-        <div id="options" style="padding: 10px 20px;">
+        <div id="options">
           <h2 class="config_page_caption"></h2>
           <label class="button"><input type="checkbox" class="option" id="hdisable"> <span class="hdisabled_label"></span></label>
           <label class="button"><input type="checkbox" class="option" id="skipUnread"> <span class="config_skip_unseen_label"></span></label>
@@ -76,14 +76,20 @@
           <label><input type="range" min="0.0" max="1.0" step="0.001" class="option" id="autoModeDelay"> <span class="config_afmspeed_label"></span></label>
 
           <label><input type="range" min="0.0" max="1.0" step="0.001" class="option" id="musicVolume"> <span class="config_musicvol_label"></span></label>
-          <label><input type="range" min="0.0" max="1.0" step="0.001" class="option" id="sfxVolume"> <span class="config_sfxvol_label"></span> <span id="test-sound" class="button config_sfxtest_label"><img src="dump/ui/bt-musicplay.png" alt="Play"></span></label>
+          <label><input type="range" min="0.0" max="1.0" step="0.001" class="option" id="sfxVolume"> <span class="config_sfxvol_label"></span> <span id="test-sound" class="button config_sfxtest_label"></span></label>
 
-          <label class="button disabled" id="language"><img src="dump/ui/bt-language.png"> <span class="config_language_sel"></span></label>
+          <label class="button disabled config_language_sel"></label>
         </div>
-        <label id="return" class="button" style="position: absolute; bottom: 15px; right: 20px;">
-          <img src="dump/ui/bt-return.png">
-          <span class="return_button_text"></span>
-        </label>
+        <div id="load_dlg">
+          <h2 class="load_page_caption"></h2>
+          <div class="saves"></div>
+        </div>
+        <div id="save_dlg">
+          <h2 class="save_page_caption"></h2>
+          <div class="saves"></div>
+          <div class="button new_save_button"></div>
+        </div>
+        <label id="return" class="button return_button_text"></label>
       </div>
       <div id="context" style="display: none;">
         <div id="context-menu" class="centered">
