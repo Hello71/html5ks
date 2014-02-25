@@ -177,7 +177,7 @@ watch:
 	done
 
 # disable default rules, increases `make` speed by 3 seconds
-.SUFFIXES:
+MAKEFLAGS=-r
 
 .INTERMEDIATE: $(Y4M) $(CTC_ANIM_TMP) $(CTC_ANIM_TMP_WEBP)
 .PHONY: video audio images js jshint clean space watch
