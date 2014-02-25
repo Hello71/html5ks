@@ -34,8 +34,8 @@ case "$1" in
 
     cd node-v*
     ./configure --openssl-use-sys --shared-zlib
-    make $MAKEOPTS
-    sudo make $MAKEOPTS install
+    make V= $MAKEOPTS
+    sudo make V= $MAKEOPTS install
     cd ..
 
     sudo npm install -g uglify-js
