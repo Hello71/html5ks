@@ -2,6 +2,8 @@
 
 set -e -x
 
+MAKEOPTS="-j`nproc` ${MAKEOPTS}"
+
 case "$1" in
   before_install)
     sudo service postgresql stop
@@ -18,8 +20,6 @@ case "$1" in
     mv *.rpyc unrpyc
     ;;
   install)
-    MAKEOPTS="-j`nproc` ${MAKEOPTS}"
-
     sudo apt-get install -q libtheora-dev libvpx-dev libx264-dev yasm
 
     cd libwebp-0.4.0
@@ -34,8 +34,9 @@ case "$1" in
 
     cd node-v*
     ./configure --openssl-use-sys --shared-zlib
-    make V= $MAKEOPTS
-    sudo make V= $MAKEOPTS install
+    # TO NODE DEVS: "quiet" DOESN'T MEAN WHAT YOU THINK IT MEANS
+    make $MAKEOPTS >/dev/null
+    sudo make $MAKEOPTS install >/dev/null
     cd ..
 
     sudo npm install -g uglify-js
@@ -60,6 +61,9 @@ case "$1" in
 
     curl https://raw.github.com/Lattyware/unrpa/master/unrpa | python2 - -p www/dump -m data.rpa
     rm data.rpa
+    ;;
+  script)
+    exec make
     ;;
   *)
     exit 1

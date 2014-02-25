@@ -7,7 +7,7 @@ The "Playtime With Hot Toddies" font is not licensed, but was found on `Font Squ
 
     It is our opinion that if the unlicensed font is freely available for download from either the original source or from multiple free-font sites then we assume it to be safe to use the font commercially. This is no guarantee of such freedom, but there are so many unlicensed free fonts distributed by primary sources that the intentions must be read that the font is free to use how you like.
 
-Ren'Py (unrpyc/renpy) is distributed under the MIT license, in unrpyc/renpy/LICENSE.txt.
+Ren'Py (``unrpyc/renpy``) is distributed under the MIT license, in ``unrpyc/renpy/LICENSE.txt``.
 
 Git submodules are not included as part of the source, and are licensed separately. See their respective subdirectories for more information.
 
