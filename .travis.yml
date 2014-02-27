@@ -1,7 +1,7 @@
 language: c
 python: "3.3"
 node_js: "0.11"
-env: MINIMAL=1 CFLAGS="-O2 -march=native -pipe" CXXFLAGS="-O2 -march=native -pipe" MAKEOPTS="-s -j4"
+env: MINIMAL=1 CFLAGS="-O2 -march=native -pipe" CXXFLAGS="-O2 -march=native -pipe" MAKEOPTS="-j8" FFMPEG="ffmpeg -t 00:00:30"
 before_install: ./.travis.sh before_install
 install: ./.travis.sh install
 script: ./.travis.sh script
