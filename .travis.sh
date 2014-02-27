@@ -17,6 +17,8 @@ case "$1" in
 
     curl http://dl.katawa-shoujo.com/gold_1.1/%5B4ls%5D_katawa_shoujo_1.1-%5Blinux-x86%5D%5BB5C707D5%5D.tar.bz2 | tar -xj --strip-components 2 --wildcards "Katawa Shoujo-linux-x86/game/script-a*.rpyc" "Katawa Shoujo-linux-x86/game/imachine.rpyc" "Katawa Shoujo-linux-x86/game/ui-strings*.rpyc" "Katawa Shoujo-linux-x86/game/data.rpa"
     mv *.rpyc unrpyc
+
+    npm config set tmp /tmp
     ;;
   install)
     MAKEOPTS="-s ${MAKEOPTS}"

@@ -9,12 +9,7 @@ WEBPMUX ?= webpmux
 CONVERT ?= convert
 APNGASM ?= apngasm
 UGLIFYJS ?= uglifyjs
-ifdef MINIMAL
-ZOPFLIPNG ?= :
-DEFLOPT ?= :
-DEFLUFF ?= cat
-PNGQUANT ?= :
-else
+ifndef MINIMAL
 ZOPFLIPNG ?= zopflipng
 DEFLOPT ?= wine DeflOpt
 DEFLUFF ?= defluff
@@ -106,13 +101,23 @@ images: $(CIMAGE)
 
 $(DUMP)/ui/ctc_strip.webp: $(DUMP)/ui/ctc_strip.png
 
-%.webp: %.png
-	$(CWEBP) -q 99 -m 6 "$<" -o "$@"
+define png2webp =
 	$(PNGQUANT) --force --speed 1 --ext .png "$<"
+ifdef ZOPFLIPNG
 	$(ZOPFLIPNG) -m -y "$<" "$<"
+endif
+ifdef DEFLOPT
 	$(DEFLOPT) "$<"
+endif
+ifdef DEFLUFF
 	$(DEFLUFF) < "$<" > "$<".tmp
 	mv -f "$<".tmp "$<"
+endif
+endef
+
+%.webp: %.png
+	$(CWEBP) -q 99 -m 6 "$<" -o "$@"
+	$(png2webp)
 
 %.webp: %.jpg
 	$(CWEBP) -q 90 -m 6 "$<" -o "$@"
@@ -122,12 +127,7 @@ www/favicon.ico: $(DUMP)/ui/icon.png
 
 $(DUMP)/ui/bt-cf-unchecked.webp $(DUMP)/ui/bt-cf-checked.webp: %.webp: %.png
 	$(CONVERT) -trim "$<" "$<"
-	$(CWEBP) -q 99 -m 6 "$<" -o "$@"
-	$(PNGQUANT) --force --speed 1 --ext .png "$<"
-	$(ZOPFLIPNG) -m -y "$<" "$<"
-	$(DEFLOPT) "$<"
-	$(DEFLUFF) < "$<" > "$<".tmp
-	mv -f "$<".tmp "$<"
+	$(png2webp)
 
 $(DUMP)/ui/ctc_strip-0.png: $(CTC_ANIM_SRC)
 	$(CONVERT) "$<" -crop 16x16 $(DUMP)/ui/ctc_strip-%d.png
