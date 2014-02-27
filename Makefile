@@ -1,7 +1,8 @@
 null :=
 SPACE := $(null) $(null)
 
-FFMPEG ?= ffmpeg -v warning -y
+FFMPEG ?= ffmpeg
+FFMPEG += -v warning -y
 CWEBP ?= cwebp
 CWEBP += -quiet -alpha_cleanup
 WEBPMUX ?= webpmux
