@@ -2,8 +2,6 @@
 
 set -e -x
 
-MAKEOPTS="-j`nproc` ${MAKEOPTS}"
-
 case "$1" in
   before_install)
     sudo service postgresql stop
