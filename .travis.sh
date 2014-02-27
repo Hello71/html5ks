@@ -19,6 +19,7 @@ case "$1" in
     mv *.rpyc unrpyc
     ;;
   install)
+    MAKEOPTS="-s ${MAKEOPTS}"
     sudo apt-get install -qq libtheora-dev libx264-dev yasm
 
     cd libwebp-0.4.0
