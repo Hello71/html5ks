@@ -6,7 +6,7 @@ case "$1" in
   before_install)
     sudo service postgresql stop
     sudo service mysql stop
-    sudo apt-get update -q
+    sudo apt-get update -qq
 
     curl http://nodejs.org/dist/node-latest.tar.gz | tar -xz
     curl https://webp.googlecode.com/files/libwebp-0.4.0.tar.gz | tar -xz
