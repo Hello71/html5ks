@@ -12,13 +12,14 @@ case "$1" in
     curl https://webp.googlecode.com/files/libwebp-0.4.0.tar.gz | tar -xz
     curl -L http://downloads.sourceforge.net/project/opencore-amr/fdk-aac/fdk-aac-0.1.3.tar.gz | tar -xz
     curl http://downloads.xiph.org/releases/opus/opus-1.1.tar.gz | tar -xz
+    curl http://webm.googlecode.com/files/libvpx-v1.3.0.tar.bz2 | tar -xj
     curl http://ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2 | tar -xj
 
     curl http://dl.katawa-shoujo.com/gold_1.1/%5B4ls%5D_katawa_shoujo_1.1-%5Blinux-x86%5D%5BB5C707D5%5D.tar.bz2 | tar -xj --strip-components 2 --wildcards "Katawa Shoujo-linux-x86/game/script-a*.rpyc" "Katawa Shoujo-linux-x86/game/imachine.rpyc" "Katawa Shoujo-linux-x86/game/ui-strings*.rpyc" "Katawa Shoujo-linux-x86/game/data.rpa"
     mv *.rpyc unrpyc
     ;;
   install)
-    sudo apt-get install -qq libtheora-dev libvpx-dev libx264-dev yasm
+    sudo apt-get install -qq libtheora-dev libx264-dev yasm
 
     cd libwebp-0.4.0
     sed -i -e '/unset ac_cv_header_GL_glut_h/d' configure
@@ -46,6 +47,12 @@ case "$1" in
 
     cd opus-1.1
     ./configure --disable-shared --disable-extra-programs --disable-dependency-tracking --quiet
+    make $MAKEOPTS >/dev/null
+    sudo make $MAKEOPTS install >/dev/null
+    cd ..
+
+    cd libvpx-v1.3.0
+    ./configure
     make $MAKEOPTS >/dev/null
     sudo make $MAKEOPTS install >/dev/null
     cd ..
