@@ -43,7 +43,6 @@
     "test/css/opacity",
     "test/css/overflow-scrolling",
     "test/css/pointerevents",
-    "test/css/positionsticky",
     "test/css/pseudoanimations",
     "test/css/pseudotransitions",
     "test/css/reflections",
