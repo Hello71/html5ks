@@ -46,7 +46,7 @@ ifdef NOTEMP
 else
 %.mp4: %.y4m
 endif
-	$(FFMPEG) -i "$<" -c:v libx264 -preset slower -tune animation -movflags empty_moov -profile:v baseline -c:a libfdk_aac -vbr 1 "$@"
+	$(FFMPEG) -i "$<" -c:v libx264 -preset slower -tune animation -movflags empty_moov -profile:v baseline -c:a libfdk_aac -b:a 60k "$@"
 
 ifdef NOTEMP
 %.webm: %.mkv
@@ -86,7 +86,7 @@ audio: $(CAUDIO)
 	$(FFMPEG) -i "$<" -c:a libopus -vbr 1 -b:a 64k "$@"
 
 %.m4a: %.wav
-	$(FFMPEG) -i "$<" -c:a libfdk_aac -vbr 1 "$@"
+	$(FFMPEG) -i "$<" -b:a 60k "$@"
 
 # === IMAGES ===
 

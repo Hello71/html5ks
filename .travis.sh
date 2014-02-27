@@ -20,7 +20,7 @@ case "$1" in
     mv *.rpyc unrpyc
     ;;
   install)
-    sudo apt-get install -q libtheora-dev libvpx-dev libx264-dev yasm
+    sudo apt-get install -qq libtheora-dev libvpx-dev libx264-dev yasm
 
     cd libwebp-0.4.0
     sed -i -e '/unset ac_cv_header_GL_glut_h/d' configure
@@ -48,8 +48,8 @@ case "$1" in
 
     cd opus-1.1
     ./configure --disable-shared --disable-extra-programs --disable-dependency-tracking --quiet
-    make $MAKEOPTS
-    sudo make $MAKEOPTS install
+    make $MAKEOPTS >/dev/null
+    sudo make $MAKEOPTS install >/dev/null
     cd ..
 
     cd ffmpeg
@@ -62,7 +62,7 @@ case "$1" in
     rm data.rpa
     ;;
   script)
-    exec make
+    exec make $MAKEOPTS
     ;;
   *)
     exit 1
