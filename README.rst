@@ -23,8 +23,8 @@ Requirements
 - cwebp and webpmux from libwebp
 - convert from ImageMagick
 - apngasm
-- uglifyjs
-- Node.js, npm, grunt
+- Node.js, npm
+- uglifyjs installed globally
 
 Recommended
 '''''''''''
