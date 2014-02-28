@@ -21,6 +21,7 @@ case "$1" in
     mv *.rpyc unrpyc
 
     npm config set tmp /tmp
+
     ;;
   install)
     MAKEOPTS="-s ${MAKEOPTS}"
@@ -63,18 +64,18 @@ case "$1" in
     cd ..
 
     cd apngasm-2.8
-    patch -p1 <<-EOF
-    --- apngasm.c
-    +++ apngasm.c
-    @@ -29,6 +29,7 @@
-      */^M
-     #include <stdio.h>^M
-     #include <stdlib.h>^M
-    +#include <string.h>^M
-     #include "png.h"     /* original (unpatched) libpng is ok */^M
-     #include "zlib.h"^M
-     ^M
-    EOF
+    patch -p1 <<EOF
+--- apngasm.c
++++ apngasm.c
+@@ -29,6 +29,7 @@
+  */
+ #include <stdio.h>
+ #include <stdlib.h>
++#include <string.h>
+ #include "png.h"     /* original (unpatched) libpng is ok */
+ #include "zlib.h"
+ 
+EOF
     make LDLIBS="$(pkg-config --libs libpng --libs zlib)" apngasm
     install -c -m755 apngasm /usr/local/bin
     cd ..
