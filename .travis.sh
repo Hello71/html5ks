@@ -14,6 +14,8 @@ case "$1" in
     curl http://downloads.xiph.org/releases/opus/opus-1.1.tar.gz | tar -xz
     curl http://webm.googlecode.com/files/libvpx-v1.3.0.tar.bz2 | tar -xj
     curl http://ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2 | tar -xj
+    curl -L http://downloads.sourceforge.net/project/apngasm/2.8/apngasm-2.8-src.zip -O
+    unzip apngasm-2.8-src.zip apngasm.c
 
     curl http://dl.katawa-shoujo.com/gold_1.1/%5B4ls%5D_katawa_shoujo_1.1-%5Blinux-x86%5D%5BB5C707D5%5D.tar.bz2 | tar -xj --strip-components 2 --wildcards "Katawa Shoujo-linux-x86/game/script-a*.rpyc" "Katawa Shoujo-linux-x86/game/imachine.rpyc" "Katawa Shoujo-linux-x86/game/ui-strings*.rpyc" "Katawa Shoujo-linux-x86/game/data.rpa"
     mv *.rpyc unrpyc
@@ -58,6 +60,23 @@ case "$1" in
     ./configure
     make $MAKEOPTS >/dev/null
     sudo make $MAKEOPTS install >/dev/null
+    cd ..
+
+    cd apngasm-2.8
+    patch -p1 <<-EOF
+    --- apngasm.c
+    +++ apngasm.c
+    @@ -29,6 +29,7 @@
+      */^M
+     #include <stdio.h>^M
+     #include <stdlib.h>^M
+    +#include <string.h>^M
+     #include "png.h"     /* original (unpatched) libpng is ok */^M
+     #include "zlib.h"^M
+     ^M
+    EOF
+    make LDLIBS="$(pkg-config --libs libpng --libs zlib)" apngasm
+    install -c -m755 apngasm /usr/local/bin
     cd ..
 
     cd ffmpeg
