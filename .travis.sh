@@ -76,7 +76,7 @@ case "$1" in
  
 EOF
     make LDLIBS="$(pkg-config --libs libpng --libs zlib)" apngasm
-    install -c -m755 apngasm /usr/local/bin
+    sudo install -c -m755 apngasm /usr/local/bin
 
     cd ffmpeg
     ./configure --disable-everything --disable-logging --disable-programs --disable-runtime-cpudetect --enable-decoder=mpeg4 --enable-decoder=pcm_s16le --enable-decoder=vorbis --enable-decoder=rawvideo --enable-demuxer=matroska --enable-demuxer=ogg --enable-demuxer=wav --enable-demuxer=yuv4mpegpipe --enable-encoder=libfdk_aac --enable-encoder=libopus --enable-encoder=libtheora --enable-encoder=libvpx_vp8 --enable-encoder=libvpx_vp9 --enable-encoder=libx264 --enable-encoder=pcm_s16le --enable-encoder=rawvideo --enable-ffmpeg --enable-filter=aresample --enable-gpl --enable-hardcoded-tables --enable-libfdk_aac --enable-libopus --enable-libtheora --enable-libvpx --enable-libx264 --enable-muxer=ipod --enable-muxer=mp4 --enable-muxer=ogg --enable-muxer=wav --enable-muxer=webm --enable-muxer=yuv4mpegpipe --enable-nonfree --enable-protocol=file
