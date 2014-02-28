@@ -14,8 +14,8 @@ case "$1" in
     curl http://downloads.xiph.org/releases/opus/opus-1.1.tar.gz | tar -xz
     curl http://webm.googlecode.com/files/libvpx-v1.3.0.tar.bz2 | tar -xj
     curl http://ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2 | tar -xj
-    curl -L http://downloads.sourceforge.net/project/apngasm/2.8/apngasm-2.8-src.zip -O
-    unzip apngasm-2.8-src.zip apngasm.c
+    curl -L http://downloads.sourceforge.net/project/apngasm/2.7/apngasm-2.7-src.zip -O
+    unzip apngasm-2.7-src.zip apngasm.c
 
     curl http://dl.katawa-shoujo.com/gold_1.1/%5B4ls%5D_katawa_shoujo_1.1-%5Blinux-x86%5D%5BB5C707D5%5D.tar.bz2 | tar -xj --strip-components 2 --wildcards "Katawa Shoujo-linux-x86/game/script-a*.rpyc" "Katawa Shoujo-linux-x86/game/imachine.rpyc" "Katawa Shoujo-linux-x86/game/ui-strings*.rpyc" "Katawa Shoujo-linux-x86/game/data.rpa"
     mv *.rpyc unrpyc
@@ -63,7 +63,6 @@ case "$1" in
     sudo make $MAKEOPTS install >/dev/null
     cd ..
 
-    cd apngasm-2.8
     patch -p1 <<EOF
 --- apngasm.c
 +++ apngasm.c
@@ -78,7 +77,6 @@ case "$1" in
 EOF
     make LDLIBS="$(pkg-config --libs libpng --libs zlib)" apngasm
     install -c -m755 apngasm /usr/local/bin
-    cd ..
 
     cd ffmpeg
     ./configure --disable-everything --disable-logging --disable-programs --disable-runtime-cpudetect --enable-decoder=mpeg4 --enable-decoder=pcm_s16le --enable-decoder=vorbis --enable-decoder=rawvideo --enable-demuxer=matroska --enable-demuxer=ogg --enable-demuxer=wav --enable-demuxer=yuv4mpegpipe --enable-encoder=libfdk_aac --enable-encoder=libopus --enable-encoder=libtheora --enable-encoder=libvpx_vp8 --enable-encoder=libvpx_vp9 --enable-encoder=libx264 --enable-encoder=pcm_s16le --enable-encoder=rawvideo --enable-ffmpeg --enable-filter=aresample --enable-gpl --enable-hardcoded-tables --enable-libfdk_aac --enable-libopus --enable-libtheora --enable-libvpx --enable-libx264 --enable-muxer=ipod --enable-muxer=mp4 --enable-muxer=ogg --enable-muxer=wav --enable-muxer=webm --enable-muxer=yuv4mpegpipe --enable-nonfree --enable-protocol=file
