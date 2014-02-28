@@ -40,7 +40,7 @@ case "$1" in
     cd node-v*
     ./configure --openssl-use-sys --shared-zlib
     make $MAKEOPTS >/dev/null
-    sudo make $MAKEOPTS install >/dev/null
+    sudo python tools/install.py install >/dev/null
     cd ..
 
     sudo npm install -g uglify-js
@@ -63,7 +63,7 @@ case "$1" in
     sudo make $MAKEOPTS install >/dev/null
     cd ..
 
-    patch -p1 <<EOF
+    patch -p0 <<EOF
 --- apngasm.c
 +++ apngasm.c
 @@ -29,6 +29,7 @@
