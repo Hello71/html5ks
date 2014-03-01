@@ -5,12 +5,14 @@
        url("font/playtime-webfont.ttf") format('ttf'),
        url("font/playtime-webfont.svg") format('svg');
 }
+/* nothing actually uses this
 @font-face {
   font-family: "Gentium";
   src: url("font/GentiumPlus.svg");
   src: url("font/GentiumPlus.ttf");
   src: url("font/GentiumPlus.woff");
 }
+*/
 
 /* general styling */
 * {
