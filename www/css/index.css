@@ -1,23 +1,16 @@
 /* font-face */
 @font-face {
   font-family: "Playtime";
-  src: url("font/playtime-webfont.woff") format('woff'),
-       url("font/playtime-webfont.ttf") format('ttf'),
+  src: url("font/playtime-webfont.eot?") format('eot'),
+       url("font/playtime-webfont.woff") format('woff'),
+       url("font/playtime-webfont.ttf") format('truetype'),
        url("font/playtime-webfont.svg") format('svg');
 }
-/* nothing actually uses this
-@font-face {
-  font-family: "Gentium";
-  src: url("font/GentiumPlus.svg");
-  src: url("font/GentiumPlus.ttf");
-  src: url("font/GentiumPlus.woff");
-}
-*/
 
 /* general styling */
 * {
-  -moz-user-select: -moz-none;
   -webkit-user-select: none;
+  -moz-user-select: -moz-none;
   -ms-user-select: none;
   user-select: none;
   outline: none;
@@ -44,7 +37,7 @@ h2 {
   display: none;
   cursor: auto;
 }
-html.no-js #interstitial {
+.no-js #interstitial {
   display: block;
 }
 #warn {
@@ -60,18 +53,18 @@ html.no-js #interstitial {
   width: 600px;
   z-index: 100;
 }
-html.no-js          #warn li { display: none; }
-html.js             #warn li#js { display: none; }
-                    #warn li#ie { display: none; }
-html.video          #warn li#video { display: none; }
-html.audio          #warn li#audio { display: none; }
-                    #warn li#opus { display: none; }
-html.fontface       #warn li#fontface { display: none; }
-html.csstransforms  #warn li#csstransforms { display: none; }
+.no-js          #warn li { display: none; }
+.js             #warn #js { display: none; }
+                #warn #ie { display: none; }
+.video          #warn #video { display: none; }
+.audio          #warn #audio { display: none; }
+                #warn #opus { display: none; }
+.fontface       #warn #fontface { display: none; }
+.csstransforms  #warn #csstransforms { display: none; }
 #gotit {
   text-align: center;
 }
-html.no-js #gotit {
+.no-js #gotit {
   display: none;
 }
 
@@ -420,5 +413,7 @@ input[type="checkbox"] + span:before {
   display: none;
   opacity: 0;
   -webkit-transition: opacity 2s;
+  -moz-transition: opacity 2s;
+  -o-transition: opacity 2s;
   transition: opacity 2s;
 }
