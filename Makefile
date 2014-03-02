@@ -168,12 +168,12 @@ $(JSOUT): $(JS)
 endif
 endif
 ifdef PACKR
-	$(PACKR) $^ -o "$@"
+	$(PACKR) $(JS) -o "$@"
 else
   ifdef CLOSURE_COMPILER
-	  $(CLOSURE_COMPILER) --compilation_level SIMPLE_OPTIMIZATIONS --create_source_map "$@".map --js $(subst $(SPACE), --js ,$^) --js_output_file "$@"
+	  $(CLOSURE_COMPILER) --compilation_level SIMPLE_OPTIMIZATIONS --create_source_map "$@".map --js $(subst $(SPACE), --js ,$(JS)) --js_output_file "$@"
   else
-	  $(UGLIFYJS) $^ -o "$@" --source-map "$@".map --source-map-url ./all.min.js.map --screw-ie8 -p 2 -m -c unsafe=true,drop_debugger=false
+	  $(UGLIFYJS) $(JS) -o "$@" --source-map "$@".map --source-map-url ./all.min.js.map --screw-ie8 -p 2 -m -c unsafe=true,drop_debugger=false
   endif
 endif
 
