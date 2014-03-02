@@ -8,7 +8,7 @@ CWEBP += -quiet -alpha_cleanup
 WEBPMUX ?= webpmux
 CONVERT ?= convert
 APNGASM ?= apngasm
-UGLIFYJS ?= uglifyjs
+UGLIFYJS ?= node_modules/.bin/uglifyjs
 ifndef MINIMAL
 ZOPFLIPNG ?= zopflipng
 DEFLOPT ?= wine DeflOpt
@@ -133,7 +133,7 @@ $(DUMP)/ui/ctc_strip-0.png: $(CTC_ANIM_SRC)
 	$(CONVERT) "$<" -crop 16x16 $(DUMP)/ui/ctc_strip-%d.png
 
 $(DUMP)/ui/ctc_strip-%.png: $(CTC_ANIM_SRC) $(DUMP)/ui/ctc_strip-0.png
-	@touch -r "$(DUMP)/ui/ctc_strip-0.png" "$@"
+	@
 
 $(DUMP)/ui/ctc_anim.png: $(CTC_ANIM_TMP)
 	$(APNGASM) "$@" $^ 3 100
@@ -144,8 +144,7 @@ $(DUMP)/ui/ctc_anim.webp: $(CTC_ANIM_TMP_WEBP)
 # === JS ===
 
 MYJS := www/js/html5ks.js www/js/menu.js www/js/api.js www/js/characters.js www/js/imachine.js www/js/i18n.js
-JSLIBS := www/js/lib/when/when.js www/js/lib/fastclick/lib/fastclick.js \
-          Modernizr/dist/modernizr-build.js www/js/lib/spin.js/spin.js
+JSLIBS := fastclick/lib/fastclick.js Modernizr/dist/modernizr-build.js when/build/when.js spin.js/spin.js
 JSDATA := www/js/play.js www/js/images.js
 JS := $(JSLIBS) $(MYJS) $(JSDATA)
 JSOUT := www/js/all.min.js
@@ -154,10 +153,22 @@ Modernizr/dist/modernizr-build.js: config-all.json
 	ln -fs ../../config-all.json Modernizr/lib/config-all.json
 	cd Modernizr && npm update && node_modules/.bin/grunt build
 
+when/build/when.js:
+	cd when && npm update && npm run browserify-debug
+
 js: $(JSOUT)
 
 $(JSOUT): $(JS)
-	$(UGLIFYJS) $(JS) -o "$@" --source-map "$@".map --source-map-url ./all.min.js.map -p 2 -m -c drop_debugger=false
+# note that packr doesn't actually work
+ifdef PACKR
+	$(PACKR) $^ -o "$@"
+else
+  ifdef CLOSURE_COMPILER
+	  $(CLOSURE_COMPILER) --compilation_level SIMPLE_OPTIMIZATIONS --create_source_map "$@".map --js $(subst $(SPACE), --js ,$^) --js_output_file "$@"
+  else
+	  $(UGLIFYJS) $^ -o "$@" --source-map "$@".map --source-map-url ./all.min.js.map --screw-ie8 -p 2 -m -c unsafe=true,drop_debugger=false
+  endif
+endif
 
 # === MISC ===
 

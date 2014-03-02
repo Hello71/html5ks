@@ -81,7 +81,7 @@ window.html5ks = {
       nvlsay: document.getElementById("nvlsay"),
       nvlctc: document.getElementById("nvlctc"),
       choices: document.getElementById("choices"),
-      show: document.getElementById("show"),
+      show: document.getElementById("show")
     };
     this.elements.spinner = new Spinner({
       color: '#CC7C2A',

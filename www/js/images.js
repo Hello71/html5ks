@@ -10,11 +10,10 @@ window.html5ks.data.images = {
         yalign: 0.9,
         zoom: 1.2,
         transform: {
-            type: "warp",
             seconds: 20,
             zoom: 1,
-            yalign: 0.5,
-        },
+            yalign: 0.5
+        }
     },
 
     "ev_other_iwanako": "event/other_iwanako_nosnow.jpg",
@@ -24,12 +23,7 @@ window.html5ks.data.images = {
 
     "ev_hisao_class_move": {
         image: "event/hisao_class.jpg",
-        xalign: 0.0,
-        transform: {
-            type: "warp",
-            seconds: 40.0,
-            xalign: 1.0,
-        },
+        xalign: 0.0
     },
 
     "ev_hisao_class_end": {image:"event/hisao_class.jpg", crop: (800, 0, 800, 600)},
@@ -39,12 +33,7 @@ window.html5ks.data.images = {
 
     "ev_emi_knockeddown_facepullout": {
         image: "event/emi_knockeddown_large.jpg",
-        crop: (840, 50, 800, 600),
-        transform:{
-        type:"easeout",
-        seconds:10.0,
-        crop: (840, 50, 880, 660),
-        }
+        crop: (840, 50, 800, 600)
     },
 
     "ev_emi_knockeddown_largepullout": {
@@ -55,23 +44,20 @@ window.html5ks.data.images = {
     "ev_emi_knockeddown_face": {image:"event/emi_knockeddown_large.jpg", crop:(840, 50, 800, 600)},
 
     "ev_emi_knockeddown_legs": {
-        crop: null,
         image: "event/emi_knockeddown_large.jpg",
         xpos: -50,
-        ypos: -790,
+        ypos: -790
     },
 
     "ev_emi_run_face_zoomin": {
-        image: "event/emi_run_face.jpg",
-        crop: (0, 0, 800, 600),
+        image: "event/emi_run_face.jpg"
     },
 
     "ev_emi_run_face": "event/emi_run_face.jpg",
 
     "ev_emi_run_face_zoomout_ss": {
         filter: "sunset",
-        image: "event/emi_run_face.jpg",
-        crop: (40, 30, 720, 540),
+        image: "event/emi_run_face.jpg"
     },
 
     "ev_emi_firstkiss": "event/emi_firstkiss.jpg",
@@ -81,7 +67,7 @@ window.html5ks.data.images = {
     "ev_emitrack_running": "event/emitrack_running.jpg",
     "ev_emitrack_blocks": {
         image: "event/emitrack_blocks.jpg",
-        xalign: 0.0,
+        xalign: 0.0
     },
     "ev_emitrack_blocks_close": "event/emitrack_blocks_close.jpg",
     "ev_emitrack_blocks_close_grin": "event/emitrack_blocks_close_grin.jpg",
@@ -116,18 +102,18 @@ window.html5ks.data.images = {
     "ev_picnic_normal": {
         image: "event/picnic_normal.jpg",
         xalign: 0.5,
-        yalign: 0.0,
+        yalign: 0.0
     },
     "ev_picnic_rain": {
         image: "event/picnic_rain.jpg",
         xalign: 0.5,
-        yalign: 0.0,
+        yalign: 0.0
     },
 
     "ev_emi_cry_down": "event/emi_cry_down.jpg",
     "evul_emi_cry_down": {
         image: "event/emi_cry_down.jpg",
-        zoom: 0.8,
+        zoom: 0.8
     },
     "ev_emi_grave": "event/emi_grave.jpg",
 
@@ -606,11 +592,7 @@ window.html5ks.data.images = {
 
     train_scenery: {
         image: "event/lilly_train/train_scenery.jpg",
-        xalign: 0.0,
-        transition: {
-            type: "linear",
-            xalign: 1.0
-        },
+        xalign: 0.0
     },
     train_scenery_fg: "event/lilly_train/train_scenery_fg.png",
 
@@ -940,12 +922,7 @@ window.html5ks.data.images = {
     "ev_shizune_car": {
         image: "event/shizune_car.jpg",
         yalign: 0.5,
-        xalign: 0.0,
-        transition: {
-            type: "easein",
-            seconds: 12.0,
-            xalign: 1.0
-        },
+        xalign: 0.0
     },
 
     "ev_shizu_fishing_sl": "event/shizu_fishing_sl.jpg",
@@ -1046,11 +1023,7 @@ window.html5ks.data.images = {
     "ev_shizu_goodend_pan": {
         image: "event/shizu_goodend.jpg",
         xalign: 0.5,
-        yalign: 1.0,
-        transition: {
-            seconds: 15.0,
-            yalign: 0.0
-        },
+        yalign: 1.0
     },
 
     "ev_shizu_badend": "event/shizu_badend.jpg",
