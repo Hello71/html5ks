@@ -8,6 +8,7 @@ CWEBP += -quiet -alpha_cleanup
 WEBPMUX ?= webpmux
 CONVERT ?= convert
 APNGASM ?= apngasm
+NPM ?= npm
 UGLIFYJS ?= node_modules/.bin/uglifyjs
 ifndef MINIMAL
 ZOPFLIPNG ?= zopflipng
@@ -151,10 +152,10 @@ JSOUT := www/js/all.min.js
 
 Modernizr/dist/modernizr-build.js: Modernizr
 	ln -fs ../../config-all.json Modernizr/lib/config-all.json
-	cd Modernizr && npm update && node_modules/.bin/grunt build
+	cd Modernizr && $(NPM) update && node_modules/.bin/grunt build
 
 when/build/when.js: when
-	export PYTHON=python2; cd when && npm update && npm run browserify-debug
+	export PYTHON=python2; cd when && $(NPM) update && $(NPM) run browserify-debug
 
 js: $(JSOUT)
 
@@ -166,6 +167,7 @@ else
   ifdef CLOSURE_COMPILER
 	  $(CLOSURE_COMPILER) --compilation_level SIMPLE_OPTIMIZATIONS --create_source_map "$@".map --js $(subst $(SPACE), --js ,$^) --js_output_file "$@"
   else
+		$(NPM) update
 	  $(UGLIFYJS) $^ -o "$@" --source-map "$@".map --source-map-url ./all.min.js.map --screw-ie8 -p 2 -m -c unsafe=true,drop_debugger=false
   endif
 endif
