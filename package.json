@@ -1,0 +1,16 @@
+{
+  "name": "html5ks",
+  "version": "0.2.0",
+  "author": "Alex Xu (Hello71) <alex_y_xu@yahoo.ca>",
+  "scripts": {
+    "start": "./nginx.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://git.happinessforme.com/html5ks.git"
+  },
+  "dependencies": {
+    "uglify-js": "*"
+  },
+  "license": "GPLv3"
+}

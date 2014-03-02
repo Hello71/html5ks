@@ -5,13 +5,6 @@
     <meta name="description" content="HTML5 implementation of Katawa Shoujo, a bishōjo-style visual novel by Four Leaf Studios that tells a story of a young man and five young women living with varying disabilities.">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
     <title class="window_name">Katawa Shoujo</title>
-    <script>
-      window.define = function(factory) {
-          try{ delete window.define; } catch(e){ window.define = void 0; } // IE
-          window.when = factory();
-      };
-      window.define.amd = {};
-    </script>
     <link rel="shortcut icon" type="image/png" href="dump/ui/icon.png">
     <link rel="apple-touch-icon" href="dump/ui/icon.png">
     <link rel="stylesheet" type="text/css" href="css/index.css">

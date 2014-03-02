@@ -11,4 +11,4 @@
 
 # generated files
 /www/js/all.min.js*
-/.modules
+/node_modules
