@@ -69,7 +69,7 @@ window.html5ks.api = {
     _nextType();
   },
 
-  play: function (channel, name, ignore, fade) {
+  play: function (channel, name, _, fade) {
     this.stop(channel);
     var deferred = when.defer(),
         audio = html5ks.elements.audio[channel];
@@ -215,7 +215,7 @@ window.html5ks.api = {
   },
 
 
-  window: function (action, transition) {
+  window: function (action) {
     var windw = html5ks.elements.window;
     switch (action) {
       case true:
@@ -504,7 +504,7 @@ window.html5ks.api = {
     return deferred.promise;
   },
 
-  nvl: function (action, transition) {
+  nvl: function (action) {
     var nvl = html5ks.elements.nvl;
     switch (action) {
     case true:

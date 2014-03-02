@@ -9,7 +9,7 @@ WEBPMUX ?= webpmux
 CONVERT ?= convert
 APNGASM ?= apngasm
 NPM ?= npm
-UGLIFYJS ?= node_modules/.bin/uglifyjs
+UGLIFYJS := node_modules/.bin/uglifyjs
 ifndef MINIMAL
 ZOPFLIPNG ?= zopflipng
 DEFLOPT ?= wine DeflOpt
@@ -150,35 +150,40 @@ JSDATA := www/js/play.js www/js/images.js
 JS := $(JSLIBS) $(MYJS) $(JSDATA)
 JSOUT := www/js/all.min.js
 
-Modernizr/dist/modernizr-build.js: Modernizr
-	ln -fs ../../config-all.json Modernizr/lib/config-all.json
-	cd Modernizr && $(NPM) update && node_modules/.bin/grunt build
+Modernizr/dist/modernizr-build.js: Modernizr config-all.json
+	ln -fs ../../config-all.json "$<"/lib/config-all.json
+	cd "$<" && $(NPM) update && node_modules/.bin/grunt build
 
 when/build/when.js: when
 	export PYTHON=python2; cd when && $(NPM) update && $(NPM) run browserify-debug
 
 js: $(JSOUT)
 
-$(JSOUT): $(JS)
 # note that packr doesn't actually work
+ifndef PACKR
+ifndef CLOSURE_COMPILER
+$(JSOUT): $(JS) $(UGLIFYJS)
+else
+$(JSOUT): $(JS)
+endif
+endif
 ifdef PACKR
 	$(PACKR) $^ -o "$@"
 else
   ifdef CLOSURE_COMPILER
 	  $(CLOSURE_COMPILER) --compilation_level SIMPLE_OPTIMIZATIONS --create_source_map "$@".map --js $(subst $(SPACE), --js ,$^) --js_output_file "$@"
   else
-		$(NPM) update
 	  $(UGLIFYJS) $^ -o "$@" --source-map "$@".map --source-map-url ./all.min.js.map --screw-ie8 -p 2 -m -c unsafe=true,drop_debugger=false
   endif
 endif
 
+$(UGLIFYJS): package.json
+	$(NPM) update
+
 # === MISC ===
 
-clean:
-	$(RM) $(CVIDEO) $(CAUDIO) $(CIMAGE)
-
 jshint: $(MYJS)
-	jshint $^
+	jshint --show-non-errors $^
 
 space:
 	$(RM) -r $(DUMP)/font
