@@ -109,7 +109,7 @@ window.html5ks = {
       }
     }, 1000);
     this._spinners += mod;
-    assert(this._spinners >= 0);
+    window.assert(this._spinners >= 0);
   },
   scale: function () {
     var newScale = 1;
