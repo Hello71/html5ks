@@ -149,12 +149,12 @@ JSDATA := www/js/play.js www/js/images.js
 JS := $(JSLIBS) $(MYJS) $(JSDATA)
 JSOUT := www/js/all.min.js
 
-Modernizr/dist/modernizr-build.js: config-all.json
+Modernizr/dist/modernizr-build.js: Modernizr
 	ln -fs ../../config-all.json Modernizr/lib/config-all.json
 	cd Modernizr && npm update && node_modules/.bin/grunt build
 
-when/build/when.js:
-	cd when && npm update && npm run browserify-debug
+when/build/when.js: when
+	export PYTHON=python2; cd when && npm update && npm run browserify-debug
 
 js: $(JSOUT)
 
