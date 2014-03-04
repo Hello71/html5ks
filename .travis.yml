@@ -11,3 +11,7 @@ notifications:
     - alex_y_xu@yahoo.ca
   irc:
     "chat.freenode.net#html5ks"
+    template:
+      - "%{repository_name}#%{build_number} of %{commit} on %{branch} by %{author} took %{duration} and ended: %{message}"
+      - "Compare: %{compare_url}"
+      - "Build details: %{build_url}"

@@ -75,9 +75,7 @@ case "$1" in
     cd ..
     rm -rf ffmpeg
 
-    patch -p0 <<EOF
---- apngasm.c
-+++ apngasm.c
+    patch -o - apngasm.c | gcc -x c -o apngasm -Wall $CFLAGS - $(pkg-config --libs libpng --libs zlib) <<EOF
 @@ -29,6 +29,7 @@
   */
  #include <stdio.h>
@@ -87,7 +85,6 @@ case "$1" in
  #include "zlib.h"
  
 EOF
-    make LDLIBS="$(pkg-config --libs libpng --libs zlib)" apngasm
     sudo install -c -m755 apngasm /usr/local/bin
     rm apngasm apngasm.c
 

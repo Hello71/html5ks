@@ -11,6 +11,8 @@ APNGASM ?= apngasm
 NPM ?= npm
 DUGLIFYJS := node_modules/uglify-js/bin/uglifyjs
 UGLIFYJS ?= $(DUGLIFYJS)
+#PACKR ?= packr
+#CLOSURE_COMPILER ?= java -jar compiler.jar
 ifndef MINIMAL
 ZOPFLIPNG ?= zopflipng
 DEFLOPT ?= wine DeflOpt
@@ -58,7 +60,7 @@ ifdef NOTEMP
 else
 %.vp9.webm: %.y4m
 endif
-	$(FFMPEG) -i "$<" -strict -2 -c:v libvpx-vp9 -crf 8 -b:v 1M -c:a libopus -vbr 1 -b:a 64k "$@"
+	$(FFMPEG) -i "$<" -strict -2 -c:v libvpx-vp9 -crf 8 -b:v 1M -c:a libopus -vbr on -b:a 64k "$@"
 
 ifdef NOTEMP
 %.ogv: %.mkv
@@ -81,7 +83,7 @@ audio: $(CAUDIO)
 	$(FFMPEG) -i "$<" -c:a pcm_s16le "$@"
 
 %.opus: %.wav
-	$(FFMPEG) -i "$<" -c:a libopus -vbr 1 -b:a 64k "$@"
+	$(FFMPEG) -i "$<" -c:a libopus -vbr on -b:a 64k "$@"
 
 %.m4a: %.wav
 	$(FFMPEG) -i "$<" -b:a 60k "$@"
