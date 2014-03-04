@@ -20,24 +20,23 @@ Requirements
 - Firefox/Chrome/a sensible browser (i.e. not IE)
 - a shell (Bash, dash, zsh, etc)
 - GNU make
-- ffmpeg with fdk-aac, libopus, libtheora, libvpx, libx264 (preferably git HEAD)
+- ffmpeg with fdk-aac, libopus, libtheora, libvpx-vp9, libx264 (preferably git HEAD)
 - cwebp and webpmux from libwebp
 - convert from ImageMagick
 - apngasm
 - Node.js, npm
-- uglifyjs installed globally
 
 Recommended
 '''''''''''
-- jpegmini
-- jpegtran
-- jpegrescan
-- pngquant
 - DeflOpt
 - defluff
-- nginx
-- zopfli
 - inotify-tools (for ``make watch``)
+- jpegmini
+- jpegrescan
+- jpegtran
+- nginx
+- pngquant
+- zopfli
 
 Build steps
 -----------
@@ -57,7 +56,8 @@ Disabling unused conversions
 To reduce programs and build time required, some conversions can be disabled.
 Defining MINIMAL as an environment variable will disable the safe ones.
 
-Alternatively, specific conversions can be disabled by setting the appropriate program variable to ":". See the Makefile for more information.
+Alternatively, specific conversions can be disabled by passing ``PROGRAM=`` on the command line, i.e. leaving it undefined.
+See the Makefile for more information.
 
 Reducing disk usage
 -------------------

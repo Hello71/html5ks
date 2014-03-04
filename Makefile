@@ -9,7 +9,8 @@ WEBPMUX ?= webpmux
 CONVERT ?= convert
 APNGASM ?= apngasm
 NPM ?= npm
-UGLIFYJS := node_modules/.bin/uglifyjs
+DUGLIFYJS := node_modules/uglify-js/bin/uglifyjs
+UGLIFYJS ?= $(DUGLIFYJS)
 ifndef MINIMAL
 ZOPFLIPNG ?= zopflipng
 DEFLOPT ?= wine DeflOpt
@@ -177,8 +178,10 @@ else
   endif
 endif
 
+ifeq ($(DUGLIFYJS), $(UGLIFYJS))
 $(UGLIFYJS): package.json
 	$(NPM) update
+endif
 
 # === MISC ===
 
@@ -195,8 +198,9 @@ watch:
 		$(MAKE); \
 	done
 
-# disable default rules, increases `make` speed by 3 seconds
+# disable implicit rules, increases `make` speed by 3 seconds
 MAKEFLAGS=-r
+.SUFFIXES:
 
 .INTERMEDIATE: $(Y4M) $(CTC_ANIM_TMP) $(CTC_ANIM_TMP_WEBP)
 .PHONY: video audio images js jshint clean space watch
