@@ -32,4 +32,4 @@ fi
 
 echo >&2 "Ignore the following message from nginx about the error log, if any."
 
-exec nginx -p "$PWD" -c nginx.conf
+exec nginx -p "$PWD/" -c nginx.conf
