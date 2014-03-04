@@ -9,7 +9,7 @@ WEBPMUX ?= webpmux
 CONVERT ?= convert
 APNGASM ?= apngasm
 NPM ?= npm
-DUGLIFYJS := node_modules/uglify-js/bin/uglifyjs
+DUGLIFYJS := node_modules/.bin/uglifyjs
 UGLIFYJS ?= $(DUGLIFYJS)
 #PACKR ?= packr
 #CLOSURE_COMPILER ?= java -jar compiler.jar
@@ -183,6 +183,7 @@ endif
 ifeq ($(DUGLIFYJS), $(UGLIFYJS))
 $(UGLIFYJS): package.json
 	$(NPM) update
+	touch "$@"
 endif
 
 # === MISC ===

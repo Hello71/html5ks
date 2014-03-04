@@ -25,7 +25,7 @@ case "$1" in
     ;;
   install)
     MAKEOPTS="-s ${MAKEOPTS}"
-    sudo apt-get install -qq libtheora-dev libx264-dev nginx yasm
+    sudo apt-get install --no-install-recommends -qq libtheora-dev libx264-dev nginx yasm
 
     cd libwebp-0.4.0
     sed -i -e '/unset ac_cv_header_GL_glut_h/d' configure
@@ -44,8 +44,6 @@ case "$1" in
     sudo python tools/install.py install >/dev/null
     cd ..
     rm -rf node-v*
-
-    sudo npm install -g uglify-js
 
     cd fdk-aac-0.1.3
     ./configure --disable-shared --disable-dependency-tracking --quiet
@@ -75,18 +73,9 @@ case "$1" in
     cd ..
     rm -rf ffmpeg
 
-    patch -o - apngasm.c | gcc -x c -o apngasm -Wall $CFLAGS - $(pkg-config --libs libpng --libs zlib) <<EOF
-@@ -29,6 +29,7 @@
-  */
- #include <stdio.h>
- #include <stdlib.h>
-+#include <string.h>
- #include "png.h"     /* original (unpatched) libpng is ok */
- #include "zlib.h"
- 
-EOF
+    sed -e "29a#include <string.h>\r\n" apngasm.c | gcc -x c -o apngasm -Wall $CFLAGS - $(pkg-config --libs libpng --libs zlib)
     sudo install -c -m755 apngasm /usr/local/bin
-    rm apngasm apngasm.c
+    rm apngasm*
 
     curl https://raw.github.com/Lattyware/unrpa/master/unrpa | python2 - -p www/dump -m data.rpa
     rm data.rpa
