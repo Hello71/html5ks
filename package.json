@@ -1,6 +1,6 @@
 {
   "name": "html5ks",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "author": "Alex Xu (Hello71) <alex_y_xu@yahoo.ca>",
   "scripts": {
     "start": "./nginx.sh"
