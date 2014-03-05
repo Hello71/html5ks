@@ -9,10 +9,11 @@ WEBPMUX ?= webpmux
 CONVERT ?= convert
 APNGASM ?= apngasm
 NPM ?= npm
-DUGLIFYJS := node_modules/.bin/uglifyjs
-UGLIFYJS ?= $(DUGLIFYJS)
-#PACKR ?= packr
-#CLOSURE_COMPILER ?= java -jar compiler.jar
+JS_COMPRESSOR ?= uglifyjs
+LOCAL_UGLIFYJS := node_modules/.bin/uglifyjs
+UGLIFYJS ?= $(LOCAL_UGLIFYJS)
+PACKR ?= packr
+CLOSURE_COMPILER ?= java -jar compiler.jar
 ifndef MINIMAL
 ZOPFLIPNG ?= zopflipng
 DEFLOPT ?= wine DeflOpt
@@ -162,29 +163,24 @@ when/build/when.js: when
 
 js: $(JSOUT)
 
-# note that packr doesn't actually work
-ifndef PACKR
-ifndef CLOSURE_COMPILER
+ifeq ($(JS_COMPRESSOR), uglifyjs)
 $(JSOUT): $(JS) $(UGLIFYJS)
+	$(UGLIFYJS) $(JS) -o "$@" --source-map "$@".map --source-map-url ./all.min.js.map --screw-ie8 -p 2 -m -c unsafe=true,drop_debugger=false
 else
 $(JSOUT): $(JS)
-endif
-endif
-ifdef PACKR
+# note that packr doesn't actually work
+ifeq ($(JS_COMPRESSOR), packr)
 	$(PACKR) $(JS) -o "$@"
 else
-  ifdef CLOSURE_COMPILER
-	  $(CLOSURE_COMPILER) --compilation_level SIMPLE_OPTIMIZATIONS --create_source_map "$@".map --js $(subst $(SPACE), --js ,$(JS)) --js_output_file "$@"
-  else
-	  $(UGLIFYJS) $(JS) -o "$@" --source-map "$@".map --source-map-url ./all.min.js.map --screw-ie8 -p 2 -m -c unsafe=true,drop_debugger=false
-  endif
-endif
+ifeq ($(JS_COMPRESSOR), closure_compiler)
+	$(CLOSURE_COMPILER) --compilation_level SIMPLE_OPTIMIZATIONS --create_source_map "$@".map --js $(subst $(SPACE), --js ,$(JS)) --js_output_file "$@"
+endif # ($(JS_COMPRESSOR), closure_compiler)
+endif # ($(JS_COMPRESSOR), packr)
+endif # ($(JS_COMPRESSOR), uglifyjs)
 
-ifeq ($(DUGLIFYJS), $(UGLIFYJS))
-$(UGLIFYJS): package.json
+$(LOCAL_UGLIFYJS): package.json
 	$(NPM) update
 	touch "$@"
-endif
 
 # === MISC ===
 
