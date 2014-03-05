@@ -1,0 +1,25 @@
+<IfModule mod_expires.c>
+  ExpiresActive on
+  ExpiresDefault "access plus 1 minutes"
+  <Location "^/(dump|json)/">
+    ExpiresDefault "access plus 1 years"
+    <Location "^/dump/(bgm|sfx)">
+      Header set X-Content-Duration "0"
+    </Location>
+  </Location>
+</IfModule>
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTP:Accept-Encoding} gzip
+  RewriteCond %{REQUEST_FILENAME}\.gz -s
+  RewriteRule ^(.*)\.json $1\.json\.gz [QSA]
+
+# Prevent double gzip and give the correct mime-type
+  RewriteRule \.json\.gz$ - [T=application/json,E=no-gzip:1,E=FORCE_GZIP]
+
+  Header set Content-Encoding gzip env=FORCE_GZIP
+</IfModule>
+
+Header set Cache-Control "public"
+Header set X-UA-Compatible "IE=edge,chrome=1"

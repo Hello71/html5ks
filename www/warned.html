@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html><head>
 <script>
+document.cookie = "warned=1; Expires=Tue, 19 Jan 2038 00:00:00 GMT; HttpOnly";
 localStorage.persistent = {
   hdisable: location.search.indexOf("hdisable=on") > -1,
   language: location.search.search("language=.*[=,]en") > -1 ? "en" : "fr"

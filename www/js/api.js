@@ -50,14 +50,22 @@ window.html5ks.api = {
     html5ks.spin(1);
 
     el.oncanplaythrough = function () {
+      el.oncanplaythrough = null;
       el.play();
       html5ks.spin(-1);
     };
 
+    setTimeout(function () {
+      if (el.oncanplaythrough) {
+        console.warn("video not playing after 3 seconds");
+        el.oncanplaythrough();
+      }
+    }, 3000);
+
     el.onerror = function (e) {
       if (e.code === e.MEDIA_ERR_SRC_NOT_SUPPORTED) {
         if (_nextType(++i)) {
-          console.warn("browser claimed support for " + types[i-1] + " but failed");
+          console.warn("browser claimed support for " + types[i-1][0] + " but failed");
         } else {
           console.error("no media formats supported");
         }
@@ -153,7 +161,7 @@ window.html5ks.api = {
     video.volume = html5ks.persistent.musicVolume;
     var done = function () {
       video.style.display = "none";
-      video.pause();
+      video.src = "";
       deferred.resolve();
     };
     document.addEventListener("keyup", function keyupListener(e) {
@@ -164,8 +172,9 @@ window.html5ks.api = {
       }
     }, false);
     video.onclick = function (e) {
-      if (e.button === 0 && skippable) {
-        done();
+      if (e.button === 0) {
+        if (video.paused) video.play();
+        else if (skippable) done();
       }
     };
     video.onended = done;
