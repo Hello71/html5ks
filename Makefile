@@ -4,7 +4,7 @@ SPACE := $(null) $(null)
 FFMPEG ?= ffmpeg
 FFMPEG += -v warning -y
 CWEBP ?= cwebp
-CWEBP += -quiet -alpha_cleanup
+CWEBP += -quiet -alpha_cleanup -m 6
 WEBPMUX ?= webpmux
 CONVERT ?= convert
 APNGASM ?= apngasm
@@ -107,6 +107,7 @@ images: $(CIMAGE)
 $(DUMP)/ui/ctc_strip.webp: $(DUMP)/ui/ctc_strip.png
 
 define png2webp =
+	$(CWEBP) -q 99 "$<" -o "$@"
 	$(PNGQUANT) --force --speed 1 --ext .png "$<"
 ifdef ZOPFLIPNG
 	$(ZOPFLIPNG) -m -y "$<" "$<"
@@ -121,11 +122,10 @@ endif
 endef
 
 %.webp: %.png
-	$(CWEBP) -q 99 -m 6 "$<" -o "$@"
 	$(png2webp)
 
 %.webp: %.jpg
-	$(CWEBP) -q 90 -m 6 "$<" -o "$@"
+	$(CWEBP) -q 90 "$<" -o "$@"
 
 www/favicon.ico: $(DUMP)/ui/icon.png
 	$(CONVERT) "$<" -resize 256x256 -transparent white "$@"
@@ -140,7 +140,8 @@ $(DUMP)/ui/ctc_strip-0.png: $(CTC_ANIM_SRC)
 $(DUMP)/ui/ctc_strip-%.png: $(CTC_ANIM_SRC) $(DUMP)/ui/ctc_strip-0.png
 	@
 
-$(DUMP)/ui/ctc_anim.png: $(CTC_ANIM_TMP)
+# depend on webp to wait for recompression
+$(DUMP)/ui/ctc_anim.png: $(CTC_ANIM_TMP_WEBP)
 	$(APNGASM) "$@" $^ 3 100
 
 $(DUMP)/ui/ctc_anim.webp: $(CTC_ANIM_TMP_WEBP)
