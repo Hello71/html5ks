@@ -109,16 +109,10 @@ $(DUMP)/ui/ctc_strip.webp: $(DUMP)/ui/ctc_strip.png
 define png2webp =
 	$(CWEBP) -q 99 "$<" -o "$@"
 	$(PNGQUANT) --force --speed 1 --ext .png "$<"
-ifdef ZOPFLIPNG
-	$(ZOPFLIPNG) -m -y "$<" "$<"
-endif
-ifdef DEFLOPT
-	$(DEFLOPT) "$<"
-endif
-ifdef DEFLUFF
-	$(DEFLUFF) < "$<" > "$<".tmp
+	$(if $(ZOPFLIPNG), $(ZOPFLIPNG) -m -y "$<" "$<")
+	$(if $(DEFLOPT),$(DEFLOPT) "$<")
+	$(if $(DEFLUFF),$(DEFLUFF) < "$<" > "$<".tmp)
 	mv -f "$<".tmp "$<"
-endif
 endef
 
 %.webp: %.png
