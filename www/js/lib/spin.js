@@ -1,1 +1,1 @@
-../../../spin.js
+../../../spin.js/spin.js

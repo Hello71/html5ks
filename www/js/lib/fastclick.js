@@ -1,0 +1,1 @@
+../../../fastclick/lib/fastclick.js

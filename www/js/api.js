@@ -465,6 +465,8 @@ window.html5ks.api = {
       } else {
         done = true;
         ctc.style.display = "block";
+        ctc.class = "";
+        ctc.class = "ctc";
       }
     };
 
