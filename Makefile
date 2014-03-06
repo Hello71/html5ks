@@ -9,6 +9,7 @@ WEBPMUX ?= webpmux
 CONVERT ?= convert
 APNGASM ?= apngasm
 NPM ?= npm
+NPM += --quiet
 JS_COMPRESSOR ?= uglifyjs
 LOCAL_UGLIFYJS := node_modules/.bin/uglifyjs
 UGLIFYJS ?= $(LOCAL_UGLIFYJS)
