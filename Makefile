@@ -8,7 +8,7 @@ CWEBP += -quiet -alpha_cleanup -m 6
 WEBPMUX ?= webpmux
 CONVERT ?= convert
 APNGASM ?= apngasm
-NPM ?= npm
+NPM ?= npm --quiet
 JS_COMPRESSOR ?= uglifyjs
 LOCAL_UGLIFYJS := node_modules/.bin/uglifyjs
 UGLIFYJS ?= $(LOCAL_UGLIFYJS)
@@ -16,7 +16,7 @@ PACKR ?= packr
 CLOSURE_COMPILER ?= java -jar compiler.jar
 ifndef MINIMAL
 ZOPFLIPNG ?= zopflipng
-DEFLOPT ?= wine DeflOpt
+#DEFLOPT ?= wine DeflOpt
 DEFLUFF ?= defluff
 PNGQUANT ?= pngquant
 endif
@@ -196,5 +196,6 @@ watch:
 MAKEFLAGS=-r
 .SUFFIXES:
 
+.SECONDARY: $(WAV)
 .INTERMEDIATE: $(Y4M) $(CTC_ANIM_TMP) $(CTC_ANIM_TMP_WEBP)
 .PHONY: video audio images js jshint clean space watch
