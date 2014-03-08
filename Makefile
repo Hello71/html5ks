@@ -105,8 +105,6 @@ CIMAGE := $(WEBP) $(CTC_ANIM) www/favicon.ico
 
 images: $(CIMAGE)
 
-$(DUMP)/ui/ctc_strip.webp: $(DUMP)/ui/ctc_strip.png
-
 define png2webp =
 	$(CWEBP) -q 99 "$<" -o "$@"
 	$(PNGQUANT) --force --speed 1 --ext .png "$<"
@@ -132,12 +130,15 @@ $(DUMP)/ui/bt-cf-unchecked.webp $(DUMP)/ui/bt-cf-checked.webp: %.webp: %.png
 $(DUMP)/ui/ctc_strip-0.png: $(CTC_ANIM_SRC)
 	$(CONVERT) "$<" -crop 16x16 $(DUMP)/ui/ctc_strip-%d.png
 
+$(DUMP)/ui/ctc_strip.webp: $(DUMP)/ui/ctc_strip.png
+	@
+
 $(DUMP)/ui/ctc_strip-%.png: $(CTC_ANIM_SRC) $(DUMP)/ui/ctc_strip-0.png
 	@
 
 # depend on webp to wait for recompression
 $(DUMP)/ui/ctc_anim.png: $(CTC_ANIM_TMP_WEBP)
-	$(APNGASM) "$@" $^ 3 100
+	$(APNGASM) "$@" $(CTC_ANIM_TMP) 3 100
 
 $(DUMP)/ui/ctc_anim.webp: $(CTC_ANIM_TMP_WEBP)
 	$(WEBPMUX) -frame $(subst $(SPACE), +30 -frame ,$^) +30 -loop 0 -o "$@"
@@ -187,8 +188,9 @@ space:
 	$(RM) -r $(DUMP)/font
 	$(RM) $(WAV) $(VIDEO) $(CTC_ANIM_TMP) $(CTC_ANIM_TMP_WEBP) $(JSOUT) $(JSOUT).map
 
-watch:
+dev:
 	$(MAKE)
+	./nginx.sh
 	while inotifywait -r -e modify,delete,move --exclude="^\./\.git" --exclude="\.swp.?$$" .; do \
 		$(MAKE); \
 	done

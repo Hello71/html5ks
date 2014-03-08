@@ -72,6 +72,6 @@ Check Bugzilla for things that need to be done. https://bugzilla.happinessforme.
 
 See docs/ for the obvious.
 
-Run ``make watch`` to automatically re-make when changes are made.
+Run ``make dev`` to automatically start nginx and re-make when changes are made.
 
 .. _`Katawa Shoujo`: http://www.katawa-shoujo.com/
