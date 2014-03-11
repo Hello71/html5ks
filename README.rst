@@ -41,7 +41,7 @@ Recommended
 Build steps
 -----------
 
-0. Get Katawa Shoujo.
+0. Get Katawa Shoujo, install prerequisites. For guidance on Ubuntu, see .travis.sh.
 1. Copy \*.rpyc from Katawa Shoujo/game into unrpyc/ directory.
 2. Extract files from Katawa Shoujo/game/data.rpa with an rpa extractor, e.g. unrpa. Put files in www/dump.
 3. Install prerequisites, download DeflOpt and defluff and place exes in this directory.
@@ -72,6 +72,6 @@ Check Bugzilla for things that need to be done. https://bugzilla.happinessforme.
 
 See docs/ for the obvious.
 
-Run ``make watch`` to automatically re-make when changes are made.
+Run ``make dev`` to automatically start nginx and re-make when changes are made.
 
 .. _`Katawa Shoujo`: http://www.katawa-shoujo.com/

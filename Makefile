@@ -4,7 +4,7 @@ SPACE := $(null) $(null)
 FFMPEG ?= ffmpeg
 FFMPEG += -v warning -y
 CWEBP ?= cwebp
-CWEBP += -quiet -alpha_cleanup
+CWEBP += -quiet -alpha_cleanup -m 6
 WEBPMUX ?= webpmux
 CONVERT ?= convert
 APNGASM ?= apngasm
@@ -17,7 +17,7 @@ PACKR ?= packr
 CLOSURE_COMPILER ?= java -jar compiler.jar
 ifndef MINIMAL
 ZOPFLIPNG ?= zopflipng
-DEFLOPT ?= wine DeflOpt
+#DEFLOPT ?= wine DeflOpt
 DEFLUFF ?= defluff
 PNGQUANT ?= pngquant
 endif
@@ -223,6 +223,7 @@ images: $(CIMAGE)
 www/dump/ui/ctc_strip.webp: www/dump/ui/ctc_strip.png
 
 define png2webp =
+	$(CWEBP) -q 99 "$<" -o "$@"
 	$(PNGQUANT) --force --speed 1 --ext .png "$<"
 	$(if $(ZOPFLIPNG), $(ZOPFLIPNG) -m -y "$<" "$<")
   $(if $(DEFLOPT), $(DEFLOPT) "$<")
@@ -231,11 +232,10 @@ define png2webp =
 endef
 
 %.webp: %.png
-	$(CWEBP) -q 99 -m 6 "$<" -o "$@"
 	$(png2webp)
 
 %.webp: %.jpg
-	$(CWEBP) -q 90 -m 6 "$<" -o "$@"
+	$(CWEBP) -q 90 "$<" -o "$@"
 
 www/favicon.ico: www/dump/ui/icon.png
 	$(CONVERT) "$<" -resize 256x256 -transparent white "$@"
@@ -247,11 +247,15 @@ www/dump/ui/bt-cf-unchecked.webp www/dump/ui/bt-cf-checked.webp: %.webp: %.png
 www/dump/ui/ctc_strip-0.png: $(CTC_ANIM_SRC)
 	$(CONVERT) "$<" -crop 16x16 www/dump/ui/ctc_strip-%d.png
 
-www/dump/ui/ctc_strip-%.png: $(CTC_ANIM_SRC) www/dump/ui/ctc_strip-0.png
+$(DUMP)/ui/ctc_strip.webp: $(DUMP)/ui/ctc_strip.png
 	@
 
-www/dump/ui/ctc_anim.png: $(CTC_ANIM_TMP)
-	$(APNGASM) "$@" $^ 3 100
+$(DUMP)/ui/ctc_strip-%.png: $(CTC_ANIM_SRC) $(DUMP)/ui/ctc_strip-0.png
+	@
+
+# depend on webp to wait for recompression
+$(DUMP)/ui/ctc_anim.png: $(CTC_ANIM_TMP_WEBP)
+	$(APNGASM) "$@" $(CTC_ANIM_TMP) 3 100
 
 www/dump/ui/ctc_anim.webp: $(CTC_ANIM_TMP_WEBP)
 	$(WEBPMUX) -frame $(subst $(SPACE), +30 -frame ,$^) +30 -loop 0 -o "$@"
@@ -265,8 +269,9 @@ space:
 	$(RM) -r www/dump/font
 	$(RM) $(WAV) $(VIDEO) $(CTC_ANIM_TMP) $(CTC_ANIM_TMP_WEBP) $(JSOUT) $(JSOUT).map
 
-watch:
+dev:
 	$(MAKE)
+	./nginx.sh
 	while inotifywait -r -e modify,delete,move --exclude="^\./\.git" --exclude="\.swp.?$$" .; do \
 		$(MAKE); \
 	done
@@ -276,5 +281,6 @@ watch:
 MAKEFLAGS=-r -L
 .SUFFIXES:
 
+.PRECIOUS: $(WAV)
 .INTERMEDIATE: $(JSONO) $(Y4M) $(CTC_ANIM_TMP) $(CTC_ANIM_TMP_WEBP)
-.PHONY: video audio images js json jshint space watch
+.PHONY: video audio images js jshint clean space watch
