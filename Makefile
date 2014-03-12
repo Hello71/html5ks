@@ -181,7 +181,7 @@ JPG := $(shell find www/dump -name '*.jpg')
 WEBP := $(patsubst %.png,%.webp,$(PNG)) \
         $(patsubst %.jpg,%.webp,$(JPG))
 CTC_ANIM_SRC := www/dump/ui/ctc_strip.png
-CTC_ANIM_TMP := www/dump/ui/ctc_strip-0.png www/dump/ui/ctc_strip-1.png \
+CTC_ANIM_TMP := www/dump/ui/ctc_strip-1.png \
                 www/dump/ui/ctc_strip-2.png www/dump/ui/ctc_strip-3.png \
                 www/dump/ui/ctc_strip-4.png www/dump/ui/ctc_strip-5.png \
                 www/dump/ui/ctc_strip-6.png www/dump/ui/ctc_strip-7.png \
@@ -214,17 +214,16 @@ CTC_ANIM_TMP := www/dump/ui/ctc_strip-0.png www/dump/ui/ctc_strip-1.png \
                 www/dump/ui/ctc_strip-60.png www/dump/ui/ctc_strip-61.png \
                 www/dump/ui/ctc_strip-62.png www/dump/ui/ctc_strip-63.png
 CTC_ANIM_TMP_WEBP := $(patsubst %.png,%.webp,$(CTC_ANIM_TMP))
+CTC_ANIM_TMP_ALL := www/dump/ui/ctc_strip-0.png $(CTC_ANIM_TMP) $(CTC_ANIM_TMP_WEBP)
 CTC_ANIM := www/dump/ui/ctc_anim.png www/dump/ui/ctc_anim.webp
 
 CIMAGE := $(WEBP) $(CTC_ANIM) www/favicon.ico
 
 images: $(CIMAGE)
 
-www/dump/ui/ctc_strip.webp: www/dump/ui/ctc_strip.png
-
 define png2webp =
 	$(CWEBP) -q 99 "$<" -o "$@"
-	$(PNGQUANT) --force --speed 1 --ext .png "$<"
+	$(if $(PNGQUANT), $(PNGQUANT) --force --speed 1 --ext .png "$<")
 	$(if $(ZOPFLIPNG), $(ZOPFLIPNG) -m -y "$<" "$<")
   $(if $(DEFLOPT), $(DEFLOPT) "$<")
   $(if $(DEFLUFF), $(DEFLUFF) < "$<" > "$<".tmp
@@ -237,6 +236,9 @@ endef
 %.webp: %.jpg
 	$(CWEBP) -q 90 "$<" -o "$@"
 
+www/dump/ui/ctc_strip.webp: www/dump/ui/ctc_strip.png
+	@
+
 www/favicon.ico: www/dump/ui/icon.png
 	$(CONVERT) "$<" -resize 256x256 -transparent white "$@"
 
@@ -247,14 +249,11 @@ www/dump/ui/bt-cf-unchecked.webp www/dump/ui/bt-cf-checked.webp: %.webp: %.png
 www/dump/ui/ctc_strip-0.png: $(CTC_ANIM_SRC)
 	$(CONVERT) "$<" -crop 16x16 www/dump/ui/ctc_strip-%d.png
 
-$(DUMP)/ui/ctc_strip.webp: $(DUMP)/ui/ctc_strip.png
-	@
-
-$(DUMP)/ui/ctc_strip-%.png: $(CTC_ANIM_SRC) $(DUMP)/ui/ctc_strip-0.png
+$(CTC_ANIM_TMP): $(CTC_ANIM_SRC) www/dump/ui/ctc_strip-0.png
 	@
 
 # depend on webp to wait for recompression
-$(DUMP)/ui/ctc_anim.png: $(CTC_ANIM_TMP_WEBP)
+www/dump/ui/ctc_anim.png: $(CTC_ANIM_TMP_WEBP)
 	$(APNGASM) "$@" $(CTC_ANIM_TMP) 3 100
 
 www/dump/ui/ctc_anim.webp: $(CTC_ANIM_TMP_WEBP)
@@ -282,5 +281,5 @@ MAKEFLAGS=-r -L
 .SUFFIXES:
 
 .PRECIOUS: $(WAV)
-.INTERMEDIATE: $(WAV) $(JSONO) $(Y4M) $(CTC_ANIM_TMP) $(CTC_ANIM_TMP_WEBP)
+.INTERMEDIATE: $(WAV) $(JSONO) $(Y4M) $(CTC_ANIM_TMP_ALL) $(CTC_ANIM_TMP_WEBP)
 .PHONY: video audio images js jshint clean space watch
