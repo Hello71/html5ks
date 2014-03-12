@@ -282,5 +282,5 @@ MAKEFLAGS=-r -L
 .SUFFIXES:
 
 .PRECIOUS: $(WAV)
-.INTERMEDIATE: $(JSONO) $(Y4M) $(CTC_ANIM_TMP) $(CTC_ANIM_TMP_WEBP)
+.INTERMEDIATE: $(WAV) $(JSONO) $(Y4M) $(CTC_ANIM_TMP) $(CTC_ANIM_TMP_WEBP)
 .PHONY: video audio images js jshint clean space watch
