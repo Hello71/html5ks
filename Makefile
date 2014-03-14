@@ -181,40 +181,41 @@ JPG := $(shell find www/dump -name '*.jpg')
 WEBP := $(patsubst %.png,%.webp,$(PNG)) \
         $(patsubst %.jpg,%.webp,$(JPG))
 CTC_ANIM_SRC := www/dump/ui/ctc_strip.png
-CTC_ANIM_TMP := www/dump/ui/ctc_strip-1.png \
-                www/dump/ui/ctc_strip-2.png www/dump/ui/ctc_strip-3.png \
-                www/dump/ui/ctc_strip-4.png www/dump/ui/ctc_strip-5.png \
-                www/dump/ui/ctc_strip-6.png www/dump/ui/ctc_strip-7.png \
-                www/dump/ui/ctc_strip-8.png www/dump/ui/ctc_strip-9.png \
-                www/dump/ui/ctc_strip-10.png www/dump/ui/ctc_strip-11.png \
-                www/dump/ui/ctc_strip-12.png www/dump/ui/ctc_strip-13.png \
-                www/dump/ui/ctc_strip-14.png www/dump/ui/ctc_strip-15.png \
-                www/dump/ui/ctc_strip-16.png www/dump/ui/ctc_strip-17.png \
-                www/dump/ui/ctc_strip-18.png www/dump/ui/ctc_strip-19.png \
-                www/dump/ui/ctc_strip-20.png www/dump/ui/ctc_strip-21.png \
-                www/dump/ui/ctc_strip-22.png www/dump/ui/ctc_strip-23.png \
-                www/dump/ui/ctc_strip-24.png www/dump/ui/ctc_strip-25.png \
-                www/dump/ui/ctc_strip-26.png www/dump/ui/ctc_strip-27.png \
-                www/dump/ui/ctc_strip-28.png www/dump/ui/ctc_strip-29.png \
-                www/dump/ui/ctc_strip-30.png www/dump/ui/ctc_strip-31.png \
-                www/dump/ui/ctc_strip-32.png www/dump/ui/ctc_strip-33.png \
-                www/dump/ui/ctc_strip-34.png www/dump/ui/ctc_strip-35.png \
-                www/dump/ui/ctc_strip-36.png www/dump/ui/ctc_strip-37.png \
-                www/dump/ui/ctc_strip-38.png www/dump/ui/ctc_strip-39.png \
-                www/dump/ui/ctc_strip-40.png www/dump/ui/ctc_strip-41.png \
-                www/dump/ui/ctc_strip-42.png www/dump/ui/ctc_strip-43.png \
-                www/dump/ui/ctc_strip-44.png www/dump/ui/ctc_strip-45.png \
-                www/dump/ui/ctc_strip-46.png www/dump/ui/ctc_strip-47.png \
-                www/dump/ui/ctc_strip-48.png www/dump/ui/ctc_strip-49.png \
-                www/dump/ui/ctc_strip-50.png www/dump/ui/ctc_strip-51.png \
-                www/dump/ui/ctc_strip-52.png www/dump/ui/ctc_strip-53.png \
-                www/dump/ui/ctc_strip-54.png www/dump/ui/ctc_strip-55.png \
-                www/dump/ui/ctc_strip-56.png www/dump/ui/ctc_strip-57.png \
-                www/dump/ui/ctc_strip-58.png www/dump/ui/ctc_strip-59.png \
-                www/dump/ui/ctc_strip-60.png www/dump/ui/ctc_strip-61.png \
-                www/dump/ui/ctc_strip-62.png www/dump/ui/ctc_strip-63.png
+CTC_ANIM_MORE_TMP := www/dump/ui/ctc_strip-1.png \
+                     www/dump/ui/ctc_strip-2.png www/dump/ui/ctc_strip-3.png \
+                     www/dump/ui/ctc_strip-4.png www/dump/ui/ctc_strip-5.png \
+                     www/dump/ui/ctc_strip-6.png www/dump/ui/ctc_strip-7.png \
+                     www/dump/ui/ctc_strip-8.png www/dump/ui/ctc_strip-9.png \
+                     www/dump/ui/ctc_strip-10.png www/dump/ui/ctc_strip-11.png \
+                     www/dump/ui/ctc_strip-12.png www/dump/ui/ctc_strip-13.png \
+                     www/dump/ui/ctc_strip-14.png www/dump/ui/ctc_strip-15.png \
+                     www/dump/ui/ctc_strip-16.png www/dump/ui/ctc_strip-17.png \
+                     www/dump/ui/ctc_strip-18.png www/dump/ui/ctc_strip-19.png \
+                     www/dump/ui/ctc_strip-20.png www/dump/ui/ctc_strip-21.png \
+                     www/dump/ui/ctc_strip-22.png www/dump/ui/ctc_strip-23.png \
+                     www/dump/ui/ctc_strip-24.png www/dump/ui/ctc_strip-25.png \
+                     www/dump/ui/ctc_strip-26.png www/dump/ui/ctc_strip-27.png \
+                     www/dump/ui/ctc_strip-28.png www/dump/ui/ctc_strip-29.png \
+                     www/dump/ui/ctc_strip-30.png www/dump/ui/ctc_strip-31.png \
+                     www/dump/ui/ctc_strip-32.png www/dump/ui/ctc_strip-33.png \
+                     www/dump/ui/ctc_strip-34.png www/dump/ui/ctc_strip-35.png \
+                     www/dump/ui/ctc_strip-36.png www/dump/ui/ctc_strip-37.png \
+                     www/dump/ui/ctc_strip-38.png www/dump/ui/ctc_strip-39.png \
+                     www/dump/ui/ctc_strip-40.png www/dump/ui/ctc_strip-41.png \
+                     www/dump/ui/ctc_strip-42.png www/dump/ui/ctc_strip-43.png \
+                     www/dump/ui/ctc_strip-44.png www/dump/ui/ctc_strip-45.png \
+                     www/dump/ui/ctc_strip-46.png www/dump/ui/ctc_strip-47.png \
+                     www/dump/ui/ctc_strip-48.png www/dump/ui/ctc_strip-49.png \
+                     www/dump/ui/ctc_strip-50.png www/dump/ui/ctc_strip-51.png \
+                     www/dump/ui/ctc_strip-52.png www/dump/ui/ctc_strip-53.png \
+                     www/dump/ui/ctc_strip-54.png www/dump/ui/ctc_strip-55.png \
+                     www/dump/ui/ctc_strip-56.png www/dump/ui/ctc_strip-57.png \
+                     www/dump/ui/ctc_strip-58.png www/dump/ui/ctc_strip-59.png \
+                     www/dump/ui/ctc_strip-60.png www/dump/ui/ctc_strip-61.png \
+                     www/dump/ui/ctc_strip-62.png www/dump/ui/ctc_strip-63.png
+CTC_ANIM_TMP := www/dump/ui/ctc_strip-0.png $(CTC_ANIM_MORE_TMP)
 CTC_ANIM_TMP_WEBP := $(patsubst %.png,%.webp,$(CTC_ANIM_TMP))
-CTC_ANIM_TMP_ALL := www/dump/ui/ctc_strip-0.png $(CTC_ANIM_TMP) $(CTC_ANIM_TMP_WEBP)
+CTC_ANIM_TMP_ALL := $(CTC_ANIM_TMP) $(CTC_ANIM_TMP_WEBP)
 CTC_ANIM := www/dump/ui/ctc_anim.png www/dump/ui/ctc_anim.webp
 
 CIMAGE := $(WEBP) $(CTC_ANIM) www/favicon.ico
@@ -249,7 +250,7 @@ www/dump/ui/bt-cf-unchecked.webp www/dump/ui/bt-cf-checked.webp: %.webp: %.png
 www/dump/ui/ctc_strip-0.png: $(CTC_ANIM_SRC)
 	$(CONVERT) "$<" -crop 16x16 www/dump/ui/ctc_strip-%d.png
 
-$(CTC_ANIM_TMP): $(CTC_ANIM_SRC) www/dump/ui/ctc_strip-0.png
+$(CTC_ANIM_MORE_TMP): $(CTC_ANIM_SRC) www/dump/ui/ctc_strip-0.png
 	@
 
 # depend on webp to wait for recompression
