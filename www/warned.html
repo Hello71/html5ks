@@ -1,11 +1,16 @@
 <!DOCTYPE html>
-<html><head>
-<script>
+<html><head><script>
 document.cookie = "warned=1; Expires=Tue, 19 Jan 2038 00:00:00 GMT; HttpOnly";
+var l = /language=[^&]*/.exec(location.search).replace(/[ \t]/g, '').split(",");
+loop: for (var i = 0; i < l.length; i++) {
+  switch (l[i].split(';')[0]) {
+    case "en": var lang = "en"; break loop;
+    case "fr": var lang = "fr"; break loop;
+  }
+}
 localStorage.persistent = {
   hdisable: location.search.indexOf("hdisable=on") > -1,
-  language: location.search.search("language=.*[=,]en") > -1 ? "en" : "fr"
+  language: lang || "en"
 };
 location.replace("./");
-</script>
-</head><body>If you're seeing this, something's gone wrong. Go back and report a bug.</body></html>
+</script></head><body>If you're seeing this, something's gone wrong. Go back and try again, and if it still doesn't work, file a bug.</body></html>
