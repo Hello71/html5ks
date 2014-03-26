@@ -8,7 +8,7 @@ case "$1" in
     sudo service mysql stop
     sudo apt-get update -qq
 
-    curl http://ftpmirror.gnu.org/make/make-4.0.tar.bz2 | tar -xj
+    curl -L http://ftpmirror.gnu.org/make/make-4.0.tar.bz2 | tar -xj
     curl https://webp.googlecode.com/files/libwebp-0.4.0.tar.gz | tar -xz
     curl -L http://downloads.sourceforge.net/project/opencore-amr/fdk-aac/fdk-aac-0.1.3.tar.gz | tar -xz
     curl http://downloads.xiph.org/releases/opus/opus-1.1.tar.gz | tar -xz
