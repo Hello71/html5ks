@@ -310,7 +310,7 @@ h2 {
   background-image: url("../dump/ui/bg-gm.png");
 }
 #context-menu {
-  background: white no-repeat top center;
+  background: transparent no-repeat top center;
   margin-top: -210px;
   padding-top: 60px;
   position: absolute;

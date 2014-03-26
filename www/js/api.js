@@ -56,7 +56,7 @@ window.html5ks.api = {
     };
 
     setTimeout(function () {
-      if (el.oncanplaythrough) {
+      if (el.src && el.oncanplaythrough) {
         console.warn("video not playing after 3 seconds");
         el.oncanplaythrough();
       }
@@ -161,6 +161,7 @@ window.html5ks.api = {
     video.volume = html5ks.persistent.musicVolume;
     var done = function () {
       video.style.display = "none";
+      video.onerror = null;
       video.src = "";
       deferred.resolve();
     };
