@@ -2,24 +2,32 @@ null :=
 SPACE := $(null) $(null)
 
 FFMPEG ?= ffmpeg
-FFMPEG += -v warning -y
+FFMPEG := $(FFMPEG) -v warning -y $(FFMPEGFLAGS)
 CWEBP ?= cwebp
-CWEBP += -quiet -alpha_cleanup -m 6
+CWEBP := $(CWEBP) -quiet -alpha_cleanup -m 6 $(CWEBPFLAGS)
 WEBPMUX ?= webpmux
+WEBPMUX := $(WEBPMUX) $(WEBPMUXFLAGS)
 CONVERT ?= convert
+CONVERT := $(CONVERT) $(CONVERTFLAGS)
 APNGASM ?= apngasm
+APNGASM := $(APNGASM) $(APNGASMFLAGS)
 NPM ?= npm
-NPM += --quiet
+NPM := $(NPM) --quiet $(NPMFLAGS)
 JS_COMPRESSOR ?= uglifyjs
 LOCAL_UGLIFYJS := node_modules/.bin/uglifyjs
 UGLIFYJS ?= $(LOCAL_UGLIFYJS)
+UGLIFYJS := $(UGLIFYJS) $(UGLIFYJSFLAGS)
 PACKR ?= packr
 CLOSURE_COMPILER ?= java -jar compiler.jar
 ifndef MINIMAL
 ZOPFLIPNG ?= zopflipng
+ZOPFLIPNG := $(ZOPFLIPNG) $(ZOPFLIPNGFLAGS)
 #DEFLOPT ?= wine DeflOpt
+#DEFLOPT := $(DEFLOPT) $(DEFLOPTFLAGS)
 DEFLUFF ?= defluff
+DEFLUFF := $(DEFLUFF) $(DEFLUFFFLAGS)
 PNGQUANT ?= pngquant
+PNGQUANT := $(PNGQUANT) $(PNGQUANTFLAGS)
 endif
 GZIP := $(shell unrpyc/find-gzip.sh)
 
@@ -226,8 +234,8 @@ define png2webp =
 	$(CWEBP) -q 99 "$<" -o "$@"
 	$(if $(PNGQUANT), $(PNGQUANT) --force --speed 1 --ext .png "$<")
 	$(if $(ZOPFLIPNG), $(ZOPFLIPNG) -m -y "$<" "$<")
-  $(if $(DEFLOPT), $(DEFLOPT) "$<")
-  $(if $(DEFLUFF), $(DEFLUFF) < "$<" > "$<".tmp
+	$(if $(DEFLOPT), $(DEFLOPT) "$<")
+	$(if $(DEFLUFF), $(DEFLUFF) < "$<" > "$<".tmp
 	mv -f "$<".tmp "$<")
 endef
 
@@ -278,7 +286,7 @@ dev:
 
 # disable implicit rules, increases `make` speed by 3 seconds
 # also check symlink targets (for js)
-MAKEFLAGS=-r -L
+MAKEFLAGS=-LRr
 .SUFFIXES:
 
 .PRECIOUS: $(WAV)

@@ -19,7 +19,7 @@ Requirements
 - Katawa Shoujo (obviously)
 - Firefox/Chrome/a sensible browser (i.e. not IE)
 - a shell (Bash, dash, zsh, etc)
-- GNU make
+- GNU make 3.82 or greater
 - ffmpeg with fdk-aac, libopus, libtheora, libvpx-vp9, libx264 (preferably git HEAD)
 - cwebp and webpmux from libwebp
 - convert from ImageMagick
