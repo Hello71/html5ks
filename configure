@@ -1,55 +1,69 @@
 #!/bin/bash
 
-set -e
-
-OUT=Makefile.inc
-
-> "${OUT}"
-
 checking() {
   printf "checking for %s... " "$1" >&2
 }
 
 check() {
-  checking="$1"
-  shift
-  var="${VAR:-${checking^^}}"
+  checking "$1"
+  var="${VAR:-${1^^}}"
   cmd="${!var}"
+  : ${cmd:=${1}}
+  shift
   varflags="${var}FLAGS"
   varflags="$@ ${!varflags}"
-  if [[ -z "${cmd}" ]]; then
-    cmd="${checking}"
-  fi
   get=$(command -v "${cmd}")
   e=$?
   if [[ -n "$get" ]]; then
+    if [[ -z "$NO_RUN" ]]; then
+      ${get} -h >/dev/null 2>&1
+      e=$?
+      if (( $e )); then
+        echo unusable, returned $e
+        return $e
+      fi
+    fi
+    declare -g "$var=$get"
     echo ${get}
+    # intentionally stripping whitespace
     echo ${var} := ${get} ${varflags} >> "${OUT}"
+  else
+    echo no
   fi
   return $e
 }
 
 rcheck() {
-  checking "$1"
-  if ! check "$@"; then
-    echo no
-    return 1
-  fi
+  check "$@" || exit
 }
 
-ocheck() {
-  rcheck "$@" || true
+fcheck() {
+  for f in $3; do
+    checking "$f $1 support in ffmpeg"
+    if grep -Eq "^ $2 $f " <<< "$4"; then
+      echo yes
+    else
+      echo no
+      exit 1
+    fi
+  done
 }
 
-checking "zopfli or gzip"
-VAR=GZIP check zopfli || check gzip -9
+OUT=Makefile.inc
+> "${OUT}"
 
-rcheck apngasm
+VAR=GZIP rcheck zopfli || rcheck gzip -9
+NO_RUN=1 rcheck apngasm
 rcheck convert
 rcheck cwebp -quiet -alpha_cleanup -m 6
 rcheck ffmpeg -v warning -y
+F=$($FFMPEG -formats 2>&1)
+fcheck demuxing "D." "matroska,webm ogg wav yuv4mpegpipe" "$F"
+fcheck muxing ".E" "ipod mp4 ogg wav webm yuv4mpegpipe" "$F"
+fcheck decoding ".{6}" "mpeg4 rawvideo pcm_s16le vorbis" "$($FFMPEG -decoders 2>&1)"
+fcheck encoding ".{6}" "libx264 rawvideo libtheora libvpx libvpx-vp9 libfdk_aac libopus pcm_s16le" "$($FFMPEG -encoders 2>&1)"
 rcheck npm --quiet
 rcheck webpmux
-ocheck defluff
-ocheck pngquant
-ocheck zopflipng
+NO_RUN=1 check defluff
+check pngquant
+check zopflipng

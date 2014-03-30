@@ -75,7 +75,6 @@ AJSON := $(JSON) $(JSONGZ)
 # FIXME
 json: $(AJSON)
 
-# the rules here are NOT BROKEN. think about it.
 %.json.i: ast2json/rpyc2json.py %.rpyc
 	$^ $@
 
@@ -139,8 +138,7 @@ audio: $(CAUDIO)
 
 PNG := $(shell find www/dump -name '*.png' ! -name 'ctc_strip.png')
 JPG := $(shell find www/dump -name '*.jpg')
-WEBP := $(PNG:.png=.webp) \
-        $(JPG:.jpg=.webp)
+WEBP := $(PNG:.png=.webp) $(JPG:.jpg=.webp)
 CTC_ANIM_SRC := www/dump/ui/ctc_strip.png
 CTC_ANIM_MORE_TMP := www/dump/ui/ctc_strip-1.png \
                      www/dump/ui/ctc_strip-2.png www/dump/ui/ctc_strip-3.png \

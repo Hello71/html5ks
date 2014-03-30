@@ -24,7 +24,7 @@ Requirements
 - cwebp and webpmux from libwebp
 - convert from ImageMagick
 - apngasm
-- Node.js, npm
+- Node.js, npm for uglifyjs
 
 Recommended
 '''''''''''
@@ -36,15 +36,15 @@ Recommended
 - jpegtran
 - nginx
 - pngquant
-- zopfli
+- zopfli and zopflipng
 
 Build steps
 -----------
 
 0. Get Katawa Shoujo, install prerequisites. For guidance on Ubuntu, see .travis.sh.
-1. Copy \*.rpyc from Katawa Shoujo/game into unrpyc/ directory.
-2. Extract files from Katawa Shoujo/game/data.rpa with an rpa extractor, e.g. unrpa. Put files in www/dump.
-3. Install prerequisites, download DeflOpt and defluff and place exes in this directory.
+1. Copy \*.rpyc from Katawa Shoujo/game into ast2json/ directory.
+2. Extract files from Katawa Shoujo/game/data.rpa to www/dump/ with an rpa extractor, like rpatool or unrpa.
+3. Install prerequisites.
 4. Run ./configure.
 5. Run make.
 6. Run nginx.sh to start nginx, then navigate to localhost:8080 in your browser.
@@ -55,10 +55,10 @@ Disabling unused conversions
 ----------------------------
 
 To reduce programs and build time required, some conversions can be disabled.
-Defining MINIMAL as an environment variable will disable the safe ones.
+Passing --minimal to configure will disable the safe ones.
 
-Alternatively, specific conversions can be disabled by passing ``PROGRAM=`` on the command line, i.e. leaving it undefined.
-See the Makefile for more information.
+Alternatively, specific conversions can be disabled by passing --disable-conversion on the command line.
+See ``./configure --help`` for more information.
 
 Reducing disk usage
 -------------------
