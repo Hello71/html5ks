@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html><head><script>
 document.cookie = "warned=1; Expires=Tue, 19 Jan 2038 00:00:00 GMT; HttpOnly";
-var l = /language=[^&]*/.exec(location.search).replace(/[ \t]/g, '').split(",");
+var l = /language=[^&]*/.exec(location.search)[0].replace(/[ \t]/g, '').split(",");
 loop: for (var i = 0; i < l.length; i++) {
   switch (l[i].split(';')[0]) {
     case "en": var lang = "en"; break loop;
