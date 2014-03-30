@@ -55,8 +55,3 @@ def get_value(attr_value):
         return ast2json(attr_value)
     else:
         raise Exception("unknow case for '%s' of type '%s'" % (attr_value, type(attr_value)))
-
-
-if __name__ == '__main__':
-    import json
-    print(json.dumps(ast2json(parse(open(__file__, "r").read())), indent=4))

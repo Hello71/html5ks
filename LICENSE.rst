@@ -1,4 +1,5 @@
 © 2013 Alex Xu (Hello71)
+
 License GPLv3+: `GNU GPL version 3`_ or later <http://gnu.org/licenses/gpl.html> *except as noted below*
 
 The "Playtime With Hot Toddies" font is not licensed, but was found on `Font Squirrel`_, and is also in the KS source, which is released as CC-BY-ND. We follow the legal opinion of Font Squirrel, as below:
@@ -7,13 +8,13 @@ The "Playtime With Hot Toddies" font is not licensed, but was found on `Font Squ
 
     It is our opinion that if the unlicensed font is freely available for download from either the original source or from multiple free-font sites then we assume it to be safe to use the font commercially. This is no guarantee of such freedom, but there are so many unlicensed free fonts distributed by primary sources that the intentions must be read that the font is free to use how you like.
 
-Ren'Py (``unrpyc/renpy``) is distributed under the MIT license, in ``unrpyc/renpy/LICENSE.txt``.
+Git submodules (i.e. ``when``, ``fastclick``, ``spin.js``, ``Modernizr``) are not included as part of the source, and are licensed separately. See their respective subdirectories for more information.
 
-Git submodules are not included as part of the source, and are licensed separately. See their respective subdirectories for more information.
+ast2json (ast2json/ast2json.py) is released under the BSD license (see header).
 
-All other source code (i.e. mine) is licensed under the `GPLv3`_ license.
+Ren'Py (ast2json/renpy) is released under the MIT license (see ast2json/renpy/LICENSE.txt).
 
-unrpyc itself used to be under the MIT license, but I have relicensed it as GPL 3.0. Where this is not legal, the contents of that subdirectory are available under the MIT license; however, the rest of the source code remains under GPL 3.0, unless otherwise noted above.
+All other source code is licensed under the `GPLv3`_ license.
 
 .. _Font Squirrel: http://www.fontsquirrel.com/license/Playtime-With-Hot-Toddies
 .. _GNU GPL version 3:
