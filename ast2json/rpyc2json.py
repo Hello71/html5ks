@@ -23,7 +23,7 @@
 import ast2json
 import glob
 import itertools
-import simplejson as json
+import json
 import optparse
 import os.path
 import pickle
