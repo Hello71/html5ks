@@ -5,8 +5,8 @@ all: js json video audio images
 
 Makefile: Makefile.inc
 
-Makefile.inc: ./configure
-	$^ $@
+Makefile.inc: configure
+	./configure $@
 
 include Makefile.inc
 
