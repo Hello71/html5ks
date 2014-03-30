@@ -52,7 +52,7 @@ fcheck() {
 OUT=Makefile.inc
 > "${OUT}"
 
-VAR=GZIP rcheck zopfli || rcheck gzip -9
+VAR=GZIP check zopfli || rcheck gzip -9
 NO_RUN=1 rcheck apngasm
 rcheck convert
 rcheck cwebp -quiet -alpha_cleanup -m 6
