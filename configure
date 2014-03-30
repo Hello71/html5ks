@@ -1,0 +1,55 @@
+#!/bin/bash
+
+set -e
+
+OUT=Makefile.inc
+
+> "${OUT}"
+
+checking() {
+  printf "checking for %s... " "$1" >&2
+}
+
+check() {
+  checking="$1"
+  shift
+  var="${VAR:-${checking^^}}"
+  cmd="${!var}"
+  varflags="${var}FLAGS"
+  varflags="$@ ${!varflags}"
+  if [[ -z "${cmd}" ]]; then
+    cmd="${checking}"
+  fi
+  get=$(command -v "${cmd}")
+  e=$?
+  if [[ -n "$get" ]]; then
+    echo ${get}
+    echo ${var} := ${get} ${varflags} >> "${OUT}"
+  fi
+  return $e
+}
+
+rcheck() {
+  checking "$1"
+  if ! check "$@"; then
+    echo no
+    return 1
+  fi
+}
+
+ocheck() {
+  rcheck "$@" || true
+}
+
+checking "zopfli or gzip"
+VAR=GZIP check zopfli || check gzip -9
+
+rcheck apngasm
+rcheck convert
+rcheck cwebp -quiet -alpha_cleanup -m 6
+rcheck ffmpeg -v warning -y
+rcheck npm --quiet
+rcheck webpmux
+ocheck defluff
+ocheck pngquant
+ocheck zopflipng

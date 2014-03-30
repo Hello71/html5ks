@@ -3,8 +3,8 @@
 /www/json
 /www/dump
 /rpy
-/unrpyc/*.json*
-/unrpyc/*.rpyc
+/ast2json/*.json*
+/ast2json/*.rpyc
 
 # generated files
 /www/js/all.min.js*

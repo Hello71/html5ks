@@ -1,16 +1,37 @@
 null :=
 SPACE := $(null) $(null)
 
+FFMPEG ?= ffmpeg
+FFMPEG := $(FFMPEG) -v warning -y $(FFMPEGFLAGS)
+CWEBP ?= cwebp
+CWEBP := $(CWEBP) -quiet -alpha_cleanup -m 6 $(CWEBPFLAGS)
+WEBPMUX ?= webpmux
+WEBPMUX := $(WEBPMUX) $(WEBPMUXFLAGS)
+CONVERT ?= convert
+CONVERT := $(CONVERT) $(CONVERTFLAGS)
+APNGASM ?= apngasm
+APNGASM := $(APNGASM) $(APNGASMFLAGS)
+NPM ?= npm
+NPM := $(NPM) --quiet $(NPMFLAGS)
+JS_COMPRESSOR ?= uglifyjs
+LOCAL_UGLIFYJS := node_modules/.bin/uglifyjs
+UGLIFYJS ?= $(LOCAL_UGLIFYJS)
+UGLIFYJS := $(UGLIFYJS) $(UGLIFYJSFLAGS)
+PACKR ?= packr
+CLOSURE_COMPILER ?= java -jar compiler.jar
+ifndef MINIMAL
+ZOPFLIPNG ?= zopflipng
+ZOPFLIPNG := $(ZOPFLIPNG) $(ZOPFLIPNGFLAGS)
+#DEFLOPT ?= wine DeflOpt
+#DEFLOPT := $(DEFLOPT) $(DEFLOPTFLAGS)
+DEFLUFF ?= defluff
+DEFLUFF := $(DEFLUFF) $(DEFLUFFFLAGS)
+PNGQUANT ?= pngquant
+PNGQUANT := $(PNGQUANT) $(PNGQUANTFLAGS)
+endif
+GZIP := $(shell unrpyc/find-gzip.sh)
+
 all: js json video audio images
-
-Makefile: Makefile.inc
-
-Makefile.inc: ./configure
-	$^ $@
-
-include Makefile.inc
-
-UGLIFYJS := node_modules/.bin/uglifyjs $(UGLIFYJSFLAGS)
 
 # === JS ===
 
@@ -24,10 +45,22 @@ JSOUT := www/js/all.min.js
 
 js: $(JSOUT)
 
-$(JSOUT): $(UGLIFYJS) $(JS)
-	$^ -o "$@" --source-map "$@".map --source-map-url ./all.min.js.map --screw-ie8 -p 2 -m -c unsafe=true,drop_debugger=false
+ifeq ($(JS_COMPRESSOR), uglifyjs)
+$(JSOUT): $(JS) $(UGLIFYJS)
+	$(UGLIFYJS) $(JS) -o "$@" --source-map "$@".map --source-map-url ./all.min.js.map --screw-ie8 -p 2 -m -c unsafe=true,drop_debugger=false
+else
+$(JSOUT): $(JS)
+# note that packr doesn't actually work
+ifeq ($(JS_COMPRESSOR), packr)
+	$(PACKR) $(JS) -o "$@"
+else
+ifeq ($(JS_COMPRESSOR), closure_compiler)
+	$(CLOSURE_COMPILER) --compilation_level SIMPLE_OPTIMIZATIONS --create_source_map "$@".map --js $(subst $(SPACE), --js ,$(JS)) --js_output_file "$@"
+endif # ($(JS_COMPRESSOR), closure_compiler)
+endif # ($(JS_COMPRESSOR), packr)
+endif # ($(JS_COMPRESSOR), uglifyjs)
 
-$(UGLIFYJS): package.json
+$(LOCAL_UGLIFYJS): package.json
 	$(NPM) update
 	touch "$@"
 
@@ -39,64 +72,78 @@ www/js/lib/when.js: when
 	export PYTHON=python2; cd when && $(NPM) update && $(NPM) run browserify-debug
 
 # === JSON ===
-ORPYC := ast2json/imachine.rpyc ast2json/imachine_replay.rpyc \
-         ast2json/ui-strings.rpyc ast2json/ui-strings_FR.rpyc
-OJSON := $(ORPYC:ast2json/%.rpyc=www/json/%.json)
+JSON := www/json/script.json www/json/script.json.gz www/json/imachine.json \
+				www/json/imachine.json.gz www/json/ui-strings.json \
+				www/json/ui-strings.json.gz www/json/ui-strings_FR.json \
+				www/json/ui-strings_FR.json.gz
 
-SRPYC := ast2json/script-a1-friday_FR.rpyc ast2json/script-a1-friday.rpyc \
-         ast2json/script-a1-monday_FR.rpyc ast2json/script-a1-monday.rpyc \
-         ast2json/script-a1-saturday_FR.rpyc ast2json/script-a1-saturday.rpyc \
-         ast2json/script-a1-sunday_FR.rpyc ast2json/script-a1-sunday.rpyc \
-         ast2json/script-a1-thursday_FR.rpyc ast2json/script-a1-thursday.rpyc \
-         ast2json/script-a1-tuesday_FR.rpyc ast2json/script-a1-tuesday.rpyc \
-         ast2json/script-a1-wednesday_FR.rpyc ast2json/script-a1-wednesday.rpyc \
-         ast2json/script-a2-emi_FR.rpyc ast2json/script-a2-emi.rpyc \
-         ast2json/script-a2-hanako_FR.rpyc ast2json/script-a2-hanako.rpyc \
-         ast2json/script-a2-lilly_FR.rpyc ast2json/script-a2-lilly.rpyc \
-         ast2json/script-a2-rin_FR.rpyc ast2json/script-a2-rin.rpyc \
-         ast2json/script-a2-shizune_FR.rpyc ast2json/script-a2-shizune.rpyc \
-         ast2json/script-a3-emi_FR.rpyc ast2json/script-a3-emi.rpyc \
-         ast2json/script-a3-hanako_FR.rpyc ast2json/script-a3-hanako.rpyc \
-         ast2json/script-a3-lilly_FR.rpyc ast2json/script-a3-lilly.rpyc \
-         ast2json/script-a3-rin_FR.rpyc ast2json/script-a3-rin.rpyc \
-         ast2json/script-a3-shizune_FR.rpyc ast2json/script-a3-shizune.rpyc \
-         ast2json/script-a4-emi_FR.rpyc ast2json/script-a4-emi.rpyc \
-         ast2json/script-a4-hanako_FR.rpyc ast2json/script-a4-hanako.rpyc \
-         ast2json/script-a4-lilly_FR.rpyc ast2json/script-a4-lilly.rpyc \
-         ast2json/script-a4-rin_FR.rpyc ast2json/script-a4-rin.rpyc \
-         ast2json/script-a4-shizune_FR.rpyc ast2json/script-a4-shizune.rpyc
-JSONI := $(SRPYC:%.rpyc=%.json.i)
-SJSON := $(SRPYC:ast2json/%.rpyc=www/json/%.json)
-
-JSON := $(OJSON) $(SJSON)
-JSONGZ := $(JSON:=.gz)
-AJSON := $(JSON) $(JSONGZ)
+RPYC := unrpyc/script-a1-friday_FR.rpyc unrpyc/script-a1-friday.rpyc \
+        unrpyc/script-a1-monday_FR.rpyc unrpyc/script-a1-monday.rpyc \
+        unrpyc/script-a1-saturday_FR.rpyc unrpyc/script-a1-saturday.rpyc \
+        unrpyc/script-a1-sunday_FR.rpyc unrpyc/script-a1-sunday.rpyc \
+        unrpyc/script-a1-thursday_FR.rpyc unrpyc/script-a1-thursday.rpyc \
+        unrpyc/script-a1-tuesday_FR.rpyc unrpyc/script-a1-tuesday.rpyc \
+        unrpyc/script-a1-wednesday_FR.rpyc unrpyc/script-a1-wednesday.rpyc \
+        unrpyc/script-a2-emi_FR.rpyc unrpyc/script-a2-emi.rpyc \
+        unrpyc/script-a2-hanako_FR.rpyc unrpyc/script-a2-hanako.rpyc \
+        unrpyc/script-a2-lilly_FR.rpyc unrpyc/script-a2-lilly.rpyc \
+        unrpyc/script-a2-rin_FR.rpyc unrpyc/script-a2-rin.rpyc \
+        unrpyc/script-a2-shizune_FR.rpyc unrpyc/script-a2-shizune.rpyc \
+        unrpyc/script-a3-emi_FR.rpyc unrpyc/script-a3-emi.rpyc \
+        unrpyc/script-a3-hanako_FR.rpyc unrpyc/script-a3-hanako.rpyc \
+        unrpyc/script-a3-lilly_FR.rpyc unrpyc/script-a3-lilly.rpyc \
+        unrpyc/script-a3-rin_FR.rpyc unrpyc/script-a3-rin.rpyc \
+        unrpyc/script-a3-shizune_FR.rpyc unrpyc/script-a3-shizune.rpyc \
+        unrpyc/script-a4-emi_FR.rpyc unrpyc/script-a4-emi.rpyc \
+        unrpyc/script-a4-hanako_FR.rpyc unrpyc/script-a4-hanako.rpyc \
+        unrpyc/script-a4-lilly_FR.rpyc unrpyc/script-a4-lilly.rpyc \
+        unrpyc/script-a4-rin_FR.rpyc unrpyc/script-a4-rin.rpyc \
+        unrpyc/script-a4-shizune_FR.rpyc unrpyc/script-a4-shizune.rpyc
+SJSON := $(patsubst unrpyc/%.rpyc,www/json/%.json,$(RPYC))
+JSONO := $(patsubst unrpyc/%.rpyc,unrpyc/%.json.o,%(RPYC))
 
 # FIXME
-json: $(AJSON)
-
-# the rules here are NOT BROKEN. think about it.
-%.json.i: ast2json/rpyc2json.py %.rpyc
-	$^ $@
-
-www/json/script-%.json: ast2json/script2json.py ast2json/script-%.json.i
-	$^ $@
-
-$(OJSON): www/json/%.json: ast2json/rpyc2json.py ast2json/%.rpyc
-	$^ $@
+# json: $(JSON)
+json:
 
 %.json.gz: %.json
 	$(GZIP) -c $< > $@
 	touch $< $@
 
+www/json/script.json: $(SJSON)
+	cat $^ > "$@"
+	sed -i -e 's/^/{/;s/,$$/}/' "$@"
+
+www/json/%.json: unrpyc/%.json.o
+	uglifyjs "$<" --expr > "$@"
+
+define unrpyc =
+	python3 unrpyc/unrpyc.py --clobber "$<" "$@"
+endef
+
+unrpyc/ui-strings.json.o unrpyc/ui-strings_FR.json.o: unrpyc/ui-strings%.json.o: unrpyc/ui-strings%.rpyc unrpyc/*.py
+	$(unrpyc)
+	sed -i -e 's/    \["init_language", "[a-z]*", \],//;s/^\]}$$/}/' "$@"
+
+unrpyc/ui_settings.json.o: ui_settings.rpyc *.py
+	python3 unrpyc.py --clobber "$<" --ignore-python "$@"
+	sed -i -e 's/,,/,/g;/: *,$$/d' "$@"
+
+unrpyc/%.json.o: unrpyc/%.rpyc unrpyc/*.py
+	$(unrpyc)
+
+www/json/script-%.json: unrpyc/script-%.json.o
+	uglifyjs "$<" --expr > "$@"
+	sed -i -e 's/^{//;s/}$$/,/' "$@"
+
 # === VIDEO ===
 
 VIDEO := $(wildcard www/dump/video/*.mkv)
-Y4M := $(VIDEO:.mkv=.y4m)
-MP4 := $(VIDEO:.mkv=.mp4)
-WEBM := $(VIDEO:.mkv=.webm)
-VP9 := $(VIDEO:.mkv=.vp9.webm)
-OGV := $(VIDEO:.mkv=.ogv)
+Y4M := $(patsubst %.mkv,%.y4m,$(VIDEO))
+MP4 := $(patsubst %.mkv,%.mp4,$(VIDEO))
+WEBM := $(patsubst %.mkv,%.webm,$(VIDEO))
+VP9 := $(patsubst %.mkv,%.vp9.webm,$(VIDEO))
+OGV := $(patsubst %.mkv,%.ogv,$(VIDEO))
 CVIDEO := $(MP4) $(WEBM) $(VP9) $(OGV)
 
 video: $(CVIDEO)
@@ -119,9 +166,9 @@ $(if $(NOTEMP),%.ogv: %.mkv,%.ogv: %.y4m)
 # === AUDIO ===
 
 AUDIO := $(wildcard www/dump/bgm/*.ogg) $(wildcard www/dump/sfx/*.ogg)
-OPUS := $(AUDIO:.ogg=.opus)
-M4A := $(AUDIO:.ogg=.m4a)
-WAV := $(AUDIO:.ogg=.wav)
+OPUS := $(patsubst %.ogg,%.opus,$(AUDIO))
+M4A := $(patsubst %.ogg,%.m4a,$(AUDIO))
+WAV := $(patsubst %.ogg,%.wav,$(AUDIO))
 CAUDIO := $(OPUS) $(M4A)
 
 audio: $(CAUDIO)
@@ -139,8 +186,8 @@ audio: $(CAUDIO)
 
 PNG := $(shell find www/dump -name '*.png' ! -name 'ctc_strip.png')
 JPG := $(shell find www/dump -name '*.jpg')
-WEBP := $(PNG:.png=.webp) \
-        $(JPG:.jpg=.webp)
+WEBP := $(patsubst %.png,%.webp,$(PNG)) \
+        $(patsubst %.jpg,%.webp,$(JPG))
 CTC_ANIM_SRC := www/dump/ui/ctc_strip.png
 CTC_ANIM_MORE_TMP := www/dump/ui/ctc_strip-1.png \
                      www/dump/ui/ctc_strip-2.png www/dump/ui/ctc_strip-3.png \
@@ -175,7 +222,7 @@ CTC_ANIM_MORE_TMP := www/dump/ui/ctc_strip-1.png \
                      www/dump/ui/ctc_strip-60.png www/dump/ui/ctc_strip-61.png \
                      www/dump/ui/ctc_strip-62.png www/dump/ui/ctc_strip-63.png
 CTC_ANIM_TMP := www/dump/ui/ctc_strip-0.png $(CTC_ANIM_MORE_TMP)
-CTC_ANIM_TMP_WEBP := $(CTC_ANIM_TMP:%.png=%.webp)
+CTC_ANIM_TMP_WEBP := $(patsubst %.png,%.webp,$(CTC_ANIM_TMP))
 CTC_ANIM_TMP_ALL := $(CTC_ANIM_TMP) $(CTC_ANIM_TMP_WEBP)
 CTC_ANIM := www/dump/ui/ctc_anim.png www/dump/ui/ctc_anim.webp
 
@@ -199,6 +246,7 @@ endef
 	$(CWEBP) -q 90 "$<" -o "$@"
 
 www/dump/ui/ctc_strip.webp: www/dump/ui/ctc_strip.png
+	@
 
 www/favicon.ico: www/dump/ui/icon.png
 	$(CONVERT) "$<" -resize 256x256 -transparent white "$@"
@@ -211,6 +259,7 @@ www/dump/ui/ctc_strip-0.png: $(CTC_ANIM_SRC)
 	$(CONVERT) "$<" -crop 16x16 www/dump/ui/ctc_strip-%d.png
 
 $(CTC_ANIM_MORE_TMP): $(CTC_ANIM_SRC) www/dump/ui/ctc_strip-0.png
+	@
 
 # depend on webp to wait for recompression
 www/dump/ui/ctc_anim.png: $(CTC_ANIM_TMP_WEBP)
@@ -242,4 +291,4 @@ MAKEFLAGS=-LRr
 
 .PRECIOUS: $(WAV)
 .INTERMEDIATE: $(WAV) $(JSONO) $(Y4M) $(CTC_ANIM_TMP_ALL) $(CTC_ANIM_TMP_WEBP)
-.PHONY: video audio images js jshint space watch
+.PHONY: video audio images js jshint clean space watch

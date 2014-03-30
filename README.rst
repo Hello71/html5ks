@@ -45,10 +45,11 @@ Build steps
 1. Copy \*.rpyc from Katawa Shoujo/game into unrpyc/ directory.
 2. Extract files from Katawa Shoujo/game/data.rpa with an rpa extractor, e.g. unrpa. Put files in www/dump.
 3. Install prerequisites, download DeflOpt and defluff and place exes in this directory.
-4. Run make. If you're on Windoze, sucks for you. Use a better OS. Patches may or may not be accepted.
-5. Run nginx.sh to start nginx, then navigate to localhost:8080 in your browser.
+4. Run ./configure.
+5. Run make.
+6. Run nginx.sh to start nginx, then navigate to localhost:8080 in your browser.
    -- OR --
-5. Open www/index.html in a browser.
+6. Open www/index.html in a browser.
 
 Disabling unused conversions
 ----------------------------

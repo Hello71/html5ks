@@ -26,7 +26,7 @@
 # When updating this file, consider if lint.py or warp.py also need
 # updating.
 
-import renpy.display
+import renpy
 
 import re
 import time
