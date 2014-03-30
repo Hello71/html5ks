@@ -67,3 +67,5 @@ rcheck webpmux
 NO_RUN=1 check defluff
 check pngquant
 check zopflipng
+
+exit 0
