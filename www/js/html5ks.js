@@ -209,9 +209,13 @@ window.html5ks = {
         } else {
           xhr.open("GET", "json/" + name + ".json");
           xhr.onload = function () {
-            var d = JSON.parse(xhr.responseText);
-            html5ks.data[name] = d;
-            deferred.resolve(d);
+            if (xhr.status === 200) {
+              var d = JSON.parse(xhr.responseText);
+              html5ks.data[name] = d;
+              deferred.resolve(d);
+            } else {
+              xhr.onerror();
+            }
           };
           xhr.onerror = function () {
             deferred.reject();

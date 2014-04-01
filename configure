@@ -1,11 +1,11 @@
 #!/bin/bash
 
 checking() {
-  printf "checking for %s... " "$1" >&2
+  printf "checking %s... " "$1" >&2
 }
 
 check() {
-  checking "$1"
+  checking "for $1"
   var="${VAR:-${1^^}}"
   cmd="${!var}"
   : ${cmd:=${1}}
@@ -15,16 +15,19 @@ check() {
   get=$(command -v "${cmd}")
   e=$?
   if [[ -n "$get" ]]; then
+    declare -g "$var=$get"
+    echo ${get}
     if [[ -z "$NO_RUN" ]]; then
+      checking "${get} usability"
       ${get} -h >/dev/null 2>&1
       e=$?
       if (( $e )); then
         echo unusable, returned $e
         return $e
+      else
+        echo yes
       fi
     fi
-    declare -g "$var=$get"
-    echo ${get}
     # intentionally stripping whitespace
     echo ${var} := ${get} ${varflags} >> "${OUT}" || exit 1
   else
@@ -39,7 +42,7 @@ rcheck() {
 
 fcheck() {
   for f in $3; do
-    checking "$f $1 support in ffmpeg"
+    checking "for $f $1 support in ffmpeg"
     if grep -Eq "^ $2 $f " <<< "$4"; then
       echo yes
     else
@@ -48,6 +51,19 @@ fcheck() {
     fi
   done
 }
+
+echeck() {
+  checking "for $2"
+  if [ "$1" "$2" ]; then
+    echo found
+  else
+    echo "$2 is missing; make sure you have $3" >&2
+    exit 1
+  fi
+}
+
+echeck -f ast2json/script-a1-monday.rpyc "copied the rpyc files"
+echeck -d www/dump "you have extracted the rpa"
 
 OUT=Makefile.inc
 > "${OUT}" || exit 1

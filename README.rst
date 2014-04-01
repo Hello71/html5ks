@@ -19,18 +19,19 @@ Requirements
 - Katawa Shoujo (obviously)
 - Firefox/Chrome/a sensible browser (i.e. not IE)
 - a shell (Bash, dash, zsh, etc)
-- GNU make 3.82 or greater
-- ffmpeg with fdk-aac, libopus, libtheora, libvpx-vp9, libx264 (preferably git HEAD)
+- GNU make 3.82 or greater (see `Makefile`_ section)
+- ffmpeg (preferably git HEAD) with fdk-aac, libopus, libtheora, libvpx-vp9, libx264 - for full list, see ``configure`` or ``.travis.sh``
 - cwebp and webpmux from libwebp
 - convert from ImageMagick
 - apngasm
 - Node.js, npm for uglifyjs
+- Python 3
 
 Recommended
 '''''''''''
 - DeflOpt
 - defluff
-- inotify-tools (for ``make watch``)
+- inotify-tools (for ``make dev``)
 - jpegmini
 - jpegrescan
 - jpegtran
@@ -61,18 +62,26 @@ Alternatively, specific conversions can be disabled by passing --disable-convers
 See ``./configure --help`` for more information.
 
 Reducing disk usage
--------------------
+===================
 Run ``make space``. Warning: This will remove source files from dump.
 
 ``make`` will continue to work (i.e. make new files as appropriate) but will not re-make converted files.
 
 Contributing
-------------
+============
 
-Check Bugzilla for things that need to be done. https://bugzilla.happinessforme.com/buglist.cgi?cmdtype=runnamed&namedcmd=Open+HTML5KS+bugs
+See ``CONTRIBUTING.rst``.
 
-See docs/ for the obvious.
+Makefile
+========
 
 Run ``make dev`` to automatically start nginx and re-make when changes are made.
+
+GNU make is required since I do not really want to write a script to output a Makefile.
+I refuse to use autoconf; moreover, it isn't even relevant to this program, being designed for use with C/C++ projects.
+
+Make 3.82 is required since this version sorts rules differently; versions of make prior to this one will not properly build www/dump/ctc_strip-0.png, resulting in errors building ctc_anim.png and ctc_anim-*.webp.
+If you must use a version before that one (e.g. you are stuck on Ubuntu 12.04), manually building that file according to the Makefile should resolve the error.
+Patches to fix this are welcome.
 
 .. _`Katawa Shoujo`: http://www.katawa-shoujo.com/

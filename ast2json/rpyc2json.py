@@ -67,7 +67,10 @@ def get_value(attr_value):
     if isinstance(attr_value, renpy.ast.Node):
         return node2json(attr_value)
     if isinstance(attr_value, renpy.ast.PyCode):
-        return ast2json.str2json(attr_value.source)
+        return {
+            "source": attr_value.source,
+            "ast": ast2json.str2json(attr_value.source)
+        }
     if isinstance(attr_value, renpy.ast.ArgumentInfo):
         return list(map(lambda x: getattr(attr_value, x), ["arguments", "extrapos", "extrakw"]))
     if isinstance(attr_value, renpy.atl.RawBlock):

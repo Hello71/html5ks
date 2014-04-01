@@ -39,53 +39,40 @@ www/js/lib/when.js: when
 	export PYTHON=python2; cd when && $(NPM) update && $(NPM) run browserify-debug
 
 # === JSON ===
-ORPYC := ast2json/imachine.rpyc ast2json/imachine_replay.rpyc \
-         ast2json/ui-strings.rpyc ast2json/ui-strings_FR.rpyc
-OJSON := $(ORPYC:ast2json/%.rpyc=www/json/%.json)
+IRPYC := ast2json/imachine.rpyc ast2json/imachine_replay.rpyc
+IJSON := $(IRPYC:ast2json/%.rpyc=www/json/%.json)
 
-SRPYC := ast2json/script-a1-friday_FR.rpyc ast2json/script-a1-friday.rpyc \
-         ast2json/script-a1-monday_FR.rpyc ast2json/script-a1-monday.rpyc \
-         ast2json/script-a1-saturday_FR.rpyc ast2json/script-a1-saturday.rpyc \
-         ast2json/script-a1-sunday_FR.rpyc ast2json/script-a1-sunday.rpyc \
-         ast2json/script-a1-thursday_FR.rpyc ast2json/script-a1-thursday.rpyc \
-         ast2json/script-a1-tuesday_FR.rpyc ast2json/script-a1-tuesday.rpyc \
-         ast2json/script-a1-wednesday_FR.rpyc ast2json/script-a1-wednesday.rpyc \
-         ast2json/script-a2-emi_FR.rpyc ast2json/script-a2-emi.rpyc \
-         ast2json/script-a2-hanako_FR.rpyc ast2json/script-a2-hanako.rpyc \
-         ast2json/script-a2-lilly_FR.rpyc ast2json/script-a2-lilly.rpyc \
-         ast2json/script-a2-rin_FR.rpyc ast2json/script-a2-rin.rpyc \
-         ast2json/script-a2-shizune_FR.rpyc ast2json/script-a2-shizune.rpyc \
-         ast2json/script-a3-emi_FR.rpyc ast2json/script-a3-emi.rpyc \
-         ast2json/script-a3-hanako_FR.rpyc ast2json/script-a3-hanako.rpyc \
-         ast2json/script-a3-lilly_FR.rpyc ast2json/script-a3-lilly.rpyc \
-         ast2json/script-a3-rin_FR.rpyc ast2json/script-a3-rin.rpyc \
-         ast2json/script-a3-shizune_FR.rpyc ast2json/script-a3-shizune.rpyc \
-         ast2json/script-a4-emi_FR.rpyc ast2json/script-a4-emi.rpyc \
-         ast2json/script-a4-hanako_FR.rpyc ast2json/script-a4-hanako.rpyc \
-         ast2json/script-a4-lilly_FR.rpyc ast2json/script-a4-lilly.rpyc \
-         ast2json/script-a4-rin_FR.rpyc ast2json/script-a4-rin.rpyc \
-         ast2json/script-a4-shizune_FR.rpyc ast2json/script-a4-shizune.rpyc
+URPYC := ast2json/ui-strings.rpyc ast2json/ui-strings_FR.rpyc
+UJSON := $(URPYC:ast2json/%.rpyc=www/json/%.json)
+
+SRPYC := $(wildcard ast2json/script-a*.rpyc)
 JSONI := $(SRPYC:%.rpyc=%.json.i)
 SJSON := $(SRPYC:ast2json/%.rpyc=www/json/%.json)
 
-JSON := $(OJSON) $(SJSON)
+JSON := $(IJSON) $(UJSON) $(SJSON)
 JSONGZ := $(JSON:=.gz)
 AJSON := $(JSON) $(JSONGZ)
 
-# FIXME
 json: $(AJSON)
 
 %.json.i: ast2json/rpyc2json.py %.rpyc
 	$^ $@
 
-www/json/script-%.json: ast2json/script2json.py ast2json/script-%.json.i
+$(SJSON): www/json/%.json: ast2json/script2json.py ast2json/%.json.i
 	$^ $@
 
-$(OJSON): www/json/%.json: ast2json/rpyc2json.py ast2json/%.rpyc
+$(UJSON): www/json/%.json: ast2json/strings2json.py ast2json/%.json.i
+	$^ $@
+
+$(IJSON): www/json/%.json: ast2json/imachine2json.py ast2json/%.json.i
 	$^ $@
 
 %.json.gz: %.json
+ifdef DEFLUFF
+	$(GZIP) -c $< | $(DEFLUFF) > $@
+else
 	$(GZIP) -c $< > $@
+endif
 	touch $< $@
 
 # === VIDEO ===
@@ -140,38 +127,11 @@ PNG := $(shell find www/dump -name '*.png' ! -name 'ctc_strip.png')
 JPG := $(shell find www/dump -name '*.jpg')
 WEBP := $(PNG:.png=.webp) $(JPG:.jpg=.webp)
 CTC_ANIM_SRC := www/dump/ui/ctc_strip.png
-CTC_ANIM_MORE_TMP := www/dump/ui/ctc_strip-1.png \
-                     www/dump/ui/ctc_strip-2.png www/dump/ui/ctc_strip-3.png \
-                     www/dump/ui/ctc_strip-4.png www/dump/ui/ctc_strip-5.png \
-                     www/dump/ui/ctc_strip-6.png www/dump/ui/ctc_strip-7.png \
-                     www/dump/ui/ctc_strip-8.png www/dump/ui/ctc_strip-9.png \
-                     www/dump/ui/ctc_strip-10.png www/dump/ui/ctc_strip-11.png \
-                     www/dump/ui/ctc_strip-12.png www/dump/ui/ctc_strip-13.png \
-                     www/dump/ui/ctc_strip-14.png www/dump/ui/ctc_strip-15.png \
-                     www/dump/ui/ctc_strip-16.png www/dump/ui/ctc_strip-17.png \
-                     www/dump/ui/ctc_strip-18.png www/dump/ui/ctc_strip-19.png \
-                     www/dump/ui/ctc_strip-20.png www/dump/ui/ctc_strip-21.png \
-                     www/dump/ui/ctc_strip-22.png www/dump/ui/ctc_strip-23.png \
-                     www/dump/ui/ctc_strip-24.png www/dump/ui/ctc_strip-25.png \
-                     www/dump/ui/ctc_strip-26.png www/dump/ui/ctc_strip-27.png \
-                     www/dump/ui/ctc_strip-28.png www/dump/ui/ctc_strip-29.png \
-                     www/dump/ui/ctc_strip-30.png www/dump/ui/ctc_strip-31.png \
-                     www/dump/ui/ctc_strip-32.png www/dump/ui/ctc_strip-33.png \
-                     www/dump/ui/ctc_strip-34.png www/dump/ui/ctc_strip-35.png \
-                     www/dump/ui/ctc_strip-36.png www/dump/ui/ctc_strip-37.png \
-                     www/dump/ui/ctc_strip-38.png www/dump/ui/ctc_strip-39.png \
-                     www/dump/ui/ctc_strip-40.png www/dump/ui/ctc_strip-41.png \
-                     www/dump/ui/ctc_strip-42.png www/dump/ui/ctc_strip-43.png \
-                     www/dump/ui/ctc_strip-44.png www/dump/ui/ctc_strip-45.png \
-                     www/dump/ui/ctc_strip-46.png www/dump/ui/ctc_strip-47.png \
-                     www/dump/ui/ctc_strip-48.png www/dump/ui/ctc_strip-49.png \
-                     www/dump/ui/ctc_strip-50.png www/dump/ui/ctc_strip-51.png \
-                     www/dump/ui/ctc_strip-52.png www/dump/ui/ctc_strip-53.png \
-                     www/dump/ui/ctc_strip-54.png www/dump/ui/ctc_strip-55.png \
-                     www/dump/ui/ctc_strip-56.png www/dump/ui/ctc_strip-57.png \
-                     www/dump/ui/ctc_strip-58.png www/dump/ui/ctc_strip-59.png \
-                     www/dump/ui/ctc_strip-60.png www/dump/ui/ctc_strip-61.png \
-                     www/dump/ui/ctc_strip-62.png www/dump/ui/ctc_strip-63.png
+CTC_ANIM_MORE_TMP := $(foreach n, 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17
+																	18 19 20 21 22 23 24 25 26 27 28 29 30 31 32
+																	33 34 35 36 37 38 39 40 41 42 43 44 45 46 47
+																	48 49 50 51 52 53 54 55 56 57 58 59 60 61 62
+																	63, www/dump/ui/ctc_strip-$(n).png)
 CTC_ANIM_TMP := www/dump/ui/ctc_strip-0.png $(CTC_ANIM_MORE_TMP)
 CTC_ANIM_TMP_WEBP := $(CTC_ANIM_TMP:%.png=%.webp)
 CTC_ANIM_TMP_ALL := $(CTC_ANIM_TMP) $(CTC_ANIM_TMP_WEBP)
