@@ -5,9 +5,9 @@ import re
 import shlex
 import shutil
 import subprocess
-from sys import stderr
 
 cmds = {}
+warnings = []
 
 class CheckError(Exception):
     pass
@@ -16,15 +16,31 @@ def checking(thing):
     stderr.write("checking %s... " % thing)
     stderr.flush()
 
-def check(name, flags=[], optional=False, var=None, run=True):
+def warn(string):
+    warnings.append(string)
+    stderr.write("WARNING: %s\n" % string)
+
+def check(name, why, flags=[], optional=False, var=None, run=True):
+    global warn
     checking("for %s" % name)
     var = var or name.upper()
-    split = shlex.split(os.getenv(var) or name)
+    varvalue = os.getenv(var)
+    if varvalue == '':
+        stderr.write("skipping\n")
+        if not optional:
+            warn("%s is required to %s, the code will not fall back gracefully without it!" % (name, why))
+        return
+    elif varvalue is None:
+        varvalue = name
+    split = shlex.split(varvalue)
     exe = shutil.which(split[0])
     if not exe:
         stderr.write("not found\n")
         if not optional:
             raise CheckError()
+        else:
+            warn("%s is recommended to %s." % (name, why))
+            return
     stderr.write("%s\n" % exe)
     cmd = [exe] + split[1:] + flags + shlex.split(os.getenv(var + "FLAGS") or "")
     if run:
@@ -51,27 +67,34 @@ def ffmpeg_check(name, regex, checks, output):
             stderr.write("no\n")
             raise CheckError()
 
-try:
-    check("zopfli", var="GZIP")
-except CheckError:
-    check("gzip", ["-9"])
+if __name__ == "__main__":
+    # no, this line isn't bugged. really. examine check() and Makefile
+    if not check("zopfli", "compress gzip files better than gzip -9", optional=True, var="GZIP"):
+        check("gzip", "pre-compress the JSON files", ["-9"])
 
-check("apngasm", run=False)
-check("convert")
-check("cwebp", ["-quiet", "-alpha_cleanup", "-m", "6"])
-ffmpeg = check("ffmpeg", ["-v", "warning", "-y"], run=False)
-ffmpeg_formats = run_ffmpeg("-formats")
-ffmpeg_check("demuxing", "D.", ["matroska,webm", "ogg", "wav", "yuv4mpegpipe"], ffmpeg_formats)
-ffmpeg_check("muxing", ".E", ["ipod", "mp4", "ogg", "wav", "webm", "yuv4mpegpipe"], ffmpeg_formats)
-ffmpeg_check("decoding", ".{6}", ["mpeg4", "rawvideo", "pcm_s16le", "vorbis"], run_ffmpeg("-decoders"))
-ffmpeg_check("encoding", ".{6}", ["libx264", "rawvideo", "libtheora", "libvpx", "libvpx-vp9", "libfdk_aac", "libopus", "pcm_s16le"], run_ffmpeg("-encoders"))
-check("npm", ["--quiet"])
-check("webpmux")
-check("defluff", optional=True, run=False)
-check("pngquant", optional=True)
-check("zopflipng", optional=True)
+    check("apngasm", "assemble the click-to-continue image", run=False)
+    check("convert", "perform miscellaneous actions on the images")
+    check("cwebp", "convert all images to WebP for webkit browsers", ["-quiet", "-alpha_cleanup", "-m", "6"])
+    ffmpeg = check("ffmpeg", "convert audio and video to HTML5 formats", ["-v", "warning", "-y"], run=False)
+    if ffmpeg:
+        ffmpeg_formats = run_ffmpeg("-formats")
+        ffmpeg_check("demuxing", "D.", ["matroska,webm", "ogg", "wav", "yuv4mpegpipe"], ffmpeg_formats)
+        ffmpeg_check("muxing", ".E", ["ipod", "mp4", "ogg", "wav", "webm", "yuv4mpegpipe"], ffmpeg_formats)
+        ffmpeg_check("decoding", ".{6}", ["mpeg4", "rawvideo", "pcm_s16le", "vorbis"], run_ffmpeg("-decoders"))
+        ffmpeg_check("encoding", ".{6}", ["libx264", "rawvideo", "libtheora", "libvpx", "libvpx-vp9", "libfdk_aac", "libopus", "pcm_s16le"], run_ffmpeg("-encoders"))
+    check("npm", "install uglifyjs", ["--quiet"])
+    check("webpmux", "assemble the WebP click-to-continue image")
+    check("defluff", "decrease the size of DEFLATE files including gzip and PNG files", optional=True, run=False)
+    check("pngquant", "quantize PNG images, improving compatibility and dramatically decreasing size", optional=True)
+    check("zopflipng", "recompress DEFLATE files including gzip and PNG files", optional=True)
 
-stderr.write("creating Makefile.inc\n")
+    stderr.write("creating Makefile.inc\n")
 
-with open("Makefile.inc", "w") as f:
-    f.write(''.join('%s := %s\n' % (k, subprocess.list2cmdline(cmds[k])) for k in cmds))
+    with open("Makefile.inc", "w") as f:
+        f.write(''.join('%s := %s\n' % (k, subprocess.list2cmdline(cmds[k])) for k in cmds))
+
+    if len(warnings):
+        stderr.write("Warnings during configuration:\n")
+        stderr.write('\n'.join(warnings) + '\n')
+
+    stderr.write("Run `make' now to build HTML5KS.\n")

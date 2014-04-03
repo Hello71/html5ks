@@ -68,12 +68,14 @@ $(IJSON): www/json/%.json: ast2json/imachine2json.py ast2json/%.json.i
 	$^ $@
 
 %.json.gz: %.json
+ifdef GZIP
 ifdef DEFLUFF
 	$(GZIP) -c $< | $(DEFLUFF) > $@
 else
 	$(GZIP) -c $< > $@
 endif
 	touch $< $@
+endif
 
 # === VIDEO ===
 

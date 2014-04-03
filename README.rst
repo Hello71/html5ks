@@ -55,11 +55,9 @@ Build steps
 Disabling unused conversions
 ----------------------------
 
-To reduce programs and build time required, some conversions can be disabled.
-Passing --minimal to configure will disable the safe ones.
+To reduce programs and build time required, some conversions can be disabled by passing ``CONVERSION=`` on the command line, e.g. ``ZOPFLIPNG= ./configure``.
 
-Alternatively, specific conversions can be disabled by passing --disable-conversion on the command line.
-See ``./configure --help`` for more information.
+Alternatively, just don't install those programs. Conversions that are safe to disable are labeled as such in ``configure``. If a required conversion is disabled, configure will print a big error.
 
 Reducing disk usage
 ===================
