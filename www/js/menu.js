@@ -168,21 +168,14 @@ html5ks.menu = {
     this.initEvents();
     this.initOptions();
 
-    when.all([html5ks.fetch("json", "imachine"),
-              html5ks.fetch("json", "script").then(function (d) {
-                for (var k in d) {
-                  if (k.slice(0, 3) === (html5ks.persistent.language === "en" ? "fr_" : "en_")) {
-                    delete d[k];
-                  }
-                }
-              }, console.error)]).then(function () {
-                var start = this.elements.main.start;
-                start.addEventListener("click", function () {
-                  this.elements.mainMenu.style.display = "none";
-                  html5ks.imachine.start().then(this.mainMenu.bind(this), console.error);
-                }.bind(this), false);
-                start.classList.remove("disabled");
-              }.bind(this), console.error);
+    html5ks.fetch("json", "imachine").then(function () {
+      var start = this.elements.main.start;
+      start.addEventListener("click", function () {
+        this.elements.mainMenu.style.display = "none";
+        html5ks.imachine.start().then(this.mainMenu.bind(this), console.error);
+      }.bind(this), false);
+      start.classList.remove("disabled");
+    }.bind(this), console.error);
   },
 
   context: function (show) {

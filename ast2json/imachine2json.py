@@ -8,9 +8,9 @@ def imachine2json(ast):
     if ast[0]['_type'] != 'Label':
         raise TypeError('obj does not start with Label, wrong file?')
     for label in ast:
-        if label['parameters'] is not None or label['hide']:
+        if label['parameters'] is not None:
             raise NotImplementedError()
-        ret[label['name']] = label
+        ret[label['name']] = label['block']
     return ret
 
 with open(sys.argv[1], 'r') as f:

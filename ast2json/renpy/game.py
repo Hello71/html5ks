@@ -1,4 +1,4 @@
-# Copyright 2004-2013 Tom Rothamel <pytom@bishoujo.us>
+# Copyright 2004-2010 PyTom <pytom@bishoujo.us>
 #
 # Permission is hereby granted, free of charge, to any person
 # obtaining a copy of this software and associated documentation files
@@ -22,6 +22,13 @@
 # This module is intended to be used as a singleton object.
 # It's purpose is to store in one global all of the data that would
 # be to annoying to lug around otherwise. 
+#
+# Many modules will probablt want to import this using a command like:
+#
+# import renpy.game as game
+#
+# These modules will then be able to access the various globals defined
+# in this module as fields on game.
 
 import renpy
 
@@ -33,16 +40,24 @@ basepath = None
 searchpath = [ ]
 
 # The options that were read off the command line.
-args = None
+options = None
 
 # The game's script.
 script = None
+
+# A shallow copy of the store dictionary made at the end of the init
+# phase. If a key in here points to the same value here as it does in
+# the store, it is not saved.
+clean_store = None
 
 # A stack of execution contexts.
 contexts = [ ]
 
 # The interface that the game uses to interact with the user.
 interface = None
+
+# Are we still running init blocks?
+init_phase = True
 
 # Are we inside lint?
 lint = False
@@ -80,9 +95,6 @@ less_updates = False
 # Should we never show the mouse?
 less_mouse = False
 
-# Should we not imagedissiolve?
-less_imagedissolve = False
-
 # The class that's used to hold the persistent data.
 class Persistent(object):
 
@@ -97,107 +109,75 @@ class Persistent(object):
         return None
         
 # The persistent data that's kept from session to session
-persistent = Persistent()
+persistent = None
 
-class Preferences(renpy.object.Object):
+class Preferences(object):
     """
     Stores preferences that will one day be persisted.
     """
-    __version__ = 5
-
-    def after_upgrade(self, version):
-        if version < 1:
-            self.mute_volumes = 0
-        if version < 2:
-            self.using_afm_enable = False
-        if version < 3:
-            self.physical_size = None
-        if version < 4:
-            self.renderer = "auto"
-            self.performance_test = True
-        if version < 5:
-            self.language = None
-            
-    def __init__(self):
-        self.fullscreen = False 
-        self.skip_unseen = False
-        self.text_cps = 0
-        self.afm_time = 0
-        self.afm_enable = True
+    def reinit(self):
+        self.fullscreen = False # W0201
+        self.skip_unseen = False # W0201
+        self.text_cps = 0 # W0201
+        self.afm_time = 0 # W0201
+        self.afm_enable = True # W0201
+        
         
         # These will be going away soon.
-        self.sound = True
-        self.music = True
+        self.sound = True # W0201
+        self.music = True # W0201
+
 
         # 2 - All transitions.
         # 1 - Only non-default transitions.
         # 0 - No transitions.
-        self.transitions = 2
+        self.transitions = 2 # W0201
 
-        self.skip_after_choices = False
+        self.skip_after_choices = False # W0201
 
         # Mixer channel info.
-
-        # A map from channel name to the current volume (between 0 and 1).
-        self.volumes = { }
-
-        # True if the channel should not play music. False
-        # otherwise. (Not used anymore.)
-        self.mute = { }
+        self.volumes = { } # W0201
+        self.mute = { } # W0201
 
         # Joystick mappings.
-        self.joymap = dict(
+        self.joymap = dict( # W0201
             joy_left="Axis 0.0 Negative",
             joy_right="Axis 0.0 Positive",
             joy_up="Axis 0.1 Negative",
             joy_down="Axis 0.1 Positive",
             joy_dismiss="Button 0.0")
-        
-        # The size of the window, or None if we don't know it yet.
-        self.physical_size = None
-        
-        # The graphics renderer we use.
-        self.renderer = "auto"
-        
-        # Should we do a performance test on startup?
-        self.performance_test = True
 
-        # The language we use for translations.
-        self.language = None
-        
     def set_volume(self, mixer, volume):
+        if volume == 0:
+            self.mute[mixer] = True
+        else:
+            self.mute[mixer] = False
+
         self.volumes[mixer] = volume
 
     def get_volume(self, mixer):
-        return self.volumes.get(mixer, 0)
+        return self.volumes[mixer]
         
-    def set_mute(self, mixer, mute):
-        self.mute[mixer] = mute
+    def __setstate__(self, state):
+        self.reinit()
+        vars(self).update(state)
 
-    def get_mute(self, mixer):
-        return self.mute[mixer]
-    
+    def __init__(self):
+        self.reinit()
+
 # The current preferences.
-preferences = Preferences()
+preferences = None
 
-class RestartContext(Exception):
+class RestartException(Exception):
     """
-    Restarts the current context. If `label` is given, calls that label
-    in the restarted context.
+    This class will be used to convey to the system that the context has
+    been changed, and therefore execution needs to be restarted.
     """
 
-    def __init__(self, label):
+    def __init__(self, contexts, label): # W0231
+        self.contexts = contexts
         self.label = label
-
-class RestartTopContext(Exception):
-    """
-    Restarts the top context. If `label` is given, calls that label
-    in the restarted context.
-    """
-
-    def __init__(self, label):
-        self.label = label
-   
+    
 class FullRestartException(Exception):
     """
     An exception of this type forces a hard restart, completely
@@ -207,6 +187,7 @@ class FullRestartException(Exception):
     def __init__(self, reason="end_game"): # W0231
         self.reason = reason
 
+    
 class UtterRestartException(Exception):
     """
     An exception of this type forces an even harder restart, causing
@@ -216,16 +197,8 @@ class UtterRestartException(Exception):
 class QuitException(Exception):
     """
     An exception of this class will let us force a safe quit, from
-    anywhere in the program.
-    
-    `relaunch`
-        If given, the program will run another copy of itself, with the
-        same arguments.
+    anywhere in the program. Do not pass go, do not collect $200.
     """
-
-    def __init__(self, relaunch=False):
-        Exception.__init__(self)
-        self.relaunch = relaunch
 
 class JumpException(Exception):
     """
@@ -240,47 +213,11 @@ class JumpOutException(Exception):
     the current context, and then raises a JumpException.
     """
 
-class CallException(Exception):
-    """
-    Raise this exception to cause the current statement to terminate, 
-    and control to be transferred to the named label.
-    """
-
-    def __init__(self, label, args, kwargs):
-        Exception.__init__(self)
-        
-        self.label = label
-        self.args = args
-        self.kwargs = kwargs
-
-class EndReplay(Exception):
-    """
-    Raise this exception to end the current replay (the current call to 
-    call_replay).
-    """
-
 class ParseErrorException(Exception):
     """
     This is raised when a parse error occurs, after it has been
     reported to the user.
     """
-
-# A tuple of exceptions that should not be caught by the 
-# exception reporting mechanism.
-CONTROL_EXCEPTIONS = (
-    RestartContext,
-    RestartTopContext,
-    FullRestartException,
-    UtterRestartException,
-    QuitException,
-    JumpException,
-    JumpOutException,
-    CallException,
-    EndReplay,
-    ParseErrorException,
-    KeyboardInterrupt,
-    )
-
     
 def context(index=-1):
     """
@@ -290,7 +227,7 @@ def context(index=-1):
 
     return contexts[index]
 
-def invoke_in_new_context(callable, *args, **kwargs): #@ReservedAssignment
+def invoke_in_new_context(callable, *args, **kwargs):
     """
     This pushes the current context, and invokes the given python
     function in a new context. When that function returns or raises an
@@ -312,29 +249,17 @@ def invoke_in_new_context(callable, *args, **kwargs): #@ReservedAssignment
     inside an interaction.
     """
 
-    context = renpy.execution.Context(False, contexts[-1], clear=True)
+    context = renpy.execution.Context(False, contexts[-1])
     contexts.append(context)
 
-    if renpy.display.interface is not None:
-        renpy.display.interface.enter_context()
-
     try:
-
         return callable(*args, **kwargs)
-
-    except renpy.game.JumpOutException as e:        
-
-        raise renpy.game.JumpException(e.args[0])
-
     finally:
-
         contexts.pop()
-        contexts[-1].do_deferred_rollback()
 
-        if interface.restart_interaction and contexts:
+        if interface.restart_interaction:
             contexts[-1].scene_lists.focused = None
 
-        
         
 def call_in_new_context(label, *args, **kwargs):
     """
@@ -347,11 +272,9 @@ def call_in_new_context(label, *args, **kwargs):
     inside an interaction.
     """
 
-    context = renpy.execution.Context(False, contexts[-1], clear=True)
+    context = renpy.execution.Context(False, contexts[-1])
     contexts.append(context)
 
-    if renpy.display.interface is not None:
-        renpy.display.interface.enter_context()
     
     if args:
         renpy.store._args = args
@@ -366,72 +289,22 @@ def call_in_new_context(label, *args, **kwargs):
     try:
             
         context.goto_label(label)
-        renpy.execution.run_context(False)
+        context.run()
 
-        rv = renpy.store._return #@UndefinedVariable
+        rv = renpy.store._return        
+        context.pop_all_dynamic()
+        contexts.pop()
 
         return rv
         
     except renpy.game.JumpOutException as e:        
 
+        context.pop_all_dynamic()
+        contexts.pop()
         raise renpy.game.JumpException(e.args[0])
 
     finally:
-
-        contexts.pop()
-        contexts[-1].do_deferred_rollback()
-   
-        if interface.restart_interaction and contexts:
+        if interface.restart_interaction:
             contexts[-1].scene_lists.focused = None
-
-def call_replay(label, scope={}):
-    """
-    :doc: replay
     
-    Calls a label as a memory.
-
-    Keyword arguments are used to set the initial values of variables in the
-    memory context.
-    """
-
-    renpy.game.log.complete()
-    
-    old_log = renpy.game.log
-    renpy.game.log = renpy.python.RollbackLog()
-    
-    sb = renpy.python.StoreBackup()
-    renpy.python.clean_stores()
-    
-    context = renpy.execution.Context(True)
-    contexts.append(context)
-
-    if renpy.display.interface is not None:
-        renpy.display.interface.enter_context()
-
-    for k, v in scope.items():
-        setattr(renpy.store, k, v)
         
-    renpy.store._in_replay = label
-    
-    try:
-
-        context.goto_label("_start_replay")
-        renpy.execution.run_context(False)
-
-    except EndReplay:
-        pass
-
-    finally:
-        contexts.pop()
-        renpy.game.log = old_log
-        sb.restore()
-         
-        if interface.restart_interaction and contexts:
-            contexts[-1].scene_lists.focused = None
-    
-    
-# Type information.       
-if False:
-    script = renpy.script.Script()
-    interface = renpy.display.core.Interface()
-    log = renpy.python.RollbackLog()

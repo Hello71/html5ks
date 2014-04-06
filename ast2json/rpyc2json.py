@@ -42,6 +42,8 @@ import renpy.game
 renpy.game.script = Dummy()
 import renpy.ast
 import renpy.atl
+import renpy.statements
+import renpy.parser
 
 def pretty_print_ast(out_file, ast):
     json.dump(rast2json(ast), out_file, separators=(',', ':'))
@@ -49,6 +51,8 @@ def pretty_print_ast(out_file, ast):
 def node2json(node):
     to_return = {}
     to_return['_type'] = node.__class__.__name__
+    if isinstance(node, renpy.ast.UserStatement):
+        node.parsed = renpy.statements.parse(node, node.line)
     for attr in node.__slots__:
         to_return[attr] = get_value(getattr(node, attr))
 
@@ -64,6 +68,8 @@ def get_value(attr_value):
         return attr_value
     if isinstance(attr_value, list) or isinstance(attr_value, tuple):
         return [get_value(x) for x in attr_value]
+    if isinstance(attr_value, dict):
+        return attr_value
     if isinstance(attr_value, renpy.ast.Node):
         return node2json(attr_value)
     if isinstance(attr_value, renpy.ast.PyCode):

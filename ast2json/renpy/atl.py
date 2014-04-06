@@ -1,4 +1,4 @@
-# Copyright 2004-2013 Tom Rothamel <pytom@bishoujo.us>
+# Copyright 2004-2010 PyTom <pytom@bishoujo.us>
 #
 # Permission is hereby granted, free of charge, to any person
 # obtaining a copy of this software and associated documentation files
@@ -23,12 +23,12 @@ import renpy
 import random
 
 def compiling(loc):
-    file, number = loc #@ReservedAssignment
+    file, number = loc
 
     renpy.game.exception_info = "Compiling ATL code at %s:%d" % (file, number)
 
 def executing(loc):
-    file, number = loc #@ReservedAssignment
+    file, number = loc
     
     renpy.game.exception_info = "Executing ATL code at %s:%d" % (file, number)
 
@@ -69,8 +69,6 @@ PROPERTIES = {
         "xalign" : float,
         "yalign" : float,
         "rotate" : float,
-        "rotate_pad" : bool,
-        "transform_anchor" : bool,
         "xzoom" : float,
         "yzoom" : float,
         "zoom" : float,
@@ -85,13 +83,7 @@ PROPERTIES = {
         "corner2" : (float, float),
         "subpixel" : bool,
         "delay" : float,
-        "xoffset" : float,
-        "yoffset" : float,
-        "offset" : (int, int),
-        "xcenter" : position,
-        "ycenter" : position,
         }
-
 
 def correct_type(v, b, ty):
     """
@@ -99,15 +91,12 @@ def correct_type(v, b, ty):
     """
 
     if ty is position:
-        if v is None:
-            return None
-        else:
-            return type(b)(v)
+        return type(b)(v)
     else:
         return ty(v)
 
 
-def interpolate(t, a, b, type): #@ReservedAssignment
+def interpolate(t, a, b, type):
     """
     Linearly interpolate the arguments. 
     """
@@ -116,10 +105,7 @@ def interpolate(t, a, b, type): #@ReservedAssignment
         return b
     
     # Recurse into tuples.
-    if isinstance(b, tuple):        
-        if a is None:
-            a = [ None ] * len(b)
-        
+    if isinstance(b, tuple):
         return tuple(interpolate(t, i, j, ty) for i, j, ty in zip(a, b, type))
 
     # Deal with booleans, nones, etc.
@@ -142,9 +128,6 @@ def interpolate_spline(t, spline):
 
     if isinstance(spline[-1], tuple):
         return tuple(interpolate_spline(t, i) for i in zip(*spline))
-
-    if spline[0] is None:
-        return spline[-1]
         
     if len(spline) == 2:
         t_p = 1.0 - t        
@@ -180,9 +163,8 @@ class Context(object):
     def __init__(self, context):
         self.context = context
 
-    def eval(self, expr): #@ReservedAssignment
-        expr = renpy.python.escape_unicode(expr)
-        return eval(expr, renpy.store.__dict__, self.context) #@UndefinedVariable
+    def eval(self, expr):
+        return eval(expr, renpy.store.__dict__, self.context)
     
 # This is intended to be subclassed by ATLTransform. It takes care of
 # managing ATL execution, which allows ATLTransform itself to not care
@@ -194,8 +176,8 @@ class ATLTransformBase(renpy.object.Object):
     
     def __init__(self, atl, context, parameters):
 
-        # The constructor will be called by atltransform.
-
+        super(ATLTransformBase, self).__init__()
+        
         if parameters is None:
             parameters = ATLTransformBase.parameters
 
@@ -238,26 +220,12 @@ class ATLTransformBase(renpy.object.Object):
         requires that t.atl is self.atl.
         """
 
-        super(ATLTransformBase, self).take_execution_state(t)
-        
-        if t.atl is not self.atl:
-            return
-
         self.done = t.done
         self.block = t.block
         self.atl_state = t.atl_state
         self.transform_event = t.transform_event
         self.last_transform_event = t.last_transform_event
         self.last_child_transform_event = t.last_child_transform_event
-
-        self.st = t.st
-        self.at = t.at
-        self.st_offset = t.st_offset
-        self.at_offset = t.at_offset
-
-        if self.child is renpy.display.motion.null:
-            self.child = t.child
-        
 
     def __call__(self, *args, **kwargs):
 
@@ -269,8 +237,8 @@ class ATLTransformBase(renpy.object.Object):
 
         positional = list(self.parameters.positional)
         args = list(args)
-
-        child = None
+        
+        child = self.child
 
         if not positional and args:
             child = args.pop(0)
@@ -301,12 +269,6 @@ class ATLTransformBase(renpy.object.Object):
             else:
                 raise Exception('Parameter %r is not known by ATL Transform.' % k)
 
-        if child is None:
-            child = self.child
-            
-        if child is None:
-            child = renpy.display.motion.get_null()
-
         # Create a new ATL Transform.
         parameters = renpy.ast.ParameterInfo({}, positional, None, None)
 
@@ -318,11 +280,11 @@ class ATLTransformBase(renpy.object.Object):
             parameters=parameters)
 
         rv.take_state(self)
-        
+
         return rv
 
     
-    def compile(self): #@ReservedAssignment
+    def compile(self):
         """
         Compiles the ATL code into a block. As necessary, updates the
         properties.
@@ -359,13 +321,10 @@ class ATLTransformBase(renpy.object.Object):
             if self.child.transform_event != self.last_child_transform_event:
                 self.last_child_transform_event = self.child.transform_event
                 self.transform_event = self.child.transform_event
-                
+
         # Hide request.
         if trans.hide_request:
             self.transform_event = "hide"
-
-        if trans.replaced_request:
-            self.transform_event = "replaced"
             
         # Notice transform events.
         if self.transform_event != self.last_transform_event:
@@ -380,7 +339,7 @@ class ATLTransformBase(renpy.object.Object):
             timebase = at
         else:
             timebase = st
-
+        
         action, arg, pause = self.block.execute(trans, timebase, self.atl_state, event)
 
         renpy.game.exception_info = old_exception_info
@@ -393,9 +352,11 @@ class ATLTransformBase(renpy.object.Object):
             self.done = True
 
         return pause
+
     
-    def predict_one(self):
-        self.atl.predict(self.context)
+    def predict(self, callback):
+        self.atl.predict(self.context, callback)
+
         
     def visit(self):
         if not self.block:
@@ -413,12 +374,13 @@ class RawStatement(renpy.object.Object):
         
     # Compiles this RawStatement into a Statement, by using ctx to
     # evaluate expressions as necessary.
-    def compile(self, ctx): #@ReservedAssignment
+    def compile(self, ctx):
         raise Exception("Compile not implemented.")
 
     # Predicts the images used by this statement.
-    def predict(self, ctx):
+    def predict(self, ctx, callback):
         return
+    
 
 # The base class for compiled ATL Statements.
 class Statement(renpy.object.Object):
@@ -474,16 +436,16 @@ class RawBlock(RawStatement):
         
         self.animation = animation
         
-    def compile(self, ctx): #@ReservedAssignment
+    def compile(self, ctx):
         compiling(self.loc)
 
         statements = [ i.compile(ctx) for i in self.statements ]
 
         return Block(self.loc, statements)
 
-    def predict(self, ctx):
+    def predict(self, ctx, callback):
         for i in self.statements:
-            i.predict(ctx)
+            i.predict(ctx, callback)
     
     
 # A compiled ATL block. 
@@ -544,7 +506,7 @@ class Block(Statement):
                     return "next", target - start, None
 
 
-                # Find the statement and try to run it.
+               # Find the statement and try to run it.
                 stmt = self.statements[index]
                 action, arg, pause = stmt.execute(trans, target - start, child_state, event)
 
@@ -573,12 +535,12 @@ class Block(Statement):
                     loop_end = target - arg
                     duration = loop_end - loop_start
 
-                    if duration <= 0:
-                        raise Exception("ATL appears to be in an infinite loop.")
-
                     # Figure how many durations can occur between the
                     # start of the loop and now.
                     new_repeats = int((target - loop_start) / duration)
+
+                    if duration <= 0:
+                        raise Exception("ATL appears to be in an infinite loop.")
 
                     if count is not None:
                         if repeats + new_repeats >= count:
@@ -655,7 +617,7 @@ class RawMultipurpose(RawStatement):
     def add_spline(self, name, exprs):
         self.splines.append((name, exprs))
         
-    def compile(self, ctx): #@ReservedAssignment
+    def compile(self, ctx):
 
         compiling(self.loc)
         
@@ -717,7 +679,7 @@ class RawMultipurpose(RawStatement):
 
             splines.append((name, values))
             
-        for expr, _with in self.expressions:
+        for expr, with_ in self.expressions:
             try:
                 value = ctx.eval(expr)
             except:
@@ -739,9 +701,9 @@ class RawMultipurpose(RawStatement):
 
         return Interpolation(self.loc, warper, duration, properties, self.revolution, circles, splines)
             
-    def predict(self, ctx):
+    def predict(self, ctx, callback):
 
-        for i, _j in self.expressions:
+        for i, j in self.expressions:
             
             try:
                 i = ctx.eval(i)
@@ -749,14 +711,17 @@ class RawMultipurpose(RawStatement):
                 continue
 
             if isinstance(i, ATLTransformBase):
-                i.atl.predict(ctx)
+                i.atl.predict(ctx, callback)
                 return
 
             try:
-                renpy.easy.predict(i)
+                i = renpy.easy.displayable(i)
             except:
                 continue
-            
+
+            if isinstance(i, renpy.display.core.Displayable):
+                i.predict(callback)
+
 # This lets us have an ATL transform as our child.
 class RawContainsExpr(RawStatement):
 
@@ -766,7 +731,7 @@ class RawContainsExpr(RawStatement):
 
         self.expression = expr
 
-    def compile(self, ctx): #@ReservedAssignment
+    def compile(self, ctx):
         compiling(self.loc)
         child = ctx.eval(self.expression)
         return Child(self.loc, child, None)
@@ -781,7 +746,7 @@ class RawChild(RawStatement):
 
         self.children = [ child ]
 
-    def compile(self, ctx): #@ReservedAssignment
+    def compile(self, ctx):
         box = renpy.display.layout.MultiBox(layout='fixed')
 
         for i in self.children:
@@ -806,9 +771,9 @@ class Child(Statement):
         
         old_child = trans.raw_child
 
-        if (old_child is not None) and (old_child is not renpy.display.motion.null) and (self.transition is not None):
+        if old_child is not None and self.transition is not None:
             child = self.transition(old_widget=old_child,
-                                    new_widget=self.child)
+                                          new_widget=self.child)
         else:
             child = self.child
 
@@ -865,10 +830,10 @@ class Interpolation(Statement):
             # Now, the things we change linearly are in the difference
             # between the new and old states.
             linear = trans.state.diff(newts)
-            
+
             revolution = None
             splines = [ ]
-
+            
             # Clockwise revolution.
             if self.revolution is not None:
 
@@ -919,19 +884,12 @@ class Interpolation(Statement):
                     
             state = (linear, revolution, splines)
 
-            # Ensure that we set things, even if they don't actually
-            # change from the old state.
-            for k, v in self.properties:
-                if k not in linear:
-                    setattr(trans.state, k, v)
-
         else:
             linear, revolution, splines = state
-
+            
         # Linearly interpolate between the things in linear.
         for k, (old, new) in linear.items():
             value = interpolate(complete, old, new, PROPERTIES[k])
-
             setattr(trans.state, k, value)            
             
         # Handle the revolution.
@@ -940,7 +898,6 @@ class Interpolation(Statement):
             trans.state.angle = interpolate(complete, startangle, endangle, float)
             trans.state.radius = interpolate(complete, startradius, endradius, float)
 
-            
         # Handle any splines we might have.
         for name, values in splines:
             value = interpolate_spline(complete, values)
@@ -964,7 +921,7 @@ class RawRepeat(RawStatement):
 
         self.repeats = repeats
 
-    def compile(self, ctx): #@ReservedAssignment
+    def compile(self, ctx):
 
         compiling(self.loc)
 
@@ -996,12 +953,12 @@ class RawParallel(RawStatement):
         super(RawParallel, self).__init__(loc)
         self.blocks = [ block ]
 
-    def compile(self, ctx): #@ReservedAssignment
+    def compile(self, ctx):
         return Parallel(self.loc, [i.compile(ctx) for i in self.blocks])
 
-    def predict(self, ctx):
+    def predict(self, ctx, callback):
         for i in self.blocks:
-            i.predict(ctx)
+            i.predict(ctx, callback)
     
         
 class Parallel(Statement):
@@ -1058,13 +1015,13 @@ class RawChoice(RawStatement):
 
         self.choices = [ (chance, block) ]
 
-    def compile(self, ctx): #@ReservedAssignment
+    def compile(self, ctx):
         compiling(self.loc)
         return Choice(self.loc, [ (ctx.eval(chance), block.compile(ctx)) for chance, block in self.choices])
 
-    def predict(self, ctx):
-        for _i, j in self.choices:
-            j.predict(ctx)
+    def predict(self, ctx, callback):
+        for i, j in self.choices:
+            j.predict(ctx, callback)
 
 class Choice(Statement):
 
@@ -1116,7 +1073,7 @@ class RawTime(RawStatement):
         super(RawTime, self).__init__(loc)
         self.time = time
 
-    def compile(self, ctx): #@ReservedAssignment
+    def compile(self, ctx):
         compiling(self.loc)
         return Time(self.loc, ctx.eval(self.time))
 
@@ -1140,7 +1097,7 @@ class RawOn(RawStatement):
 
         self.handlers = { name : block }
 
-    def compile(self, ctx): #@ReservedAssignment
+    def compile(self, ctx):
 
         compiling(self.loc)
 
@@ -1151,9 +1108,9 @@ class RawOn(RawStatement):
 
         return On(self.loc, handlers)
 
-    def predict(self, ctx):
+    def predict(self, ctx, callback):
         for i in self.handlers.values():
-            i.predict(ctx)
+            i.predict(ctx, callback)
 
 class On(Statement):
 
@@ -1172,6 +1129,7 @@ class On(Statement):
         else:
             name, start, cstate = state
 
+
         # If we have an external event, and we have a handler for it,
         # handle it.
         if event in self.handlers:
@@ -1182,7 +1140,6 @@ class On(Statement):
                 name = event
                 start = st
                 cstate = None
-
                 
         while True:
 
@@ -1194,19 +1151,18 @@ class On(Statement):
 
             # If we get a continue, save our state.
             if action == "continue":
-                
+
                 # If it comes from a hide block, indicate that.
-                if name == "hide" or name == "replaced":
+                if name == "hide":
                     trans.hide_response = False
-                    trans.replaced_response = False
-                    
+
                 return "continue", (name, start, arg), pause
 
             # If we get a next, then try going to the default
             # event, unless we're already in default, in which case we
             # go to None.
             elif action == "next":
-                if name == "default" or name == "hide" or name == "replaced":
+                if name == "default" or name == "hide":
                     name = None
                 else:
                     name = "default"
@@ -1242,7 +1198,7 @@ class RawEvent(RawStatement):
 
         self.name = name
 
-    def compile(self, ctx): #@ReservedAssignment
+    def compile(self, ctx):
         return Event(self.loc, self.name)
 
     
@@ -1264,11 +1220,10 @@ class RawFunction(RawStatement):
 
         self.expr = expr
 
-    def compile(self, ctx): #@ReservedAssignment
+    def compile(self, ctx):
         compiling(self.loc)
         return Function(self.loc, ctx.eval(self.expr))
 
-    
 class Function(Statement):
     
     def __init__(self, loc, function):
@@ -1283,6 +1238,8 @@ class Function(Statement):
             return "continue", None, fr
         else:
             return "next", 0, None
+
+        
     
     
 # This parses an ATL block.

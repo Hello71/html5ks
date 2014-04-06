@@ -1,4 +1,4 @@
-# Copyright 2004-2013 Tom Rothamel <pytom@bishoujo.us>
+# Copyright 2004-2010 PyTom <pytom@bishoujo.us>
 #
 # Permission is hereby granted, free of charge, to any person
 # obtaining a copy of this software and associated documentation files
@@ -22,250 +22,110 @@
 # This file ensures that renpy packages will be imported in the right
 # order.
 
-import sys
-import os
+# Some version numbers and things.
 
-# Version numbers.
-try:
-    from renpy.vc_version import vc_version; vc_version
-except ImportError:
-    vc_version = 0
-
-# The tuple giving the version. This needs to be updated when
-# we bump the version. 
-#
-# Be sure to change script_version in launcher/script_version.rpy.
-# Be sure to change config.version in tutorial/game/options.rpy.
-version_tuple = (6, 15, 4, vc_version)
-
-# A verbose string computed from that version.
-version = "Ren'Py " + ".".join(str(i) for i in version_tuple)
-
-# Other versions.
+# ***** ***** ***** ***** ***** ***** **** ***** ***** ***** *****
+# Be sure to change script_version in launcher/script_version.rpy, too!
+# Also check to see if we have to update renpy.py.
+version = "Ren'Py 6.10.2e"
 script_version = 5003000
 savegame_suffix = "-LT1.save"
-bytecode_version = 1
 
-# True if this is the first time we've started - even including
-# utter restarts.
-first_utter_start = True
-
-def setup_modulefinder(modulefinder):
-    import _renpy 
-
-    libexec = os.path.dirname(_renpy.__file__)
-
-    for i in [ "display", "gl", "angle", "text" ]:
-    
-        displaypath = os.path.join(libexec, "renpy", i)
-
-        if os.path.exists(displaypath):
-            modulefinder.AddPackagePath('renpy.' + i, displaypath)
-
-def import_cython():
-    """
-    Never called, but necessary to ensure that modulefinder will properly
-    grab the various cython modules.
-    """
-
-    import renpy.arguments #@UnresolvedImport
-
-    import renpy.display.accelerator #@UnresolvedImport
-    import renpy.display.render #@UnresolvedImport
-
-    import renpy.gl.gldraw #@UnresolvedImport
-    import renpy.gl.glenviron_fixed #@UnresolvedImport
-    import renpy.gl.glenviron_limited #@UnresolvedImport
-    import renpy.gl.glenviron_shader #@UnresolvedImport
-    import renpy.gl.glrtt_copy #@UnresolvedImport
-    import renpy.gl.glrtt_fbo #@UnresolvedImport
-    import renpy.gl.gltexture #@UnresolvedImport
-
-    import renpy.angle.gldraw #@UnresolvedImport
-    import renpy.angle.glenviron_shader #@UnresolvedImport
-    import renpy.angle.glrtt_copy #@UnresolvedImport
-    import renpy.angle.glrtt_fbo #@UnresolvedImport
-    import renpy.angle.gltexture #@UnresolvedImport
-    
-    
 def import_all():
 
-    
-    import renpy.display #@UnresolvedImport
+    import renpy.game
+
+    # Should probably be early, as we will add it as a base to serialized things.
+    import renpy.object 
 
     # Adds in the Ren'Py loader.
-    import renpy.loader #@UnresolvedImport
+    import renpy.loader
 
-    import renpy.ast #@UnresolvedImport
-    import renpy.atl #@UnresolvedImport
-    import renpy.curry #@UnresolvedImport
-    import renpy.easy #@UnresolvedImport
-    import renpy.execution #@UnresolvedImport
-    import renpy.loadsave #@UnresolvedImport
-    import renpy.parser #@UnresolvedImport
-    import renpy.python #@UnresolvedImport
-    import renpy.script #@UnresolvedImport
-    import renpy.statements #@UnresolvedImport
-    import renpy.style #@UnresolvedImport
-    import renpy.substitutions #@UnresolvedImport
-    import renpy.translation #@UnresolvedImport
+    import renpy.ast
+    import renpy.atl
+    import renpy.curry
+    import renpy.easy
+    import renpy.execution
+    import renpy.loadsave
+    import renpy.parser
+    import renpy.python # object
+    import renpy.remote
+    import renpy.script
+    import renpy.statements
+    import renpy.style
 
-    import renpy.display.presplash #@UnresolvedImport
-    import renpy.display.pgrender #@UnresolvedImport
-    import renpy.display.scale #@UnresolvedImport
-    import renpy.display.module #@UnresolvedImport
-
-    def update_path(package):
-        """
-        Update the __path__ of package, to import binary modules from a libexec
-        directory.
-        """
-        
-        name = package.__name__.split(".")
-        
-        import _renpy #@UnresolvedImport
-        libexec = os.path.dirname(_renpy.__file__)
-        package.__path__.append(os.path.join(libexec, *name))
+    import renpy.display
+    import renpy.display.presplash
+    import renpy.display.iliad # Must be before scale and pgrender.
+    import renpy.display.pgrender
+    import renpy.display.scale # Must be before module.
+    import renpy.display.module
+    import renpy.display.render # Most display stuff depends on this.
+    import renpy.display.core # object
+    import renpy.display.font
+    import renpy.display.text # core, font
+    import renpy.display.layout # core
+    import renpy.display.motion # layout
+    import renpy.display.behavior # layout
+    import renpy.display.transition # core, layout
+    import renpy.display.im
+    import renpy.display.image # core, behavior, im
+    import renpy.display.video
+    import renpy.display.focus
+    import renpy.display.anim
+    import renpy.display.particle
+    import renpy.display.joystick
+    import renpy.display.minigame
+    import renpy.display.error
     
-        # Also find encodings, to deal with the way py2exe lays things out.
-        import encodings
-        libexec = os.path.dirname(encodings.__path__[0])
-        package.__path__.append(os.path.join(libexec, *name))
-
-    update_path(renpy.display)
-    
-    import renpy.display.render # Most display stuff depends on this. @UnresolvedImport
-    import renpy.display.core # object @UnresolvedImport
-
-    import renpy.text #@UnresolvedImport
-    update_path(renpy.text)
-    
-    import renpy.text.ftfont #@UnresolvedImport
-    import renpy.text.font #@UnresolvedImport
-    import renpy.text.textsupport #@UnresolvedImport
-    import renpy.text.texwrap #@UnresolvedImport
-    import renpy.text.text #@UnresolvedImport
-    import renpy.text.extras #@UnresolvedImport
-    
-    sys.modules['renpy.display.text'] = renpy.text.text
-    
-    import renpy.gl #@UnresolvedImport
-    update_path(renpy.gl)
-    
-    import renpy.angle #@UnresolvedImport
-    update_path(renpy.angle)
-    
-    import renpy.display.layout # core @UnresolvedImport
-    import renpy.display.motion # layout @UnresolvedImport
-    import renpy.display.behavior # layout @UnresolvedImport
-    import renpy.display.transition # core, layout @UnresolvedImport
-    import renpy.display.movetransition # core @UnresolvedImport
-    import renpy.display.im #@UnresolvedImport
-    import renpy.display.imagelike #@UnresolvedImport
-    import renpy.display.image # core, behavior, im, imagelike @UnresolvedImport
-    import renpy.display.video #@UnresolvedImport
-    import renpy.display.focus #@UnresolvedImport
-    import renpy.display.anim #@UnresolvedImport
-    import renpy.display.particle #@UnresolvedImport
-    import renpy.display.joystick #@UnresolvedImport
-    import renpy.display.minigame #@UnresolvedImport
-    import renpy.display.screen #@UnresolvedImport
-    import renpy.display.dragdrop #@UnresolvedImport
-    import renpy.display.imagemap #@UnresolvedImport
-    import renpy.display.predict #@UnresolvedImport
-    
-    import renpy.display.error #@UnresolvedImport
-
     # Note: For windows to work, renpy.audio.audio needs to be after
     # renpy.display.module. 
-    import renpy.audio.audio #@UnresolvedImport
-    import renpy.audio.music #@UnresolvedImport
-    import renpy.audio.sound #@UnresolvedImport
+    import renpy.audio.audio
+    import renpy.audio.music
+    import renpy.audio.sound
 
-    import renpy.ui #@UnresolvedImport
-    import renpy.screenlang #@UnresolvedImport
+    import renpy.ui
 
-    import renpy.lint #@UnresolvedImport
-    import renpy.warp #@UnresolvedImport
+    import renpy.lint
+    import renpy.warp
 
-    import renpy.editor #@UnresolvedImport
-    import renpy.exports #@UnresolvedImport
-    import renpy.character # depends on exports. @UnresolvedImport
+    import renpy.exports
+    import renpy.character # depends on exports.
 
-    import renpy.dump #@UnresolvedImport
-
-    import renpy.config # depends on lots. @UnresolvedImport
-    import renpy.minstore # depends on lots. @UnresolvedImport
-    import renpy.defaultstore  # depends on everything. @UnresolvedImport
-    import renpy.main #@UnresolvedImport
-
-    # Create the store.
-    renpy.python.create_store("store")
-
-    # Import the contents of renpy.defaultstore into renpy.store, and set 
-    # up an alias as we do.
-    renpy.store = sys.modules['store']
-    sys.modules['renpy.store'] = sys.modules['store']
-
-    import subprocess
-    sys.modules['renpy.subprocess'] = subprocess
-    
-    for k, v in renpy.defaultstore.__dict__.items():
-        renpy.store.__dict__.setdefault(k, v)
+    import renpy.config # depends on lots.
+    import renpy.store  # depends on everything.
+    import renpy.main
 
     # Import everything into renpy.exports, provided it isn't
     # already there.
     for k, v in globals().items():
         vars(renpy.exports).setdefault(k, v)
 
-# Fool the analyzer.
-if False:
-    import renpy.defaultstore as store
-
 # This reloads all modules.
 def reload_all():
     
-    import renpy #@UnresolvedImport
-
+    import renpy
+    
     # Shut down the cache thread.
     renpy.display.im.cache.quit()
         
+    # Cleans out the RenpyImporter.
+    import sys
+    sys.meta_path.pop()
+
     blacklist = [ "renpy",
                   "renpy.bootstrap",
                   "renpy.display",
+                  "renpy.display.iliad",
                   "renpy.display.pgrender",
                   "renpy.display.scale" ]
     
     for i in list(sys.modules.keys()):
         if i.startswith("renpy") and i not in blacklist:
             del sys.modules[i]
-            
-        if i.startswith("store"):
-            del sys.modules[i]
 
     import gc
     gc.collect()
 
-    renpy.display.draw = None
-    
     import_all()
-
-# Information about the platform we're running on. We break the platforms
-# up into 4 groups - windows-like, mac-like, linux-like, and android-like.
-windows = False
-macintosh = False
-linux = False
-android = False
-
-import platform
-
-if platform.win32_ver()[0]:
-    windows = True
-elif platform.mac_ver()[0]:
-    macintosh = True
-else:
-    linux = True
-    
-# The android init code in renpy.py will set linux=False and android=True.
-
 

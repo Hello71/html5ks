@@ -1,4 +1,4 @@
-# Copyright 2004-2013 Tom Rothamel <pytom@bishoujo.us>
+# Copyright 2004-2010 PyTom <pytom@bishoujo.us>
 #
 # Permission is hereby granted, free of charge, to any person
 # obtaining a copy of this software and associated documentation files
@@ -27,20 +27,13 @@
 # updating.
 
 import renpy
-
 import re
 import time
-import hashlib
-import collections
 
-def next_node(n):
-    """
-    Indicates the next node that should be executed. When a statement
-    can crash, this should be set as early as possible, so that ignore
-    can bring us there.
-    """
-
-    renpy.game.context().next_node = n
+# Called to set the state of a Node, when necessary.
+def setstate(node, state):
+    for k, v in state[1].items():
+        setattr(node, k, v)
 
 class ParameterInfo(object):
     """
@@ -82,14 +75,14 @@ class ArgumentInfo(object):
 
 
 def __newobj__(cls, *args):
-    return cls.__new__(cls, *args)
+    return cls.__new__(cls, *args)  
 
 # This represents a string containing python code.
 class PyExpr(str):
 
-    __slots__ = [
+    __slots__ = [ 
         'filename',
-        'linenumber',
+        'linenumber'
         ]
 
     def __new__(cls, s, filename, linenumber):
@@ -100,7 +93,8 @@ class PyExpr(str):
 
     def __getnewargs__(self):
         return (str(self), self.filename, self.linenumber) # E1101
-
+    
+    
 class PyCode(object):
 
     __slots__ = [
@@ -108,8 +102,10 @@ class PyCode(object):
         'location',
         'mode',
         'bytecode',
-        'hash',
         ]
+
+    # All PyCodes known to the system.
+    extent = [ ]
 
     def __getstate__(self):
         return (1, self.source, self.location, self.mode)
@@ -117,15 +113,8 @@ class PyCode(object):
     def __setstate__(self, state):
         (_, self.source, self.location, self.mode) = state
         self.bytecode = None
-
-        if renpy.game.script.record_pycode:
-            renpy.game.script.all_pycode.append(self)
-
+        
     def __init__(self, source, loc=('<none>', 1), mode='exec'):
-
-        if isinstance(source, PyExpr):
-            loc = (source.filename, source.linenumber, source)
-
         # The source code.
         self.source = source
 
@@ -137,27 +126,7 @@ class PyCode(object):
         # This will be initialized later on, after we are serialized.
         self.bytecode = None
 
-        if renpy.game.script.record_pycode:
-            renpy.game.script.all_pycode.append(self)
-
-        self.hash = None
-
-    def get_hash(self):
-        try:
-            if self.hash is not None:
-                return self.hash
-        except:
-            pass
-
-        code = self.source
-        if isinstance(code, renpy.python.ast.AST): #@UndefinedVariable
-            code = renpy.python.ast.dump(code) #@UndefinedVariable
-
-        self.hash = chr(renpy.bytecode_version) + hashlib.md5(repr(self.location) + code.encode("utf-8")).digest()
-        return self.hash
-
-
-def chain_block(block, next): #@ReservedAssignment
+def chain_block(block, next):
     """
     This is called to chain together all of the nodes in a block. Node
     n is chained with node n+1, while the last node is chained with
@@ -183,13 +152,13 @@ class Scry(object):
     def __getattr__(self, name):
         return None
 
-    def __next__(self): #@ReservedAssignment
+    def __next__(self):
         if self._next is None:
             return None
         else:
             return self._next.scry()
 
-
+    
 class Node(object):
     """
     A node in the abstract syntax tree of the program.
@@ -199,26 +168,13 @@ class Node(object):
     @ivar filename: The filename where this node comes from.
     @ivar linenumber: The line number of the line on which this node is defined.
     """
-
+    
     __slots__ = [
         'name',
         'filename',
         'linenumber',
         'next',
         ]
-
-    # True if this node is translatable, false otherwise. (This can be set on
-    # the class or the instance.)
-    translatable = False
-
-    # Called to set the state of a Node, when necessary.
-    def __setstate__(self, state):
-        for k, v in state[1].items():
-            try:
-                setattr(self, k, v)
-            except AttributeError:
-                pass
-
 
     def __init__(self, loc):
         """
@@ -231,7 +187,7 @@ class Node(object):
         self.filename, self.linenumber  = loc
         self.name = None
         self.next = None
-
+        
     def diff_info(self):
         """
         Returns a tuple of diff info about ourself. This is used to
@@ -260,14 +216,14 @@ class Node(object):
         """
 
         return None
-
-    def chain(self, next): #@ReservedAssignment
+        
+    def chain(self, next):
         """
         This is called with the Node node that should be followed after
         executing this node, and all nodes that this node
         executes. (For example, if this node is a block label, the
         next is the node that should be executed after all nodes in
-        the block.)
+        the block.)        
         """
 
         self.next = next
@@ -275,28 +231,34 @@ class Node(object):
     def execute(self):
         """
         Causes this node to execute, and any action it entails to be
-        performed. The node should call next_node with the node to
-        be executed after this one.
+        performed. The node is then responsible for returning the node
+        that should be executed after this one, or None to end the
+        program or init block.
         """
 
         assert False, "Node subclass forgot to define execute."
 
-    def early_execute(self):
+    def predict(self, callback):
         """
-        Called when the module is loaded.
-        """
-
-    def predict(self):
-        """
-        This is called to predictively load images from this node.  It
-        should cause renpy.display.predict.image and
-        renpy.display.predict.screen to be called as necessary.
+        This is called to predictively load images from this node. The
+        callback needs to be passed into the predict method of any
+        images this ast node will probably load, and the method should
+        return a list containing the nodes that this node will
+        probably execute next.
         """
 
         if self.__next__:
             return [ self.__next__ ]
         else:
             return [ ]
+
+    def get_pycode(self):
+        """
+        Returns a list of PyCode objects associated with this Node,
+        or None if no objects are associated with it.
+        """
+
+        return [ ]
 
     def scry(self):
         """
@@ -307,30 +269,6 @@ class Node(object):
         rv = Scry()
         rv._next = self.__next__ # W0201
         return rv
-
-    def restructure(self, callback):
-        """
-        Called to restructure the AST.
-
-        When this method is called, callback is called once for each child
-        block of the node. The block, a list, can be updated by the callback
-        using slice assignment to the list.
-        """
-
-        # Does nothing for nodes that do not contain child blocks.
-        return
-
-    def get_code(self, dialogue_filter=None):
-        """
-        Returns the canonical form of the code corresponding to this statement.
-        This only needs to be defined if the statement is translatable.
-
-        `filter`
-            If present, a filter that should be applied to human-readable
-            text in the statement.
-        """
-
-        raise Exception("Not Implemented")
 
 def say_menu_with(expression, callback):
     """
@@ -350,7 +288,7 @@ def say_menu_with(expression, callback):
     if renpy.game.preferences.transitions:
         # renpy.game.interface.set_transition(what)
         callback(what)
-
+        
 class Say(Node):
 
     __slots__ = [
@@ -359,18 +297,12 @@ class Say(Node):
         'what',
         'with_',
         'interact',
-        'attributes',
         ]
 
     def diff_info(self):
         return (Say, self.who, self.what)
 
-    def __setstate__(self, state):
-        self.attributes = None
-        self.interact = True
-        Node.__setstate__(self, state)
-
-    def __init__(self, loc, who, what, with_, interact=True, attributes=None):
+    def __init__(self, loc, who, what, with_, interact=True):
 
         super(Say, self).__init__(loc)
 
@@ -382,115 +314,39 @@ class Say(Node):
             else:
                 self.who_fast = False
         else:
-            self.who = None
+            self.who = None 
             self.who_fast = False
-
+            
         self.what = what
         self.with_ = with_
         self.interact = interact
 
-        # A tuple of attributes that are applied to the character that's
-        # speaking, or None to disable this behavior.
-        self.attributes = attributes
-
-    def get_code(self, dialogue_filter=None):
-        rv = [ ]
-
-        if self.who:
-            rv.append(self.who)
-
-        if self.attributes is not None:
-            rv.extend(self.attributes)
-
-        what = self.what
-        if dialogue_filter is not None:
-            what = dialogue_filter(what)
-
-        rv.append(renpy.translation.encode_say_string(what))
-
-        if not self.interact:
-            rv.append("nointeract")
-
-        if self.with_:
-            rv.append("with")
-            rv.append(self.with_)
-
-        return " ".join(rv)
-
     def execute(self):
 
-        next_node(self.__next__)
-
-        try:
-
-            renpy.exports.say_attributes = self.attributes
-
-            if self.who is not None:
-                if self.who_fast:
-                    who = getattr(renpy.store, self.who, None)
-                    if who is None:
-                        raise Exception("Sayer '%s' is not defined." % self.who.encode("utf-8"))
-                else:
-                    who = renpy.python.py_eval(self.who)
+        if self.who is not None:
+            if self.who_fast:
+                who = getattr(renpy.store, self.who, None)
+                if who is None:
+                    raise Exception("Sayer '%s' is not defined." % self.who.encode("utf-8"))
             else:
-                who = None
+                who = renpy.python.py_eval(self.who)
+        else:
+            who = None
 
-            if not (
-                (who is None) or
-                isinstance(who, collections.Callable) or
-                isinstance(who, str) ):
+        what = self.what
+        if renpy.config.say_menu_text_filter:
+            what = renpy.config.say_menu_text_filter(what) # E1102
+            
+        say_menu_with(self.with_, renpy.game.interface.set_transition)
+        renpy.exports.say(who, what, interact=getattr(self, 'interact', True))
 
-                raise Exception("Sayer %s is not a function or string." % self.who.encode("utf-8"))
+        if getattr(who, "record_say", True):
+            renpy.store._last_say_who = self.who
+            renpy.store._last_say_what = what
 
-            what = self.what
-            if renpy.config.say_menu_text_filter:
-                what = renpy.config.say_menu_text_filter(what) # E1102
+        return self.__next__
 
-            if getattr(who, "record_say", True):
-                renpy.store._last_say_who = self.who
-                renpy.store._last_say_what = what
-
-            say_menu_with(self.with_, renpy.game.interface.set_transition)
-            renpy.exports.say(who, what, interact=self.interact)
-
-        finally:
-            renpy.exports.say_attributes = None
-
-
-    def predict(self):
-
-        old_attributes = renpy.exports.say_attributes
-
-        try:
-
-            renpy.exports.say_attributes = self.attributes
-
-            if self.who is not None:
-                if self.who_fast:
-                    who = getattr(renpy.store, self.who)
-                else:
-                    who = renpy.python.py_eval(self.who)
-            else:
-                who = None
-
-            def predict_with(trans):
-                renpy.display.predict.displayable(trans(old_widget=None, new_widget=None))
-
-            say_menu_with(self.with_, predict_with)
-
-            what = self.what
-            if renpy.config.say_menu_text_filter:
-                what = renpy.config.say_menu_text_filter(what)
-
-            renpy.exports.predict_say(who, what)
-
-        finally:
-            renpy.exports.say_attributes = old_attributes
-
-        return [ self.__next__ ]
-
-    def scry(self):
-        rv = Node.scry(self)
+    def predict(self, callback):
 
         if self.who is not None:
             if self.who_fast:
@@ -500,13 +356,26 @@ class Say(Node):
         else:
             who = None
 
-        if self.interact:
-            renpy.exports.scry_say(who, rv)
-        else:
-            rv.interacts = False
+        def predict_with(trans):
+            trans(old_widget=None, new_widget=None).predict(callback)
 
+        say_menu_with(self.with_, predict_with)
+
+        what = self.what
+        if renpy.config.say_menu_text_filter:
+            what = renpy.config.say_menu_text_filter(what)
+
+        for i in renpy.exports.predict_say(who, what):
+            if i is not None:
+                i.predict(callback)
+
+        return [ self.__next__ ]
+
+    def scry(self):
+        rv = Node.scry(self)
+        rv.interacts = True # W0201
         return rv
-
+    
 # Copy the descriptor.
 setattr(Say, "with", Say.with_) # E1101
 
@@ -533,87 +402,14 @@ class Init(Node):
     # We handle chaining specially. We want to chain together the nodes in
     # the block, but we want that chain to end in None, and we also want
     # this node to just continue on to the next node in normal execution.
-    def chain(self, next): #@ReservedAssignment
+    def chain(self, next):
         self.next = next
 
         chain_block(self.block, None)
 
     def execute(self):
-        next_node(self.__next__)
-
-    def restructure(self, callback):
-        callback(self.block)
-
-def apply_arguments(params, args, kwargs):
-    """
-    Applies arguments to parameters to update scope.
-
-    `scope`
-        A dict.
-
-    `params`
-        The parameters object.
-
-    `args`, `kwargs`
-        Positional and keyword arguments.
-    """
-
-    values = { }
-    rv = { }
-
-    if args is None:
-        args = ()
-
-    if kwargs is None:
-        kwargs = { }
-
-    if params is None:
-        if args or kwargs:
-            raise Exception("Arguments supplied, but parameter list not present")
-        else:
-            return rv
-
-    for name, value in zip(params.positional, args):
-        if name in values:
-            raise Exception("Parameter %s has two values." % name)
-
-        values[name] = value
-
-    extrapos = tuple(args[len(params.positional):])
-
-    for name, value in kwargs.items():
-        if name in values:
-            raise Exception("Parameter %s has two values." % name)
-
-        values[name] = value
-
-    for name, default in params.parameters:
-
-        if name not in values:
-            if default is None:
-                raise Exception("Required parameter %s has no value." % name)
-            else:
-                rv[name] = renpy.python.py_eval(default)
-
-        else:
-            rv[name] = values[name]
-            del values[name]
-
-    # Now, values has the left-over keyword arguments, and extrapos
-    # has the left-over positional arguments.
-
-    if params.extrapos:
-        rv[params.extrapos] = extrapos
-    elif extrapos:
-        raise Exception("Too many arguments in call (expected %d, got %d)." % (len(params.positional), len(args)))
-
-    if params.extrakw:
-        rv[params.extrakw] = values
-    else:
-        if values:
-            raise Exception("Unknown keyword arguments: %s" % ( ", ".join(list(values.keys()))))
-
-    return rv
+        return self.__next__
+    
 
 class Label(Node):
 
@@ -621,15 +417,13 @@ class Label(Node):
         'name',
         'parameters',
         'block',
-        'hide',
         ]
 
     def __setstate__(self, state):
         self.parameters = None
-        self.hide = False
-        Node.__setstate__(self, state)
-
-    def __init__(self, loc, name, block, parameters, hide=False):
+        setstate(self, state)
+    
+    def __init__(self, loc, name, block, parameters):
         """
         Constructs a new Label node.
 
@@ -643,85 +437,126 @@ class Label(Node):
         self.name = name
         self.block = block
         self.parameters = parameters
-        self.hide = hide
 
     def diff_info(self):
         return (Label, self.name)
 
     def get_children(self):
-        return self.block
+        return self.block 
 
-    def chain(self, next): #@ReservedAssignment
+    def chain(self, next):
 
         if self.block:
             self.next = self.block[0]
             chain_block(self.block, next)
         else:
             self.next = next
-
+            
     def execute(self):
-        next_node(self.__next__)
-
         renpy.game.context().mark_seen()
+        
+        args = renpy.store._args
+        kwargs = renpy.store._kwargs
 
-        values = apply_arguments(self.parameters, renpy.store._args, renpy.store._kwargs)
+        if self.parameters is None:
+            if (args is not None) or (kwargs is not None):
+                raise Exception("Arguments supplied, but label does not take parameters.")
+            else:
+                if renpy.config.label_callback:
+                    renpy.config.label_callback(self.name, renpy.game.context().last_abnormal)
 
-        for k, v in values.items():
-            renpy.exports.dynamic(k)
-            setattr(renpy.store, k, v)
+                return self.__next__
+        else:
+            if args is None:
+                args = ()
+
+            if kwargs is None:
+                kwargs = { }
+            
+        values = { }        
+        params = self.parameters
+
+        for name, value in zip(params.positional, args):
+            if name in values:
+                raise Exception("Parameter %s has two values." % name)
+
+            values[name] = value
+
+        extrapos = tuple(args[len(params.positional):])
+
+        for name, value in kwargs.items():
+            if name in values:
+                raise Exception("Parameter %s has two values." % name)
+
+            values[name] = value
+
+        for name, default in params.parameters:
+
+            if name not in values:
+                if default is None:
+                    raise Exception("Required parameter %s has no value." % name)
+                else:
+                    values[name] = renpy.python.py_eval(default)
+
+                    
+            renpy.exports.dynamic(name)
+            setattr(renpy.store, name, values[name])
+            del values[name]
+
+        # Now, values has the left-over keyword arguments, and extrapos
+        # has the left-over positional arguments.
+
+        if params.extrapos:
+            renpy.exports.dynamic(params.extrapos)
+            setattr(renpy.store, params.extrapos, extrapos)
+        else:
+            if extrapos:
+                raise Exception("Too many arguments in call (expected %d, got %d)." % (len(params.positional), len(args)))
+
+        if params.extrakw:
+            renpy.exports.dynamic(params.extrakw)
+            setattr(renpy.store, params.extrakw, renpy.python.RevertableDict(values))
+        else:
+            if values:
+                raise Exception("Unknown keyword arguments: %s" % ( ", ".join(list(values.keys()))))
 
         renpy.store._args = None
         renpy.store._kwargs = None
 
         if renpy.config.label_callback:
             renpy.config.label_callback(self.name, renpy.game.context().last_abnormal)
-
-    def restructure(self, callback):
-        callback(self.block)
-
+        
+        return self.__next__
 
 class Python(Node):
 
     __slots__ = [
         'hide',
         'code',
-        'store',
         ]
 
-    def __setstate__(self, state):
-        self.store = "store"
-        super(Python, self).__setstate__(state)
-
-    def __init__(self, loc, python_code, hide=False, store="store"):
+    def __init__(self, loc, python_code, hide=False):
         """
         @param code: A PyCode object.
 
         @param hide: If True, the code will be executed with its
         own local dictionary.
         """
-
+        
         super(Python, self).__init__(loc)
 
         self.hide = hide
         self.code = PyCode(python_code, loc=loc, mode='exec')
-        self.store = store
+
+    def get_pycode(self):
+        return [ self.code ]
 
     def diff_info(self):
         return (Python, self.code.source)
 
-    def early_execute(self):
-        renpy.python.create_store(self.store)
-
     def execute(self):
-        next_node(self.__next__)
-
-        try:
-            renpy.python.py_exec_bytecode(self.code.bytecode, self.hide, store=self.store)
-        finally:
-
-            if not renpy.game.context().init_phase:
-                for i in renpy.config.python_callbacks:
-                    i()
+        renpy.python.py_exec_bytecode(self.code.bytecode, self.hide)
+        return self.__next__
 
     def scry(self):
         rv = Node.scry(self)
@@ -733,38 +568,32 @@ class EarlyPython(Node):
     __slots__ = [
         'hide',
         'code',
-        'store',
         ]
 
-    def __setstate__(self, state):
-        self.store = "store"
-        super(EarlyPython, self).__setstate__(state)
-
-    def __init__(self, loc, python_code, hide=False, store="store"):
+    def __init__(self, loc, python_code, hide=False):
         """
         @param code: A PyCode object.
 
         @param hide: If True, the code will be executed with its
         own local dictionary.
         """
-
+        
         super(EarlyPython, self).__init__(loc)
 
         self.hide = hide
         self.code = PyCode(python_code, loc=loc, mode='exec')
-        self.store = store
+
+    def get_pycode(self):
+        return [ self.code ]
 
     def diff_info(self):
         return (EarlyPython, self.code.source)
 
     def execute(self):
-        next_node(self.__next__)
+        return self.__next__
 
     def early_execute(self):
-        renpy.python.create_store(self.store)
-
-        if self.code.bytecode:
-            renpy.python.py_exec_bytecode(self.code.bytecode, self.hide, store=self.store)
+        renpy.python.py_exec_bytecode(self.code.bytecode, self.hide)
 
 class Image(Node):
 
@@ -783,7 +612,7 @@ class Image(Node):
         """
 
         super(Image, self).__init__(loc)
-
+        
         self.imgname = name
 
         if expr:
@@ -792,16 +621,20 @@ class Image(Node):
         else:
             self.code = None
             self.atl = atl
-
-    def diff_info(self):
+            
+    def diff_info(self): 
         return (Image, tuple(self.imgname))
 
+    def get_pycode(self):
+        if self.code:            
+            return [ self.code ]
+        else:
+            return [ ]
+        
     def execute(self):
 
         # Note: We should always check that self.code is None before
         # accessing self.atl, as self.atl may not always exist.
-
-        next_node(self.__next__)
 
         if self.code is not None:
             img = renpy.python.py_eval_bytecode(self.code.bytecode)
@@ -810,8 +643,10 @@ class Image(Node):
 
         renpy.exports.image(self.imgname, img)
 
+        return self.__next__
 
 
+    
 class Transform(Node):
 
     __slots__ = [
@@ -823,25 +658,23 @@ class Transform(Node):
         'atl',
 
         # The parameters associated with the transform, if any.
-        'parameters',
+        'parameters',        
         ]
 
     default_parameters = ParameterInfo([ ], [ ], None, None)
-
+    
     def __init__(self, loc, name, atl=None, parameters=default_parameters):
 
         super(Transform, self).__init__(loc)
-
+        
         self.varname = name
         self.atl = atl
         self.parameters = parameters
-
-    def diff_info(self):
+        
+    def diff_info(self): 
         return (Transform, self.varname)
 
     def execute(self):
-
-        next_node(self.__next__)
 
         parameters = getattr(self, "parameters", None)
 
@@ -849,26 +682,28 @@ class Transform(Node):
             parameters = Transform.default_parameters
 
         trans = renpy.display.motion.ATLTransform(self.atl, parameters=parameters)
-        renpy.dump.transforms.append((self.varname, self.filename, self.linenumber))
+        renpy.exports.definitions[self.varname].append((self.filename, self.linenumber, "transform"))
         setattr(renpy.store, self.varname, trans)
+                
+        return self.__next__
 
-
-def predict_imspec(imspec, scene=False, atl=None):
+    
+def predict_imspec(imspec, callback, scene=False):
     """
     Call this to use the given callback to predict the image named
     in imspec.
     """
 
     if len(imspec) == 7:
-        name, expression, tag, _at_list, layer, _zorder, _behind = imspec
+        name, expression, tag, at_list, layer, zorder, behind = imspec
 
     elif len(imspec) == 6:
-        name, expression, tag, _at_list, layer, _zorder = imspec
+        name, expression, tag, at_list, layer, zorder = imspec
 
     elif len(imspec) == 3:
-        name, _at_list, layer = imspec
-
-
+        name, at_list, layer = imspec
+        
+        
     if expression:
         try:
             img = renpy.python.py_eval(expression)
@@ -877,7 +712,7 @@ def predict_imspec(imspec, scene=False, atl=None):
             return
 
     else:
-        img = renpy.display.image.images.get(name, None)
+        img = renpy.exports.images.get(name, None)
         if img is None:
             return
 
@@ -886,37 +721,29 @@ def predict_imspec(imspec, scene=False, atl=None):
         full_name = (tag,) + full_name[1:]
 
     if scene:
-        renpy.game.context().images.predict_scene(layer)
+        renpy.game.context().predict_info.images.predict_scene(layer)
+        
+    renpy.game.context().predict_info.images.predict_show(tag or name, layer)
+        
+    img.predict(callback)
 
-    renpy.game.context().images.predict_show(tag or name, layer)
-
-    if atl is not None:
-        try:
-            img = renpy.display.motion.ATLTransform(atl, child=img)
-        except:
-            import traceback
-            traceback.print_exc()
-
-    renpy.display.predict.displayable(img)
-
-
-
+    
 def show_imspec(imspec, atl=None):
 
     if len(imspec) == 7:
         name, expression, tag, at_list, layer, zorder, behind = imspec
-
+        
     elif len(imspec) == 6:
         name, expression, tag, at_list, layer, zorder = imspec
         behind = [ ]
-
+        
     elif len(imspec) == 3:
         name, at_list, layer = imspec
         expression = None
         tag = None
         zorder = None
         behind = [ ]
-
+        
     if zorder is not None:
         zorder = renpy.python.py_eval(zorder)
     else:
@@ -954,19 +781,20 @@ class Show(Node):
 
         self.imspec = imspec
         self.atl = atl
-
-    def diff_info(self):
+        
+    def diff_info(self): 
         return (Show, tuple(self.imspec[0]))
 
     def execute(self):
-        next_node(self.__next__)
 
         show_imspec(self.imspec, atl=getattr(self, "atl", None))
 
-    def predict(self):
-        predict_imspec(self.imspec, atl=getattr(self, "atl", None))
-        return [ self.__next__ ]
+        return self.__next__
 
+    def predict(self, callback):
+        predict_imspec(self.imspec, callback)
+        return [ self.__next__ ]
+        
 
 class Scene(Node):
 
@@ -989,7 +817,7 @@ class Scene(Node):
         self.layer = layer
         self.atl = atl
 
-    def diff_info(self):
+    def diff_info(self): 
 
         if self.imspec:
             data = tuple(self.imspec[0])
@@ -1000,21 +828,21 @@ class Scene(Node):
 
     def execute(self):
 
-        next_node(self.__next__)
-
         renpy.config.scene(self.layer)
 
         if self.imspec:
             show_imspec(self.imspec, atl=getattr(self, "atl", None))
 
-    def predict(self):
-
+        return self.__next__
+        
+    def predict(self, callback):
+        
         if self.imspec:
-            predict_imspec(self.imspec, atl=getattr(self, "atl", None), scene=True)
+            predict_imspec(self.imspec, callback, scene=True)
 
         return [ self.__next__ ]
 
-
+    
 class Hide(Node):
 
     __slots__ = [
@@ -1032,48 +860,46 @@ class Hide(Node):
 
         self.imspec = imgspec
 
-    def diff_info(self):
+    def diff_info(self): 
         return (Hide, tuple(self.imspec[0]))
 
-    def predict(self):
+    def predict(self, callback):
 
         if len(self.imspec) == 3:
-            name, _at_list, layer = self.imspec
+            name, at_list, layer = self.imspec
+            expression = None
             tag = None
-            _expression = None
-            _zorder = None
-            _behind = None
+            zorder = 0
         elif len(self.imspec) == 6:
-            name, _expression, tag, _at_list, layer, _zorder = self.imspec
-            _behind = None
+            name, expression, tag, at_list, layer, zorder = self.imspec
         elif len(self.imspec) == 7:
-            name, _expression, tag, _at_list, layer, _zorder, _behind = self.imspec
+            name, expression, tag, at_list, layer, zorder, behind = self.imspec
 
 
         if tag is None:
             tag = name[0]
+            
+        renpy.game.context().predict_info.images.predict_hide(tag, layer)
 
-        renpy.game.context().images.predict_hide(tag, layer)
-
-        return [ self.__next__ ]
-
+        return [ ]
+        
     def execute(self):
 
-        next_node(self.__next__)
-
         if len(self.imspec) == 3:
-            name, _at_list, layer = self.imspec
-            _expression = None
+            name, at_list, layer = self.imspec
+            expression = None
             tag = None
-            _zorder = 0
+            zorder = 0
         elif len(self.imspec) == 6:
-            name, _expression, tag, _at_list, layer, _zorder = self.imspec
+            name, expression, tag, at_list, layer, zorder = self.imspec
         elif len(self.imspec) == 7:
-            name, _expression, tag, _at_list, layer, _zorder, _behind = self.imspec
-
+            name, expression, tag, at_list, layer, zorder, behind = self.imspec
+            
         renpy.config.hide(tag or name, layer)
 
+        return self.__next__
 
+    
 class With(Node):
 
     __slots__ = [
@@ -1083,8 +909,8 @@ class With(Node):
 
     def __setstate__(self, state):
         self.paired = None
-        Node.__setstate__(self, state)
-
+        setstate(self, state)
+    
     def __init__(self, loc, expr, paired=None):
         """
         @param expr: An expression giving a transition or None.
@@ -1096,35 +922,34 @@ class With(Node):
 
     def diff_info(self):
         return (With, self.expr)
-
+        
     def execute(self):
-
-        next_node(self.__next__)
 
         trans = renpy.python.py_eval(self.expr)
 
         if self.paired is not None:
             paired = renpy.python.py_eval(self.paired)
         else:
-            paired = None
+            paired = None 
 
         renpy.exports.with_statement(trans, paired)
 
-    def predict(self):
+        return self.__next__
+
+    def predict(self, callback):
 
         try:
             trans = renpy.python.py_eval(self.expr)
 
             if trans:
-                renpy.display.predict.displayable(trans(old_widget=None, new_widget=None))
-
+                trans(old_widget=None, new_widget=None).predict(callback)
         except:
             pass
 
-
+                
         return [ self.__next__ ]
-
-
+        
+        
 class Call(Node):
 
     __slots__ = [
@@ -1135,8 +960,8 @@ class Call(Node):
 
     def __setstate__(self, state):
         self.arguments = None
-        Node.__setstate__(self, state)
-
+        setstate(self, state)
+    
     def __init__(self, loc, label, expression, arguments):
 
         super(Call, self).__init__(loc)
@@ -1154,7 +979,6 @@ class Call(Node):
             label = renpy.python.py_eval(label)
 
         rv = renpy.game.context().call(label, return_site=self.next.name)
-        next_node(rv)
         renpy.game.context().abnormal = True
 
         if self.arguments:
@@ -1187,8 +1011,12 @@ class Call(Node):
 
             renpy.store._args = tuple(args)
             renpy.store._kwargs = kwargs
-
-    def predict(self):
+                    
+        
+        return rv
+        
+        
+    def predict(self, callback):
         if self.expression:
             return [ ]
         else:
@@ -1206,17 +1034,17 @@ class Return(Node):
 
     def __setstate__(self, state):
         self.expression = None
-        Node.__setstate__(self, state)
-
+        setstate(self, state)
+    
     def __init__(self, loc, expression):
         super(Return, self).__init__(loc)
         self.expression = expression
-
+        
     def diff_info(self):
         return (Return, )
 
     # We don't care what the next node is.
-    def chain(self, next): #@ReservedAssignment
+    def chain(self, next):
         self.next = None
         return
 
@@ -1228,10 +1056,10 @@ class Return(Node):
             renpy.store._return = None
 
         renpy.game.context().pop_dynamic()
+            
+        return renpy.game.context().lookup_return(pop=True)
 
-        next_node(renpy.game.context().lookup_return(pop=True))
-
-    def predict(self):
+    def predict(self, callback):
         site = renpy.game.context().lookup_return(pop=False)
         if site:
             return [ site ]
@@ -1243,7 +1071,7 @@ class Return(Node):
         rv._next = None
         return rv
 
-
+    
 class Menu(Node):
 
     __slots__ = [
@@ -1252,7 +1080,7 @@ class Menu(Node):
         'with_',
         ]
 
-    def __init__(self, loc, items, set, with_): #@ReservedAssignment
+    def __init__(self, loc, items, set, with_):
         super(Menu, self).__init__(loc)
 
         self.items = items
@@ -1265,65 +1093,57 @@ class Menu(Node):
     def get_children(self):
         rv = [ ]
 
-        for _label, _condition, block in self.items:
+        for label, condition, block in self.items:
             if block:
                 rv.extend(block)
 
         return rv
 
     # Blocks of statements in a choice continue after the menu.
-    def chain(self, next): #@ReservedAssignment
+    def chain(self, next):
 
         self.next = next
 
-        for (_label, _condition, block) in self.items:
+        for (label, condition, block) in self.items:
             if block:
                 chain_block(block, next)
 
     def execute(self):
 
-        next_node(self.__next__)
-
         choices = [ ]
-        narration = [ ]
-
+            
         for i, (label, condition, block) in enumerate(self.items):
 
             if renpy.config.say_menu_text_filter:
                 label = renpy.config.say_menu_text_filter(label)
 
             if block is None:
-                if renpy.config.narrator_menu and label:
-                    narration.append(label)
-                else:
-                    choices.append((label, condition, None))
+                choices.append((label, condition, None))
             else:
                 choices.append((label, condition, i))
-                next_node(block[0])
-
-        if narration:
-            renpy.exports.say(None, "\n".join(narration), interact=False)
 
         say_menu_with(self.with_, renpy.game.interface.set_transition)
         choice = renpy.exports.menu(choices, self.set)
 
-        if choice is not None:
-            next_node(self.items[choice][2][0])
+        if choice is None:
+            return self.__next__
         else:
-            next_node(self.__next__)
+            return self.items[choice][2][0]
+        
 
-
-    def predict(self):
+    def predict(self, callback):
         rv = [ ]
 
         def predict_with(trans):
-            renpy.display.predict.displayable(trans(old_widget=None, new_widget=None))
+            trans(old_widget=None, new_widget=None).predict(callback)
 
         say_menu_with(self.with_, predict_with)
 
-        renpy.store.predict_menu()
+        for i in renpy.store.predict_menu():
+            if i is not None:
+                i.predict(callback)
 
-        for _label, _condition, block in self.items:
+        for label, condition, block in self.items:
             if block:
                 rv.append(block[0])
 
@@ -1334,17 +1154,12 @@ class Menu(Node):
         rv._next = None
         rv.interacts = True
         return rv
-
-    def restructure(self, callback):
-        for _label, _condition, block in self.items:
-            if block is not None:
-                callback(block)
-
+    
 setattr(Menu, "with", Menu.with_) # E1101
 
 
 # Goto is considered harmful. So we decided to name it "jump"
-# instead.
+# instead. 
 class Jump(Node):
 
     __slots__ = [
@@ -1362,7 +1177,7 @@ class Jump(Node):
         return (Jump, self.target, self.expression)
 
     # We don't care what our next node is.
-    def chain(self, next): #@ReservedAssignment
+    def chain(self, next):
         self.next = None
         return
 
@@ -1374,10 +1189,9 @@ class Jump(Node):
 
         rv = renpy.game.script.lookup(target)
         renpy.game.context().abnormal = True
+        return rv
 
-        next_node(rv)
-
-    def predict(self):
+    def predict(self, callback):
 
         if self.expression:
             return [ ]
@@ -1390,7 +1204,7 @@ class Jump(Node):
             rv._next = None
         else:
             rv._next = renpy.game.script.lookup(self.target)
-
+            
         return rv
 
 
@@ -1403,7 +1217,7 @@ class Pass(Node):
         return (Pass,)
 
     def execute(self):
-        next_node(self.__next__)
+        return self.__next__
 
 
 class While(Node):
@@ -1425,27 +1239,24 @@ class While(Node):
     def get_children(self):
         return self.block
 
-    def chain(self, next): #@ReservedAssignment
+    def chain(self, next):
         self.next = next
         chain_block(self.block, self)
 
     def execute(self):
 
-        next_node(self.__next__)
-
         if renpy.python.py_eval(self.condition):
-            next_node(self.block[0])
+            return self.block[0]
+        else:
+            return self.__next__
 
-    def predict(self):
+    def predict(self, callback):
         return [ self.block[0], self.__next__ ]
-
+        
     def scry(self):
         rv = Node.scry(self)
         rv._next = None
         return rv
-
-    def restructure(self, callback):
-        callback(self.block)
 
 class If(Node):
 
@@ -1466,29 +1277,28 @@ class If(Node):
     def get_children(self):
         rv = [ ]
 
-        for _condition, block in self.entries:
+        for condition, block in self.entries:
             rv.extend(block)
 
         return rv
 
-    def chain(self, next): #@ReservedAssignment
+    def chain(self, next):
         self.next = next
 
-        for _condition, block in self.entries:
+        for condition, block in self.entries:
             chain_block(block, next)
 
     def execute(self):
 
-        next_node(self.__next__)
-
         for condition, block in self.entries:
             if renpy.python.py_eval(condition):
-                next_node(block[0])
-                return
+                return block[0]
 
-    def predict(self):
+        return self.__next__
 
-        return [ block[0] for _condition, block in self.entries ] + \
+    def predict(self, callback):
+
+        return [ block[0] for condition, block in self.entries ] + \
                [ self.__next__ ]
 
     def scry(self):
@@ -1496,50 +1306,40 @@ class If(Node):
         rv._next = None
         return rv
 
-    def restructure(self, callback):
-        for _condition, block in self.entries:
-            callback(block)
 
 class UserStatement(Node):
 
-    __slots__ = [
-        'line',
-        'parsed',
-        'block',
-        'translatable' ]
+    __slots__ = [ 'line', 'parsed' ]
 
-    def __setstate__(self, state):
-        self.block = [ ]
-        self.translatable = False
-        Node.__setstate__(self, state)
-
-    def __init__(self, loc, line, block):
+    def __init__(self, loc, line):
 
         super(UserStatement, self).__init__(loc)
         self.line = line
-        self.block = block
         self.parsed = None
 
         # Do not store the parse quite yet.
-        _parse_info = renpy.statements.parse(self, self.line, self.block)
-
+        renpy.statements.parse(self, self.line)
+        
     def diff_info(self):
         return (UserStatement, self.line)
 
     def execute(self):
-        next_node(self.get_next())
-
         self.call("execute")
+        return self.get_next()
 
-    def predict(self):
-        self.call("predict")
+    def predict(self, callback):
+        predicted = self.call("predict") or [ ]
+
+        for i in predicted:
+            callback(i)
+            
         return [ self.get_next() ]
-
+    
     def call(self, method, *args, **kwargs):
-
-        parsed = self.parsed
+        
+        parsed = self.parsed        
         if parsed is None:
-            parsed = renpy.statements.parse(self, self.line, self.block)
+            parsed = renpy.statements.parse(self, self.line)
             self.parsed = parsed
 
         renpy.statements.call(method, parsed, *args, **kwargs)
@@ -1550,17 +1350,14 @@ class UserStatement(Node):
             return renpy.game.script.lookup(rv)
         else:
             return self.__next__
-
+        
     def scry(self):
         rv = Node.scry(self)
         rv._next = self.get_next()
         self.call("scry", rv)
         return rv
-
-    def get_code(self, dialogue_filter=None):
-        return self.line
-
-
+                            
+            
 class Define(Node):
 
     __slots__ = [
@@ -1577,181 +1374,23 @@ class Define(Node):
         """
 
         super(Define, self).__init__(loc)
-
+        
         self.varname = name
         self.code = PyCode(expr, loc=loc, mode='eval')
-
-    def diff_info(self):
+            
+    def diff_info(self): 
         return (Define, tuple(self.varname))
 
+    def get_pycode(self):
+        if self.code:            
+            return [ self.code ]
+        else:
+            return [ ]
+        
     def execute(self):
-
-        next_node(self.__next__)
 
         value = renpy.python.py_eval_bytecode(self.code.bytecode)
-        renpy.dump.definitions.append((self.varname, self.filename, self.linenumber))
-        setattr(renpy.store, self.varname, value)
-
-
-class Screen(Node):
-
-    __slots__ = [
-        'screen',
-        ]
-
-    def __init__(self, loc, screen):
-        """
-        @param name: The name of the image being defined.
-
-        @param expr: An expression yielding a Displayable that is
-        assigned to the image.
-        """
-
-        super(Screen, self).__init__(loc)
-
-        self.screen = screen
-
-    def diff_info(self):
-        return (Screen, self.screen.name)
-
-    def execute(self):
-        next_node(self.__next__)
-        self.screen.define()
-        renpy.dump.screens.append((self.screen.name, self.filename, self.linenumber))
-
-
-################################################################################
-# Translations
-################################################################################
-
-class Translate(Node):
-    """
-    A translation block, produced either by explicit translation statements
-    or implicit translation blocs.
-
-    If language is None, when executed this transfers control to the translate
-    statement in the current language, if any, and otherwise runs the block.
-    If language is not None, causes an error to occur if control reaches this
-    statement.
-
-    When control normally leaves a translate statement, in any language, it
-    goes to the end of the translate statement in the None language.
-    """
-
-    __slots__ = [
-        "identifier",
-        "language",
-        "block",
-        ]
-
-    def __init__(self, loc, identifier, language, block):
-        super(Translate, self).__init__(loc)
-
-        self.identifier = identifier
-        self.language = language
-        self.block = block
-
-    def diff_info(self):
-        return (Translate, self.identifier, self.language)
-
-    def chain(self, next): #@ReservedAssignment
-        self.next = next
-        chain_block(self.block, next)
-
-    def execute(self):
-
-        if self.language is not None:
-            next_node(self.__next__)
-            raise Exception("Translation nodes cannot be run directly.")
-
-        next_node(renpy.game.script.translator.lookup_translate(self.identifier))
-        renpy.game.context().translate_identifier = self.identifier
-
-    def predict(self):
-        node = renpy.game.script.translator.lookup_translate(self.identifier)
-        return [ node ]
-
-    def scry(self):
-        rv = Scry()
-        rv._next = renpy.game.script.translator.lookup_translate(self.identifier)
-        return rv
-
-    def get_children(self):
-        return self.block
-
-    def restructure(self, callback):
-        return callback(self.block)
-
-
-class EndTranslate(Node):
-    """
-    A node added implicitly after each translate block. It's responsible for
-    resetting the translation identifier.
-    """
-
-    def __init__(self, loc):
-        super(EndTranslate, self).__init__(loc)
-
-    def diff_info(self):
-        return (EndTranslate,)
-
-    def execute(self):
-        next_node(self.__next__)
-        renpy.game.context().translate_identifier = None
-
-
-class TranslateString(Node):
-    """
-    A node used for translated strings.
-    """
-
-    __slots__ = [
-        "language",
-        "old",
-        "new"
-        ]
-
-    def __init__(self, loc, language, old, new):
-        super(TranslateString, self).__init__(loc)
-        self.language = language
-        self.old = old
-        self.new = new
-
-    def diff_info(self):
-        return (TranslateString,)
-
-    def execute(self):
-        next_node(self.__next__)
-        renpy.translation.add_string_translation(self.language, self.old, self.new)
-
-class TranslatePython(Node):
-
-    __slots__ = [
-        'language',
-        'code',
-        ]
-
-    def __init__(self, loc, language, python_code):
-        """
-        @param code: A PyCode object.
-
-        @param hide: If True, the code will be executed with its
-        own local dictionary.
-        """
-
-        super(TranslatePython, self).__init__(loc)
-
-        self.language = language
-        self.code = PyCode(python_code, loc=loc, mode='exec')
-
-    def diff_info(self):
-        return (TranslatePython, self.code.source)
-
-    def execute(self):
-        next_node(self.__next__)
-
-    # def early_execute(self):
-    #    renpy.python.create_store(self.store)
-    #    renpy.python.py_exec_bytecode(self.code.bytecode, self.hide, store=self.store)
-
-
+        renpy.exports.definitions[self.varname].append((self.filename, self.linenumber, "define"))
+        setattr(renpy.store, self.varname, value)    
+        
+        return self.__next__
