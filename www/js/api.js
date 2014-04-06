@@ -191,9 +191,9 @@ window.html5ks.api = {
   iscene: function (target, is_h, is_end) {
     html5ks.store.status = "scene";
     var deferred = when.defer(),
-        real_target = html5ks.persistent.language + "_" + target,
+        real_target = html5ks.persistent.language + "_" + target.replace(/"/g, ''),
         i = 0;
-    html5ks.fetch('script', html5ks.data.s2s[real_target]).then(function (l) {
+    html5ks.fetch('script', real_target).then(function run(l) {
       if (l[i]) {
         html5ks.api.runInst(l[i++]).then(run, console.error);
       } else {
@@ -214,8 +214,6 @@ window.html5ks.api = {
         return this[cmd].apply(this, args);
       } else if (inst.length === 1) {
         return this.say("name_only", cmd);
-      } else if (/^[A-Z]/.test(cmd)) {
-        return this.say(cmd, args[0]);
       } else {
         console.error("no such cmd " + cmd);
         return when.resolve();

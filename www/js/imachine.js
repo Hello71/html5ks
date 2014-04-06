@@ -21,8 +21,9 @@ html5ks.imachine = {
                 case "act_op":
                 case "iscene":
                   html5ks.api[inst.label].call(html5ks.api, inst['arguments'][0][0][1]).then(runInst, deferred.reject);
+                  break;
                 default:
-                  throw new Error('unknown Call label');
+                  throw new Error('unknown Call label: ' + inst.label);
               }
               break;
             case 'UserStatement':

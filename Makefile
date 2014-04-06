@@ -1,7 +1,7 @@
 null :=
 SPACE := $(null) $(null)
 
-all: js json video audio images
+all: html js json video audio images
 
 Makefile: Makefile.inc
 
@@ -11,6 +11,14 @@ Makefile.inc: configure
 include Makefile.inc
 
 UGLIFYJS := node_modules/.bin/uglifyjs $(UGLIFYJSFLAGS)
+
+# === HTML ===
+
+html: www/index.html
+
+www/index.html: www/index.html.dist
+	$(if $(DEBUG), sed -e 's:$(subst www/,,$(JSOUT)):$(subst $(SPACE),"></script><script src=",$(subst www/,,$(JS))):' $^ > $@, \
+							cp $^ $@)
 
 # === JS ===
 

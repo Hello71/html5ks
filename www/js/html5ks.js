@@ -205,7 +205,7 @@ window.html5ks = {
     var deferred = when.defer();
     var xhr = new XMLHttpRequest();
     if (obj[prop]) {
-      deferred.resolve();
+      deferred.resolve(obj[prop]);
     } else {
       xhr.open("GET", path);
       xhr.onload = function () {
@@ -217,8 +217,8 @@ window.html5ks = {
           xhr.onerror();
         }
       };
-      xhr.onerror = function () {
-        deferred.reject();
+      xhr.onerror = function (e) {
+        deferred.reject(new Error(xhr.status));
       };
       xhr.send();
     }
@@ -229,14 +229,14 @@ window.html5ks = {
     switch (type) {
       case "json":
         return this._fetch(html5ks.data, name, "json/" + name + ".json");
-        break;
       case "script":
-        this._fetch(html5ks.data.script, name, "json/script-" + name + ".json").then(function (d) {
+        var filename = html5ks.data.s2s[name];
+        this._fetch(html5ks.data.script, filename, "json/script-" + filename + ".json").then(function (d) {
           for (var i in d) {
             html5ks.data.script[i] = d[i];
           }
-          deferred.resolve();
-        });
+          deferred.resolve(d[name]);
+        }, deferred.reject);
         break;
       default:
         throw new Error("fetchtype " + type + " not implemented");

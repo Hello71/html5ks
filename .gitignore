@@ -1,15 +1,16 @@
 # ignore 'copyrighted' contents similar to emulators
-/www/favicon.ico
-/www/json
-/www/dump
-/rpy
 /ast2json/*.json*
 /ast2json/*.rpyc
+/rpy
+/www/dump
+/www/favicon.ico
+/www/json
 
 # generated files
 /Makefile.inc
-/www/js/all.min.js*
 /node_modules
+/www/index.html
+/www/js/all.min.js*
 
 # generated nginx conf - see nginx.sh
 /nginx.gen.conf
