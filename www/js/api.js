@@ -191,16 +191,15 @@ window.html5ks.api = {
   iscene: function (target, is_h, is_end) {
     html5ks.store.status = "scene";
     var deferred = when.defer(),
-        label = html5ks.data.script[html5ks.persistent.language + "_" + target],
+        real_target = html5ks.persistent.language + "_" + target,
         i = 0;
-    (function run(ret) {
-      if (label[i]) {
-        html5ks.api.runInst(label[i]).then(run, console.error);
-        i++;
+    html5ks.fetch('script', html5ks.data.s2s[real_target]).then(function (l) {
+      if (l[i]) {
+        html5ks.api.runInst(l[i++]).then(run, console.error);
       } else {
-        deferred.resolve(ret);
+        deferred.resolve();
       }
-    }());
+    }, deferred.reject);
     return deferred.promise;
   },
 

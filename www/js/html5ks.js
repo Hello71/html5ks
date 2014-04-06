@@ -4,7 +4,7 @@ window.assert = function (c, m) {
   else if (!c) throw new Error(m);
 };
 window.html5ks = {
-  data: {},
+  data: {script: {}},
   persistent: {},
   init: function () {
     var defaultPersistent = {
@@ -55,7 +55,9 @@ window.html5ks = {
       hanako: 0
     },
     play: {},
-    speed: ""
+    speed: "",
+    nvl: false,
+    window: false
   },
   next: function () {
     var _next = html5ks._next;
@@ -199,29 +201,42 @@ window.html5ks = {
       html5ks.menu.mainMenu();
     }, console.error);
   },
-  fetch: function (type, name) {
+  _fetch: function (obj, prop, path) {
     var deferred = when.defer();
     var xhr = new XMLHttpRequest();
+    if (obj[prop]) {
+      deferred.resolve();
+    } else {
+      xhr.open("GET", path);
+      xhr.onload = function () {
+        if (xhr.status === 200) {
+          var d = JSON.parse(xhr.responseText);
+          obj[prop] = d;
+          deferred.resolve(d);
+        } else {
+          xhr.onerror();
+        }
+      };
+      xhr.onerror = function () {
+        deferred.reject();
+      };
+      xhr.send();
+    }
+    return deferred.promise;
+  },
+  fetch: function (type, name) {
+    var deferred = when.defer();
     switch (type) {
       case "json":
-        if (html5ks.data[name]) {
+        return this._fetch(html5ks.data, name, "json/" + name + ".json");
+        break;
+      case "script":
+        this._fetch(html5ks.data.script, name, "json/script-" + name + ".json").then(function (d) {
+          for (var i in d) {
+            html5ks.data.script[i] = d[i];
+          }
           deferred.resolve();
-        } else {
-          xhr.open("GET", "json/" + name + ".json");
-          xhr.onload = function () {
-            if (xhr.status === 200) {
-              var d = JSON.parse(xhr.responseText);
-              html5ks.data[name] = d;
-              deferred.resolve(d);
-            } else {
-              xhr.onerror();
-            }
-          };
-          xhr.onerror = function () {
-            deferred.reject();
-          };
-          xhr.send();
-        }
+        });
         break;
       default:
         throw new Error("fetchtype " + type + " not implemented");

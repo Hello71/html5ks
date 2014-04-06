@@ -18,7 +18,7 @@ MYJS := www/js/html5ks.js www/js/menu.js www/js/api.js \
         www/js/characters.js www/js/imachine.js www/js/i18n.js
 JSLIBS := www/js/lib/fastclick.js www/js/lib/modernizr-build.js \
           www/js/lib/when.js www/js/lib/spin.js
-JSDATA := www/js/play.js www/js/images.js
+JSDATA := www/js/play.js www/js/images.js www/js/s2s.js
 JS := $(JSLIBS) $(MYJS) $(JSDATA)
 JSOUT := www/js/all.min.js
 

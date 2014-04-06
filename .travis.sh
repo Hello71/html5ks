@@ -4,6 +4,7 @@ set -e -x
 
 case "$1" in
   before_install)
+    ln -s $(command -v python) /usr/local/bin/python
     sudo service postgresql stop
     sudo service mysql stop
     sudo apt-get update -qq
